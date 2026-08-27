@@ -1,0 +1,493 @@
+6  --  Lists  (create, add, remove, index, slice)
+
+1)  What a list is
+
+A LIST is an ORDERED collection of values.
+The values can be of any type, and the same
+list can hold different types together.
+
+Two key properties:
+
+  -  ORDERED   --  items keep the order in
+                   which you put them.
+  -  MUTABLE   --  you can add, remove, and
+                   change items after the
+                   list has been created.
+
+
+2)  Creating a list
+
+Use square brackets  [ ]  , items separated
+by commas.
+
+Code:
+
+     empty   = []
+     numbers = [10, 20, 30, 40]
+     names   = ["adarsh", "priya", "rahul"]
+     mixed   = [1, "hello", 3.14, True]
+     nested  = [[1, 2], [3, 4], [5, 6]]
+
+Notes:
+
+  -  An empty list is  []  (zero items).
+  -  Items can be different types in the
+     same list.
+  -  Lists can contain other lists
+     ("nested" list).
+
+
+3)  Length  --  len()
+
+The same  len()  function used for strings.
+
+Code:
+
+     nums = [10, 20, 30, 40]
+     print(len(nums))
+     print(len([]))
+
+Output:
+     4
+     0
+
+
+4)  Indexing
+
+Same rules as strings: indexes start at 0,
+and negative indexes count from the end.
+
+     nums   =   [10, 20, 30, 40]
+     idx       0   1   2   3
+              -4  -3  -2  -1
+
+Code:
+
+     nums = [10, 20, 30, 40]
+     print(nums[0])
+     print(nums[2])
+     print(nums[-1])
+     print(nums[-2])
+
+Output:
+     10
+     30
+     40
+     30
+
+
+For nested lists, use two sets of brackets:
+
+Code:
+
+     matrix = [[1, 2], [3, 4], [5, 6]]
+     print(matrix[0])
+     print(matrix[0][1])
+     print(matrix[2][0])
+
+Output:
+     [1, 2]
+     2
+     5
+
+
+5)  Slicing
+
+Same syntax as strings:  lst[start:stop]
+and  lst[start:stop:step] .
+
+  -  start   INCLUDED (0-based).
+  -  stop    NOT included.
+  -  If omitted, start defaults to 0 and
+     stop defaults to  len(lst) .
+
+
+Code:
+
+     nums = [10, 20, 30, 40, 50]
+     print(nums[1:4])
+     print(nums[:3])
+     print(nums[2:])
+     print(nums[:])
+     print(nums[::2])
+     print(nums[::-1])
+
+Output:
+     [20, 30, 40]
+     [10, 20, 30]
+     [30, 40, 50]
+     [10, 20, 30, 40, 50]
+     [10, 30, 50]
+     [50, 40, 30, 20, 10]
+
+A slice returns a NEW list. It does not
+change the original.
+
+
+6)  Lists are MUTABLE  --  change items in place
+
+Unlike strings, you CAN change items in a
+list.
+
+Code:
+
+     nums = [10, 20, 30]
+     nums[0] = 99
+     print(nums)
+
+Output:  [99, 20, 30]
+
+
+You can also assign to a slice to replace a
+range:
+
+Code:
+
+     nums = [10, 20, 30, 40, 50]
+     nums[1:4] = ["a", "b"]
+     print(nums)
+
+Output:  [10, 'a', 'b', 50]
+
+Positions  1 , 2 , 3  were replaced by
+"a"  and  "b" . The list SHRANK from 5
+items to 4.
+
+
+7)  Adding items
+
+  (a)   append(item)  --  add one item to
+                          the END.
+
+        Code:
+
+           nums = [10, 20]
+           nums.append(30)
+           nums.append(40)
+           print(nums)
+
+        Output:  [10, 20, 30, 40]
+
+
+  (b)   insert(i, item)  --  insert  item
+                             at position  i .
+
+        Code:
+
+           nums = [10, 20, 30]
+           nums.insert(1, 99)
+           print(nums)
+
+        Output:  [10, 99, 20, 30]
+
+
+  (c)   extend(other)  --  add all items
+                           from another
+                           list to the END.
+
+        Code:
+
+           a = [1, 2]
+           b = [3, 4, 5]
+           a.extend(b)
+           print(a)
+
+        Output:  [1, 2, 3, 4, 5]
+
+        Different from  a.append(b)  ,
+        which would give
+        [1, 2, [3, 4, 5]]  (a nested list
+        instead of a flat one).
+
+
+  (d)   +   --  concatenate two lists into
+                a NEW list. The originals
+                are unchanged.
+
+        Code:
+
+           a = [1, 2]
+           b = [3, 4]
+           c = a + b
+           print(a)
+           print(b)
+           print(c)
+
+        Output:
+           [1, 2]
+           [3, 4]
+           [1, 2, 3, 4]
+
+
+8)  Removing items
+
+  (a)   remove(value)  --  remove the FIRST
+                           item equal to
+                           value .
+
+        Code:
+
+           nums = [10, 20, 30, 20]
+           nums.remove(20)
+           print(nums)
+
+        Output:  [10, 30, 20]
+
+        Only the FIRST 20 was removed. If
+        value  is not in the list,
+        remove()  raises a  ValueError .
+
+
+  (b)   pop(i)   --  remove the item at
+                     index  i  and RETURN
+                     it. Without an index,
+                     pops the LAST item.
+
+        Code:
+
+           nums = [10, 20, 30, 40]
+           last  = nums.pop()
+           first = nums.pop(0)
+           print(last)
+           print(first)
+           print(nums)
+
+        Output:
+           40
+           10
+           [20, 30]
+
+
+  (c)   del   --  a statement that deletes
+                  an item by index, or a
+                  slice of items.
+
+        Code:
+
+           nums = [10, 20, 30, 40, 50]
+           del nums[0]
+           print(nums)
+           del nums[1:3]
+           print(nums)
+
+        Output:
+           [20, 30, 40, 50]
+           [20, 50]
+
+
+  (d)   clear()  --  empty the list
+                     completely.
+
+        Code:
+
+           nums = [10, 20, 30]
+           nums.clear()
+           print(nums)
+
+        Output:  []
+
+
+9)  Membership and finding
+
+  (a)   in / not in  --  check if a value
+                         is in the list.
+
+        Code:
+
+           nums = [10, 20, 30]
+           print(20 in nums)
+           print(99 in nums)
+           print(99 not in nums)
+
+        Output:
+           True
+           False
+           True
+
+
+  (b)   index(value)  --  return the index
+                         of the FIRST item
+                         equal to  value .
+                         Raises  ValueError
+                         if not present.
+
+        Code:
+
+           nums = [10, 20, 30, 20]
+           print(nums.index(20))
+
+        Output:  1
+
+
+  (c)   count(value)  --  return how many
+                         times  value
+                         appears.
+
+        Code:
+
+           nums = [10, 20, 30, 20, 20]
+           print(nums.count(20))
+
+        Output:  3
+
+
+10)  Sorting and reversing
+
+  (a)   sort()  --  sort the list IN PLACE
+                    (changes the original).
+                    Returns  None .
+
+        Code:
+
+           nums = [30, 10, 20]
+           nums.sort()
+           print(nums)
+
+        Output:  [10, 20, 30]
+
+        Descending order:
+
+           nums.sort(reverse=True)
+
+
+  (b)   sorted(lst)  --  return a NEW
+                         sorted list without
+                         changing the
+                         original.
+
+        Code:
+
+           nums = [30, 10, 20]
+           new  = sorted(nums)
+           print(nums)
+           print(new)
+
+        Output:
+           [30, 10, 20]
+           [10, 20, 30]
+
+
+  (c)   reverse()  --  reverse the list IN
+                       PLACE.
+
+        Code:
+
+           nums = [10, 20, 30]
+           nums.reverse()
+           print(nums)
+
+        Output:  [30, 20, 10]
+
+
+  IN-PLACE vs NEW:
+
+     sort() , reverse()       -> change the
+                                 original
+                                 list.
+                                 Return
+                                 None .
+
+     sorted() , reversed()    -> return a
+                                 new value.
+                                 Original
+                                 stays
+                                 untouched.
+
+
+11)  Iterating over a list  (brief look)
+
+You will often want to do something with
+each item in a list. The tool for that is
+a  for  loop.
+
+Code:
+
+     nums = [10, 20, 30]
+     for n in nums:
+         print(n)
+
+Output:
+     10
+     20
+     30
+
+Read  for n in nums:  as "take each item
+from  nums , one at a time, call it  n ,
+and run the indented block for it".
+
+Full details on loops ( for , while ,
+range , break , continue ) are in section 11.
+
+
+12)  Common errors
+
+  (a)   Index out of range
+
+        Code:
+
+           nums = [10, 20]
+           print(nums[5])
+
+        Run:
+
+           IndexError: list index out of range
+
+
+  (b)   Removing a value that is not in
+        the list
+
+        Code:
+
+           nums = [10, 20, 30]
+           nums.remove(99)
+
+        Run:
+
+           ValueError: list.remove(x): x
+           not in list
+
+        Check first with  in  :
+
+           if 99 in nums:
+               nums.remove(99)
+
+
+  (c)   append vs extend confusion
+
+        Code:
+
+           a = [1, 2]
+           b = [3, 4]
+           a.append(b)
+           print(a)
+
+        Output:  [1, 2, [3, 4]]
+
+        append  added the whole list as
+        ONE item. For a flat
+        [1, 2, 3, 4]  , use  extend  or
+        +  .
+
+
+  (d)   Forgetting that sort() returns None
+
+        Code:
+
+           nums = [30, 10, 20]
+           result = nums.sort()
+           print(result)
+
+        Output:  None
+
+        sort()  changes the list in place
+        and returns  None . The sorted
+        values are in  nums  itself:
+        print(nums)  gives
+        [10, 20, 30] .
+
+        If you want a NEW sorted list, use
+        sorted(nums)  instead.
+
+
+In section 7 we look at DICTIONARIES  --
+collections of KEY-VALUE pairs.

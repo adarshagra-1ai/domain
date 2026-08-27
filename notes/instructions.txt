@@ -103,157 +103,146 @@ Never write code before explaining what and why.
 
 5. LEARNING ORDER  (bird's-eye view)
 
-You may adjust the order, but tell me WHY if you do.
+Each topic lives in its own numbered folder inside
+notes/  . The leading number is the order I learn
+them. You may adjust the order, but tell me WHY if
+you do.
 
---- Phase 0  -  Computer & terminal basics ---
-   0.1  What a file system is (folder, file, path,
-        absolute vs relative)
-   0.2  What a terminal is and why we use it
-   0.3  Core commands with one-line meaning:
-          pwd, ls, cd, mkdir, touch, cat, rm, mv, cp
+--- 1_terminal  -  Computer & terminal basics ---
+   1  What a file system is (folder, file, path,
+      absolute vs relative)
+   2  What a terminal is and why we use it
+   3  Core commands with one-line meaning:
+        pwd, ls, cd, mkdir, touch, cat, rm, mv, cp
 
---- Phase A  -  Python from zero ---
-   A.1   What Python is; check install (python3 --version)
-   A.2   First program: print("hello") in a .py file
-         and run it
-   A.3   Variables and naming rules
-   A.4   Data types: int, float, str, bool
-   A.5   Strings and common string operations
-   A.6   Lists: create, add, remove, index, slice
-   A.7   Dictionaries: create, read, update, delete
-         key-value pairs
-   A.8   Tuples: immutable ordered collections, when
-         to use them
-   A.9   Sets: unique unordered collections, when to
-         use them
-   A.10  Conditions: if / elif / else, truthy / falsy
-   A.11  Loops: for, while, break, continue, range
-   A.12  Functions: def, arguments, return, default
-         arguments, *args, **kwargs, scope
-   A.13  Reading and writing files: open, with,
-         read, write, modes (r, w, a)
-   A.14  Modules and import: own module, standard
-         library, third-party module
-   A.15  Errors: try / except / else / finally,
-         raising errors
-   A.16  Classes: class, __init__, self, methods,
-         attributes, and a working look at inheritance
-   A.17  Type hints: variables, function params,
-         return types, Optional, List, Dict
-   A.18  Virtual environment: what and why, create
-         (python3 -m venv .venv), activate, deactivate
-   A.19  pip and requirements.txt workflow
+--- 2_python  -  Python from zero ---
+   1   What Python is; check install
+       ( python3 --version )
+   2   First program: print("hello") in a .py file
+       and run it
+   3   Variables and naming rules
+   4   Data types: int, float, str, bool
+   5   Strings and common string operations
+   6   Lists: create, add, remove, index, slice
+   7   Dictionaries: create, read, update, delete
+       key-value pairs
+   8   Tuples: immutable ordered collections; when
+       to use them
+   9   Sets: unique unordered collections; when to
+       use them
+   10  Conditions: if / elif / else, truthy / falsy
+   11  Loops: for, while, break, continue, range
+   12  Functions: def, arguments, return, default
+       arguments, *args, **kwargs, scope
+   13  Reading and writing files: open, with,
+       read, write, modes ( r , w , a )
+   14  Modules and import: own module, standard
+       library, third-party module
+   15  Errors: try / except / else / finally,
+       raising errors
+   16  Classes: class, __init__, self, methods,
+       attributes, and a working look at inheritance
+   17  Type hints: variables, function params,
+       return types, Optional, List, Dict
+   18  Virtual environment: what and why, create
+       ( python3 -m venv .venv ), activate,
+       deactivate
+   19  pip and requirements.txt workflow
 
---- Phase B  -  Backend framework basics ---
-   B.1   HTTP idea: request, response, method, status
-   B.2   FastAPI hello-world route
-   B.3   Path params, query params, JSON body
-   B.4   Pydantic model to validate input
-   B.5   SQLite basics: create table, insert, select,
-         update, delete
-   B.6   Talking to SQLite from Python (sqlite3 module)
+--- 3_http  -  HTTP basics ---
+   1   HTTP idea: request, response, method, status
 
---- Phase C  -  Auth and multi-user ---
-   C.1   Password hashing: why (bcrypt idea)
-   C.2   JWT and cookies: how they work together
-   C.3   Login route and session cookie
-   C.4   "Active project" concept for multi-tenant apps
+--- 4_fastapi  -  Web framework basics ---
+   1   FastAPI hello-world route
+   2   Path params, query params, JSON body
+   3   Pydantic model to validate input
 
---- Phase D  -  One domain end-to-end ---
-   D.1   Floors: schema, Pydantic model, tool
-         functions, routes
-   D.2   Repeat the same pattern for rooms, drivers,
-         loads, macros
+--- 5_sqlite  -  Database basics ---
+   1   SQLite basics: create table, insert, select,
+       update, delete
+   2   Talking to SQLite from Python
+       ( sqlite3  module)
 
---- Phase E  -  The AI agent ---
-   E.1   What an LLM tool call is
-   E.2   LiteLLM and streaming
-   E.3   Agent loop: send message, get tool call, run
-         it, send result back
-   E.4   Plan approval gate (agent proposes, user
-         approves)
-   E.5   Prompt caching and logging
+--- 6_auth  -  Auth and multi-user ---
+   1   Password hashing: why (bcrypt idea)
+   2   JWT and cookies: how they work together
+   3   Login route and session cookie
+   4   "Active project" concept for multi-tenant
+       apps
 
---- Phase F  -  HTML fundamentals ---
-   F.1   What HTML is; how a browser reads it
-   F.2   Tags, attributes, elements
-   F.3   Common tags: div, span, h1-h6, p, a, img,
-         button, input, form, ul/ol/li, table
-   F.4   id and class attributes
-   F.5   Semantic tags: header, nav, section, footer
-   F.6   Nesting rules and document structure
+--- Future topics  (folder numbers assigned as we
+    start them) ---
 
---- Phase G  -  CSS fundamentals ---
-   G.1   What CSS is; how to attach it (inline,
-         internal, external)
-   G.2   Selectors: element, class, id, combinators
-   G.3   Common properties: color, background, font,
-         border
-   G.4   Box model: margin, padding, border, content
-   G.5   Units: px, em, rem, %
-   G.6   Display: block, inline, inline-block, none
-   G.7   Flexbox in depth
-   G.8   Grid basics
-   G.9   Positioning: static, relative, absolute, fixed
+  domain end-to-end
+     Floors: schema, Pydantic model, tool
+     functions, routes. Repeat the same pattern
+     for rooms, drivers, loads, macros.
 
---- Phase H  -  JavaScript fundamentals ---
-   H.1   What JS is; where it runs
-   H.2   Variables: let, const (var mention only)
-   H.3   Data types: number, string, boolean, null,
-         undefined, object, array
-   H.4   Operators and template literals
-   H.5   Conditions: if / else / switch
-   H.6   Loops: for, while, for...of, forEach
-   H.7   Functions: regular and arrow, default params
-   H.8   Arrays and methods: map, filter, reduce,
-         find, forEach, some, every
-   H.9   Objects and destructuring
-   H.10  Spread and rest operators
-   H.11  Promises: then, catch
-   H.12  async / await
-   H.13  Modules: import / export
-   H.14  fetch API: GET, POST, headers, body, response
-   H.15  JSON.parse and JSON.stringify
+  ai_agent
+     What an LLM tool call is; LiteLLM and
+     streaming; agent loop (send message, get
+     tool call, run it, send result back); plan
+     approval gate; prompt caching and logging.
 
---- Phase I  -  Node.js and npm ---
-   I.1   What Node.js is (JS outside the browser)
-   I.2   npm and package.json
-   I.3   Installing packages (dependencies vs
-         devDependencies)
-   I.4   npm scripts (dev, build, start)
+  html
+     What HTML is; how a browser reads it. Tags,
+     attributes, elements. Common tags (div,
+     span, h1-h6, p, a, img, button, input, form,
+     ul/ol/li, table). id / class attributes.
+     Semantic tags (header, nav, section, footer).
+     Nesting rules and document structure.
 
---- Phase J  -  React from zero ---
-   J.1   What React is and why we use it
-   J.2   JSX
-   J.3   Function components
-   J.4   Props: passing data down
-   J.5   useState: local state
-   J.6   useEffect: side effects and cleanup
-   J.7   Event handlers (onClick, onChange, onSubmit)
-   J.8   Conditional rendering
-   J.9   List rendering with map and keys
-   J.10  Forms and controlled inputs
-   J.11  Callbacks: passing functions to children
-   J.12  Component composition and folder structure
+  css
+     What CSS is; how to attach it (inline,
+     internal, external). Selectors (element,
+     class, id, combinators). Common properties
+     (color, background, font, border). Box model.
+     Units (px, em, rem, %). Display (block,
+     inline, inline-block, none). Flexbox in
+     depth. Grid basics. Positioning (static,
+     relative, absolute, fixed).
 
---- Phase K  -  Frontend project pieces ---
-   K.1   Vite: what it is, dev server, production build
-   K.2   Material-UI: components, theme, sx prop
-   K.3   react-markdown and GFM
-   K.4   fetch with credentials and cookies
-   K.5   SSE (Server-Sent Events) streaming
-   K.6   Custom hooks: when and why
-   K.7   Polling pattern
+  javascript
+     What JS is; where it runs. Variables (let,
+     const). Data types. Operators and template
+     literals. Conditions. Loops. Functions
+     (regular and arrow). Array methods (map,
+     filter, reduce, find, forEach, some, every).
+     Objects and destructuring. Spread / rest.
+     Promises. async / await. Modules
+     (import / export). fetch API. JSON.parse
+     and JSON.stringify.
 
---- Phase L  -  Build the frontend pages ---
-   L.1   Login page
-   L.2   Dashboard sections (floors, drivers, macros)
-   L.3   Chat panel with SSE
-   L.4   Polling /state every few seconds
+  node
+     What Node.js is (JS outside the browser).
+     npm and package.json. Installing packages
+     (dependencies vs devDependencies). npm
+     scripts (dev, build, start).
 
---- Phase M  -  Polish ---
-   M.1   Error handling and edge cases
-   M.2   Small UX fixes
+  react
+     What React is and why we use it. JSX.
+     Function components. Props. useState.
+     useEffect. Event handlers. Conditional
+     rendering. List rendering with map and keys.
+     Forms and controlled inputs. Callbacks.
+     Component composition and folder structure.
+
+  frontend_pieces
+     Vite (dev server, production build).
+     Material-UI (components, theme, sx prop).
+     react-markdown and GFM. fetch with
+     credentials and cookies. SSE (Server-Sent
+     Events) streaming. Custom hooks. Polling
+     pattern.
+
+  frontend_pages
+     Login page. Dashboard sections (floors,
+     drivers, macros). Chat panel with SSE.
+     Polling  /state  every few seconds.
+
+  polish
+     Error handling and edge cases. Small UX
+     fixes.
 
 
 6. MY FINAL GOAL
@@ -273,18 +262,26 @@ folder. It has TWO top-level sub-folders:
     domain/
     +-- notes/                        <- learning material
     |    +-- instructions.txt         <- this file
-    |    +-- phase_0/
-    |    |    +-- intro.txt
+    |    +-- 0_index/                 <- one intro file per topic
+    |    |    +-- 1_terminal.txt
+    |    |    +-- 2_python.txt
+    |    |    +-- 3_http.txt
+    |    |    +-- 4_fastapi.txt
+    |    |    +-- 5_sqlite.txt
+    |    |    +-- 6_auth.txt
+    |    +-- 1_terminal/
     |    |    +-- 1_file_system.txt
     |    |    +-- 2_terminal.txt
     |    |    +-- 3_core_commands.txt
-    |    +-- phase_a/                 <- current phase
-    |    |    +-- intro.txt
+    |    +-- 2_python/
     |    |    +-- 1_what_is_python.txt
     |    |    +-- 2_first_program.txt
     |    |    +-- ...
-    |    +-- phase_b/                 (created when Phase B begins)
-    |    +-- ...
+    |    +-- 3_http/
+    |    +-- 4_fastapi/
+    |    +-- 5_sqlite/
+    |    +-- 6_auth/
+    |    +-- ...                      (future topic folders)
     +-- programs/                     <- hands-on code
          +-- index.htm
          +-- script.js
@@ -299,29 +296,34 @@ notes/   --  learning material  (plain .txt only)
        The contract you are reading right now. It
        lives directly inside  notes/  .
 
-  -  One folder per phase, inside  notes/ :
-       phase_0/ , phase_a/ , phase_b/ , ... ,
-       phase_m/
-       (lowercase, snake_case).
+  -  0_index/
+       Holds one intro file per topic. Each intro
+       lists the small parts that topic covers.
+       File names match their topic folder:
+       1_terminal.txt  for  1_terminal/  ,
+       2_python.txt  for  2_python/  , and so on.
 
-  -  Inside each phase folder:
-       intro.txt
-          The short list of small parts that phase
-          is made of.
+  -  One folder per topic, inside  notes/ :
+       1_terminal/ , 2_python/ , 3_http/ , ...
+       The leading number is the order I learn
+       them. Names are lowercase, snake_case.
+
+  -  Inside each topic folder:
        N_topic_name.txt
-          One file per section of that phase, where
+          One file per section of that topic, where
           N is the section number and topic_name
           is a short, lowercase, snake_case
           description.
 
-  -  When we START a new section (for example A.2),
-     create a new file  2_first_program.txt  inside
-     the correct phase folder and add the content
-     there.
+  -  When we START a new section inside an existing
+     topic, create a new file  N_topic_name.txt
+     inside the correct topic folder and add the
+     content there.
 
-  -  When we START a new phase (for example Phase B),
-     create a new folder  notes/phase_b/  , put an
-     intro.txt  inside it listing that phase's
+  -  When we START a new topic, create a new
+     folder  notes/N_topic/  (using the next
+     unused number), add an intro file
+     0_index/N_topic.txt  listing that topic's
      parts, and add section files as we teach them.
 
   -  All learning content stays in plain  .txt
@@ -334,7 +336,7 @@ programs/   --  hands-on practice  (actual code files)
      and runs while learning. This is where the
      examples from the notes are actually tried.
 
-  -  FLAT structure. No phase subfolders. Every
+  -  FLAT structure. No topic subfolders. Every
      file sits directly inside  programs/  .
 
   -  File names use whatever extension matches

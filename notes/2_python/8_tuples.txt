@@ -1,0 +1,246 @@
+8  --  Tuples  (immutable ordered collections)
+
+1)  What a tuple is
+
+A TUPLE is an ORDERED collection of values,
+like a list. The one big difference:
+
+  -  A tuple is IMMUTABLE. Once created,
+     you cannot add, remove, or change its
+     items.
+
+Everything else feels like a list  --
+ordered items, 0-based indexing, slicing.
+
+
+2)  Creating a tuple
+
+Use parentheses  ( )  with items separated
+by commas.
+
+Code:
+
+     empty  = ()
+     point  = (10, 20)
+     colors = ("red", "green", "blue")
+     mixed  = (1, "hi", 3.14, True)
+     nested = ((1, 2), (3, 4))
+
+
+One-item tuple  --  need a TRAILING COMMA:
+
+Code:
+
+     ok  = (5,)
+     bad = (5)
+     print(type(ok))
+     print(type(bad))
+
+Output:
+     <class 'tuple'>
+     <class 'int'>
+
+Without the comma,  (5)  is just the number
+5  wrapped in parentheses, not a tuple.
+
+
+Parentheses are optional if the meaning is
+clear:
+
+Code:
+
+     point = 10, 20
+     print(point)
+     print(type(point))
+
+Output:
+     (10, 20)
+     <class 'tuple'>
+
+Even so, always writing the  ( )  makes
+code easier to read.
+
+
+3)  Indexing and slicing
+
+Same as lists and strings.
+
+Code:
+
+     colors = ("red", "green", "blue")
+     print(colors[0])
+     print(colors[-1])
+     print(colors[1:])
+
+Output:
+     red
+     blue
+     ('green', 'blue')
+
+
+4)  Immutability  --  cannot change items
+
+Code:
+
+     colors = ("red", "green", "blue")
+     colors[0] = "yellow"
+
+Run:
+
+     TypeError: 'tuple' object does not
+     support item assignment
+
+
+You also cannot use  append , insert ,
+remove , pop , or  del  on a tuple's
+items.
+
+If you need a "changed" tuple, build a new
+one:
+
+Code:
+
+     colors = ("red", "green", "blue")
+     colors = ("yellow",) + colors[1:]
+     print(colors)
+
+Output:  ('yellow', 'green', 'blue')
+
+
+5)  Common operations still work
+
+Because tuples are read-only sequences, you
+still get:
+
+     len(t)              length
+     t[i]                indexing
+     t[a:b]              slicing
+     item in t           membership
+     t + t2              concat (new tuple)
+     t * n               repeat (new tuple)
+     for x in t:         iteration
+     t.count(x)          how many
+     t.index(x)          first index
+
+Code:
+
+     nums = (10, 20, 30, 20)
+     print(len(nums))
+     print(nums.count(20))
+     print(nums.index(20))
+     print(20 in nums)
+
+Output:
+     4
+     2
+     1
+     True
+
+
+6)  Unpacking
+
+You can assign a tuple to multiple variables
+at once  --  called UNPACKING.
+
+Code:
+
+     point = (10, 20)
+     x, y = point
+     print(x)
+     print(y)
+
+Output:
+     10
+     20
+
+
+Also works without an intermediate variable:
+
+Code:
+
+     x, y = 10, 20
+
+
+Star unpacking gathers extra items into a
+list:
+
+Code:
+
+     a, b, *rest = (1, 2, 3, 4, 5)
+     print(a)
+     print(b)
+     print(rest)
+
+Output:
+     1
+     2
+     [3, 4, 5]
+
+
+7)  When to use a tuple  (vs a list)
+
+Use a TUPLE when:
+
+  -  The collection is FIXED and should not
+     change (a point  (x, y)  , an
+     (r, g, b)  color, a database row).
+  -  You want to return MULTIPLE values
+     from a function (functions covered in
+     section 12; a Python function returns a
+     tuple by default when you  return
+     more than one value).
+  -  You need a value to use as a
+     DICTIONARY KEY. Lists are unhashable
+     and cannot be dict keys; tuples can.
+
+Use a LIST when the collection is expected
+to grow, shrink, or change.
+
+
+8)  Common errors
+
+  (a)   Trying to modify a tuple
+
+        Code:
+
+           t = (1, 2, 3)
+           t[0] = 99
+
+        Run:
+
+           TypeError: 'tuple' object does
+           not support item assignment
+
+
+  (b)   Forgetting the comma in a one-item
+        tuple
+
+        Code:
+
+           t = (5)
+           print(type(t))
+
+        Output:  <class 'int'>
+
+        Add the comma:  t = (5,) .
+
+
+  (c)   Unpacking with wrong number of
+        names
+
+        Code:
+
+           x, y = (1, 2, 3)
+
+        Run:
+
+           ValueError: too many values to
+           unpack (expected 2)
+
+        Either add another name, or use
+        star unpacking:
+        x, y, *rest = (1, 2, 3) .
+
+
+In section 9 we look at SETS  --  collections of
+UNIQUE values.

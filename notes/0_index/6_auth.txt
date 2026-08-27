@@ -1,0 +1,13 @@
+Auth  --  Auth and multi-user
+
+Auth has 4 small parts:
+
+   1   Password hashing:  why (bcrypt idea)
+
+   2   JWT and cookies:  how they work
+       together
+
+   3   Login route and session cookie
+
+   4   "Active project" concept for
+       multi-tenant apps

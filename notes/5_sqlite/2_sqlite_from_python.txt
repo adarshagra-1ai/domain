@@ -1,0 +1,274 @@
+2  --  Talking to SQLite from Python
+         ( sqlite3  module)
+
+1)  What the sqlite3 module is
+
+sqlite3  is a Python STANDARD LIBRARY
+module (no  pip install  needed) that
+lets your Python code open a SQLite
+database file, run SQL statements, and
+read the results.
+
+It follows the same shape as most Python
+database libraries:  connect , cursor ,
+execute , fetch .
+
+
+2)  Connect to a database file
+
+Code:
+
+     import sqlite3
+
+     conn = sqlite3.connect("mydata.sqlite")
+
+  -  If the file exists, it is opened.
+  -  If it does not exist, it is CREATED.
+
+The path is relative to your CWD unless
+you pass an absolute path.
+
+
+In-memory database (great for tests):
+
+     conn = sqlite3.connect(":memory:")
+
+Everything lives only in RAM and
+disappears when the process ends.
+
+
+3)  Cursor  --  the "query runner"
+
+You do not run SQL on the connection
+directly. You get a CURSOR from it, then
+run queries through the cursor.
+
+Code:
+
+     cursor = conn.cursor()
+
+Then:
+
+     cursor.execute("SELECT * FROM users")
+
+The cursor also holds the result of the
+last query.
+
+
+4)  Executing a statement
+
+Code:
+
+     import sqlite3
+
+     conn = sqlite3.connect("mydata.sqlite")
+     cur  = conn.cursor()
+
+     cur.execute("""
+         CREATE TABLE IF NOT EXISTS users (
+             id INTEGER PRIMARY KEY AUTOINCREMENT,
+             name TEXT NOT NULL,
+             age INTEGER
+         )
+     """)
+
+     conn.commit()
+     conn.close()
+
+Notes:
+
+  -  Triple-quoted strings ( """...""" )
+     let you write multi-line SQL
+     cleanly.
+  -  CREATE TABLE IF NOT EXISTS  makes it
+     safe to run the script many times.
+  -  conn.commit()  saves changes to the
+     file. Without it, INSERT / UPDATE /
+     DELETE are LOST.
+  -  conn.close()  releases the file lock.
+
+
+5)  Insert with parameters  (safe way)
+
+NEVER build SQL by string concatenation
+with user input  --  that opens the door
+to SQL INJECTION (see gotcha (d)). Use
+PLACEHOLDER syntax with a tuple of values.
+
+Code:
+
+     name = "adarsh"
+     age  = 25
+
+     cur.execute(
+         "INSERT INTO users (name, age) VALUES (?, ?)",
+         (name, age),
+     )
+     conn.commit()
+
+The  ?  characters are placeholders. The
+tuple  (name, age)  supplies the actual
+values. The library escapes them safely.
+
+
+Named placeholders (readable when many
+parameters):
+
+Code:
+
+     cur.execute(
+         "INSERT INTO users (name, age) "
+         "VALUES (:name, :age)",
+         {"name": "priya", "age": 30},
+     )
+
+
+6)  Reading rows  --  fetchone, fetchall
+
+After a SELECT, ask the cursor for rows.
+
+     cur.fetchone()   ->  next row as a
+                          tuple, or  None
+                          at end of results
+     cur.fetchall()   ->  list of all
+                          remaining rows
+
+Example:
+
+     cur.execute("SELECT id, name, age FROM users")
+     rows = cur.fetchall()
+     for row in rows:
+         print(row)
+
+Output:
+
+     (1, 'adarsh', 25)
+     (2, 'priya', 30)
+
+Each row is a TUPLE in the order the
+columns were selected.
+
+
+7)  Row factory  --  dict-like rows
+
+By default,  row[0]  gives the first
+column. To use  row["name"]  instead, set
+a row factory.
+
+Code:
+
+     conn.row_factory = sqlite3.Row
+
+     cur = conn.cursor()
+     cur.execute("SELECT id, name, age FROM users")
+     for row in cur.fetchall():
+         print(row["name"], row["age"])
+
+Output:
+
+     adarsh 25
+     priya 30
+
+
+8)  Update and delete
+
+Same shape as insert  --  use
+placeholders.
+
+     cur.execute(
+         "UPDATE users SET age = ? WHERE name = ?",
+         (26, "adarsh"),
+     )
+
+     cur.execute(
+         "DELETE FROM users WHERE id = ?",
+         (5,),
+     )
+
+     conn.commit()
+
+Notes:
+
+  -  Do not forget the comma in a
+     one-item tuple:  (5,) , not  (5) .
+  -  conn.commit()  applies the changes.
+
+
+9)  Using with block  (auto commit / rollback)
+
+A  with  block on the connection commits
+if the block finishes normally and rolls
+back if an exception is raised inside.
+
+Code:
+
+     with sqlite3.connect("mydata.sqlite") as conn:
+         cur = conn.cursor()
+         cur.execute(
+             "INSERT INTO users (name, age) VALUES (?, ?)",
+             ("rahul", 22),
+         )
+
+The commit happens at the end of the
+with  block if there was no exception.
+The connection is also closed cleanly.
+
+
+10)  Common errors
+
+  (a)   sqlite3.OperationalError:
+        no such table: users
+
+        The table has not been created
+        yet in this file. Run
+        CREATE TABLE  first (or use
+        CREATE TABLE IF NOT EXISTS  in
+        your setup script).
+
+
+  (b)   sqlite3.OperationalError:
+        database is locked
+
+        Another process (or another
+        connection in your program) has
+        the database open with an
+        unfinished write. Close the other
+        connection, or wrap your writes
+        in a  with  block so they end
+        promptly.
+
+
+  (c)   Forgot to commit
+
+        You inserted rows, closed the
+        program, then reopened it  --
+        the rows are gone. INSERT /
+        UPDATE / DELETE need
+        conn.commit()  (or a  with
+        block).
+
+
+  (d)   Building SQL by string
+        concatenation  (SQL INJECTION)
+
+        DO NOT do this:
+
+           cur.execute(
+               f"SELECT * FROM users WHERE name = '{name}'"
+           )
+
+        If  name  contains a  '  or
+        ; DROP TABLE users;  , disaster.
+        Always use placeholders:
+
+           cur.execute(
+               "SELECT * FROM users WHERE name = ?",
+               (name,),
+           )
+
+
+With section 2 we finish the SQLite topic
+and the backend framework and database
+basics. Next comes AUTH and MULTI-USER
+--  password hashing, JWT (JSON Web
+Token) cookies, and the login flow.

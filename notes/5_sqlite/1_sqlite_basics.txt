@@ -1,0 +1,266 @@
+1  --  SQLite basics
+         (create table, insert, select,
+          update, delete)
+
+1)  What SQLite is
+
+SQLite is a small, file-based SQL database.
+Instead of running as a separate server
+program, SQLite is a library that Python
+(and most other languages) can embed
+directly. The whole database lives in ONE
+FILE.
+
+Facts you need for now:
+
+  -  No server to start. No login. Just a
+     file.
+  -  Full SQL syntax: create table,
+     insert, select, update, delete,
+     joins, transactions.
+  -  Great for small projects, tests, and
+     desktop apps. Not meant for very
+     high-traffic websites (Postgres or
+     MySQL are the usual choice there).
+
+The file usually has a  .sqlite ,  .db ,
+or  .sqlite3  extension by convention.
+
+
+2)  Open a SQLite shell
+
+Install the CLI tool if it is missing:
+
+     sudo apt install sqlite3
+
+Open (or CREATE) a database file:
+
+     sqlite3 mydata.sqlite
+
+You are now inside the SQLite prompt:
+
+     SQLite version 3.x
+     Enter ".help" for usage hints.
+     sqlite>
+
+If  mydata.sqlite  did not exist, SQLite
+creates it as soon as you save the first
+table.
+
+Exit:
+
+     sqlite> .quit
+
+
+3)  SQL statement basics
+
+  -  A SQL statement usually ends with a
+     semicolon  ;  .
+  -  SQL keywords are case-INSENSITIVE
+     ( SELECT  =  select ), but the
+     convention is to write keywords in
+     UPPERCASE and names in lowercase.
+
+
+4)  CREATE TABLE
+
+Syntax:
+
+     CREATE TABLE <name> (
+         <column> <type> <constraints>,
+         <column> <type> <constraints>,
+         ...
+     );
+
+Example:
+
+     CREATE TABLE users (
+         id INTEGER PRIMARY KEY AUTOINCREMENT,
+         name TEXT NOT NULL,
+         email TEXT UNIQUE,
+         age INTEGER,
+         is_active INTEGER DEFAULT 1
+     );
+
+Explanation of the constraints:
+
+  -  INTEGER PRIMARY KEY AUTOINCREMENT
+       an auto-numbering ID column.
+  -  NOT NULL
+       the column cannot be empty.
+  -  UNIQUE
+       no two rows can share this value.
+  -  DEFAULT 1
+       if the caller does not provide a
+       value, use this.
+
+
+5)  INSERT
+
+Syntax:
+
+     INSERT INTO <table>
+       (<col1>, <col2>, ...)
+       VALUES (<val1>, <val2>, ...);
+
+Example:
+
+     INSERT INTO users (name, email, age)
+       VALUES ('adarsh', 'a@x.com', 25);
+
+     INSERT INTO users (name, age)
+       VALUES ('priya', 30);
+
+You do NOT need to include the AUTOINCREMENT
+id  --  SQLite fills it in.
+
+Multiple rows in one statement:
+
+     INSERT INTO users (name, age) VALUES
+       ('rahul', 22),
+       ('meera', 28);
+
+
+6)  SELECT  --  read data
+
+Basic form:
+
+     SELECT <columns> FROM <table>;
+
+Examples:
+
+     SELECT * FROM users;
+     SELECT id, name FROM users;
+
+
+Filter with WHERE:
+
+     SELECT * FROM users WHERE age > 24;
+     SELECT name FROM users WHERE name = 'adarsh';
+     SELECT * FROM users WHERE is_active = 1;
+
+
+Combine conditions:
+
+     SELECT * FROM users
+       WHERE age > 20 AND is_active = 1;
+
+     SELECT * FROM users
+       WHERE name = 'adarsh' OR name = 'priya';
+
+
+Sort with ORDER BY:
+
+     SELECT * FROM users ORDER BY age;
+     SELECT * FROM users ORDER BY age DESC;
+
+
+Limit rows with LIMIT:
+
+     SELECT * FROM users LIMIT 5;
+     SELECT * FROM users
+       ORDER BY id DESC LIMIT 3;
+
+
+7)  UPDATE  --  change existing rows
+
+Syntax:
+
+     UPDATE <table>
+       SET <col1> = <val1>, <col2> = <val2>
+       WHERE <condition>;
+
+Example:
+
+     UPDATE users
+       SET age = 26
+       WHERE name = 'adarsh';
+
+If you FORGET the WHERE clause, EVERY
+row is updated:
+
+     UPDATE users SET is_active = 0;
+
+Almost never what you want. Always double-
+check the WHERE clause before running an
+UPDATE.
+
+
+8)  DELETE  --  remove rows
+
+Syntax:
+
+     DELETE FROM <table>
+       WHERE <condition>;
+
+Example:
+
+     DELETE FROM users WHERE id = 3;
+
+Same warning as UPDATE:
+
+     DELETE FROM users;
+
+deletes EVERY row. Always double-check
+the WHERE.
+
+
+9)  Column types in SQLite
+
+SQLite has a small type system:
+
+     INTEGER    whole numbers
+     REAL       floating-point numbers
+     TEXT       strings
+     BLOB       raw bytes
+     NULL       no value
+
+SQLite is FLEXIBLE about types (older
+versions do not strictly enforce them).
+Modern usage still declares types for
+clarity and portability.
+
+
+10)  Common gotchas
+
+  (a)   Missing semicolon
+
+        Inside the sqlite3 shell, the
+        prompt changes to  ...>  when it
+        expects the rest of the
+        statement. Add a  ;  to run.
+
+
+  (b)   Case in string comparisons
+
+        WHERE name = 'Adarsh'  will NOT
+        match  'adarsh'  . SQL string
+        equality is case-sensitive.
+
+
+  (c)   Single vs double quotes
+
+        Use SINGLE quotes for text
+        values:  'adarsh'  . Double
+        quotes are for identifiers in
+        some SQL dialects and can lead
+        to confusing errors in SQLite.
+
+
+  (d)   Forgot the WHERE
+
+        UPDATE  or  DELETE  without a
+        WHERE clause changes every row.
+        Preview first with a matching
+        SELECT:
+
+           SELECT * FROM users
+             WHERE name = 'adarsh';
+
+        Then run the UPDATE / DELETE with
+        the same WHERE.
+
+
+In section 2 we use these same statements from
+Python  --  the  sqlite3  standard
+library module.

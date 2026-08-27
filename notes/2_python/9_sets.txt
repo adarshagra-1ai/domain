@@ -1,0 +1,328 @@
+9  --  Sets  (unique unordered collections)
+
+1)  What a set is
+
+A SET is a collection of UNIQUE values.
+
+Two key properties:
+
+  -  UNIQUE     --  duplicates are not
+                    allowed. Adding the same
+                    value twice stores it
+                    only once.
+  -  UNORDERED  --  items have NO fixed
+                    position. There is no
+                    s[0]  or  s[-1] .
+                    Indexing and slicing
+                    do not work.
+
+Sets are MUTABLE (you can add and remove
+items), but their items must be IMMUTABLE
+(numbers, strings, tuples). You cannot put
+a list inside a set.
+
+
+2)  Creating a set
+
+Use curly braces  { }  with items separated
+by commas.
+
+Code:
+
+     colors  = {"red", "green", "blue"}
+     numbers = {1, 2, 3}
+
+
+Empty set  --  a trap:
+
+     bad  = {}          <- this is a DICT
+     good = set()
+
+An empty  { }  is a DICTIONARY, not a set.
+For an empty set, use the  set()
+constructor.
+
+Code:
+
+     print(type({}))
+     print(type(set()))
+
+Output:
+     <class 'dict'>
+     <class 'set'>
+
+
+From a list (removes duplicates):
+
+Code:
+
+     nums   = [1, 2, 2, 3, 3, 3]
+     unique = set(nums)
+     print(unique)
+
+Output:  {1, 2, 3}
+
+
+The ORDER in which set items are printed
+is NOT guaranteed. Never depend on it.
+
+
+3)  Adding items
+
+  (a)   add(item)  --  add one item.
+
+        Code:
+
+           s = {1, 2}
+           s.add(3)
+           s.add(2)
+           print(s)
+
+        Output:  {1, 2, 3}
+
+        Adding  2  again did nothing  --
+        the value was already there.
+
+
+  (b)   update(other)  --  add all items
+                          from another
+                          collection.
+
+        Code:
+
+           s = {1, 2}
+           s.update([3, 4, 4, 5])
+           print(s)
+
+        Output:  {1, 2, 3, 4, 5}
+
+
+4)  Removing items
+
+  (a)   remove(item)  --  remove  item .
+                          Raises  KeyError
+                          if the item is
+                          not present.
+
+        Code:
+
+           s = {1, 2, 3}
+           s.remove(2)
+           print(s)
+
+        Output:  {1, 3}
+
+
+  (b)   discard(item)  --  same as remove,
+                           but does NOTHING
+                           if the item is
+                           missing (no
+                           error).
+
+        Code:
+
+           s = {1, 2, 3}
+           s.discard(2)
+           s.discard(99)
+           print(s)
+
+        Output:  {1, 3}
+
+
+  (c)   pop()  --  remove and RETURN one
+                   arbitrary item. Since
+                   sets have no order, you
+                   cannot control which
+                   item is popped.
+
+        Code:
+
+           s = {1, 2, 3}
+           item = s.pop()
+           print(item)
+           print(s)
+
+        Output:  (some item, then the rest)
+
+
+  (d)   clear()  --  empty the set.
+
+        Code:
+
+           s = {1, 2, 3}
+           s.clear()
+           print(s)
+
+        Output:  set()
+
+        An empty set is printed as
+        set()  , not  {}  , because  {}
+        means an empty dict.
+
+
+5)  Membership  --  very fast
+
+The  in  check on a set is much faster
+than on a list (because sets use a hash
+lookup). For "does this value appear in a
+large collection?", a set is the right
+choice.
+
+Code:
+
+     nums = {1, 2, 3, 4, 5}
+     print(3 in nums)
+     print(99 in nums)
+
+Output:
+     True
+     False
+
+
+6)  Set operations  (union, intersection, etc.)
+
+Sets support classic math operations.
+Assume:
+
+     a = {1, 2, 3, 4}
+     b = {3, 4, 5, 6}
+
+
+  (a)   Union   --   a | b   OR
+                    a.union(b)
+
+        Every item that is in EITHER set.
+
+        Code:
+
+           print(a | b)
+
+        Output:  {1, 2, 3, 4, 5, 6}
+
+
+  (b)   Intersection  --   a & b   OR
+                          a.intersection(b)
+
+        Every item that is in BOTH sets.
+
+        Code:
+
+           print(a & b)
+
+        Output:  {3, 4}
+
+
+  (c)   Difference  --   a - b   OR
+                        a.difference(b)
+
+        Items in  a  that are NOT in  b .
+
+        Code:
+
+           print(a - b)
+
+        Output:  {1, 2}
+
+
+  (d)   Symmetric difference  --   a ^ b
+                                  OR
+                a.symmetric_difference(b)
+
+        Items in EITHER set but NOT both.
+
+        Code:
+
+           print(a ^ b)
+
+        Output:  {1, 2, 5, 6}
+
+
+7)  When to use a set
+
+Use a SET when:
+
+  -  You need to DEDUPLICATE a collection
+     (  set(my_list)  removes duplicates).
+  -  You do many "is X in this collection?"
+     checks on a large collection (much
+     faster than a list).
+  -  You need math-style operations (union,
+     intersection, difference, symmetric
+     difference).
+
+Do NOT use a set when:
+
+  -  Order matters. Use a list.
+  -  You need indexing or slicing. Use a
+     list.
+  -  Values must repeat. Use a list.
+
+
+8)  Common errors
+
+  (a)   Empty set trap  --  {} is a dict
+
+        Code:
+
+           s = {}
+           s.add(1)
+
+        Run:
+
+           AttributeError: 'dict' object
+           has no attribute 'add'
+
+        For an empty set, use  s = set() .
+
+
+  (b)   Cannot index a set
+
+        Code:
+
+           s = {1, 2, 3}
+           print(s[0])
+
+        Run:
+
+           TypeError: 'set' object is not
+           subscriptable
+
+        Sets are UNORDERED. If you need
+        position access, convert to a list
+        first:  list(s)[0] .
+
+
+  (c)   remove() on a missing item
+
+        Code:
+
+           s = {1, 2, 3}
+           s.remove(99)
+
+        Run:
+
+           KeyError: 99
+
+        Use  discard()  if the item might
+        be missing.
+
+
+  (d)   Unhashable item in a set
+
+        Code:
+
+           s = {[1, 2], [3, 4]}
+
+        Run:
+
+           TypeError: unhashable type: 'list'
+
+        Lists are mutable and cannot be
+        set items. Use tuples:
+        s = {(1, 2), (3, 4)}  works.
+
+
+In section 10 we look at CONDITIONS  --  the
+if / elif / else  statement, and how
+Python decides what is  "truthy"  or
+"falsy" .

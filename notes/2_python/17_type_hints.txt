@@ -1,0 +1,296 @@
+17  --  Type hints  (variables, function
+          params, return types, Optional,
+          List, Dict)
+
+1)  What type hints are
+
+A TYPE HINT is a NOTE in your code saying
+"this variable, parameter, or return value
+is supposed to be of this type". Python
+itself does NOT enforce type hints at
+runtime. External tools (editors, linters,
+type checkers like  mypy ) use them to
+catch mistakes before you run the code.
+
+Type hints make code:
+
+  -  easier to read (readers know what a
+     function expects)
+  -  easier to check with tools
+  -  easier to refactor (editors know
+     what a variable is)
+
+
+2)  Type hints on variables
+
+Syntax:
+
+     <name>: <type> = <value>
+
+Code:
+
+     count: int   = 0
+     price: float = 99.99
+     name:  str   = "adarsh"
+     is_ok: bool  = True
+
+The colon-and-type is the hint. Python
+still assigns the value; the type note is
+just extra info.
+
+You do not have to hint every variable.
+Common practice: hint function arguments
+and return types; hint variables only
+when it clarifies something non-obvious.
+
+
+3)  Type hints on function parameters and
+    return types
+
+Syntax:
+
+     def <name>(<param>: <type>,
+                <param>: <type>) -> <return_type>:
+
+Code:
+
+     def add(x: int, y: int) -> int:
+         return x + y
+
+     def greet(name: str) -> str:
+         return f"hello, {name}"
+
+     def log(msg: str) -> None:
+         print(msg)
+
+  -  Parameter types come after a colon.
+  -  Return type comes after  -> , before
+     the final colon.
+  -  Use  None  as the return type when
+     the function returns nothing
+     meaningful.
+
+
+4)  Basic built-in types
+
+     int      whole number
+     float    decimal number
+     str      string
+     bool     True / False
+     list     any list
+     dict     any dict
+     tuple    any tuple
+     set      any set
+     None     the value  None
+
+Code:
+
+     age:   int    = 25
+     price: float  = 3.99
+     name:  str    = "adarsh"
+     tags:  list   = ["python", "web"]
+     info:  dict   = {"city": "delhi"}
+
+
+5)  Generic types  --  say WHAT is inside
+
+Plain  list  says "a list of anything".
+You can be more specific about the item
+type.
+
+
+Modern syntax  (Python 3.9 and newer):
+
+     list[int]                 list of ints
+     list[str]                 list of strings
+     dict[str, int]            keys are str,
+                               values are int
+     tuple[int, str, float]    a fixed-size
+                               tuple with these
+                               three types
+     set[str]                  set of strings
+
+
+Code:
+
+     scores: list[int]        = [90, 85, 78]
+     lookup: dict[str, int]   = {"a": 1, "b": 2}
+
+
+Older syntax  (Python 3.8 and older, or
+codebases that support both):
+
+     from typing import List, Dict, Tuple, Set
+
+     scores: List[int]        = [90, 85, 78]
+     lookup: Dict[str, int]   = {"a": 1, "b": 2}
+
+If you are on modern Python (3.9+), prefer
+the lowercase built-in style
+( list[int] , dict[str, int] ). Use
+typing  for older code.
+
+
+6)  Optional  --  a value that can be None
+
+Sometimes a value is either of a type OR
+None . Write it as  Optional[<type>] .
+
+     Optional[int]     is the same as     int | None
+     Optional[str]     is the same as     str | None
+
+Code:
+
+     from typing import Optional
+
+     def find(name: str) -> Optional[dict]:
+         if name == "adarsh":
+             return {"age": 25}
+         return None
+
+     result: Optional[dict] = find("unknown")
+
+Using the  |  syntax (Python 3.10+):
+
+     def find(name: str) -> dict | None:
+         ...
+
+
+7)  Union  --  more than one possible type
+
+Union[X, Y]  means "either X or Y". The
+|  syntax does the same.
+
+     Union[int, str]     is the same as     int | str
+
+Code:
+
+     from typing import Union
+
+     def stringify(x: Union[int, float]) -> str:
+         return str(x)
+
+Modern equivalent (Python 3.10+):
+
+     def stringify(x: int | float) -> str:
+         return str(x)
+
+
+8)  Any  --  give up, allow anything
+
+Any  is a type hint meaning "I do not
+want to say what this is; accept
+anything". Use sparingly.
+
+Code:
+
+     from typing import Any
+
+     def dump(x: Any) -> None:
+         print(x)
+
+Prefer specific types when you know them.
+
+
+9)  Type checkers  (mypy, pyright)
+
+Type hints are NOT enforced by Python at
+runtime. This code runs without errors
+even though the hint says  int :
+
+Code:
+
+     def double(x: int) -> int:
+         return x * 2
+
+     print(double("hi"))
+
+Output:  hihi
+
+Python did not complain because it does
+not check hints. Use an external tool:
+
+     pip install mypy
+     mypy your_file.py
+
+mypy  reads the type hints and warns you
+about mismatches like the one above.
+
+
+10)  Common errors and tips
+
+  (a)   Type hint syntax error
+
+        Code:
+
+           def add(x int, y int) -> int:
+               return x + y
+
+        Run:
+           SyntaxError: invalid syntax
+
+        You need a COLON:  x: int  , not
+        x int .
+
+
+  (b)   Forgetting the arrow for return
+        type
+
+        Code:
+
+           def add(x: int, y: int): int:
+               return x + y
+
+        Run:
+           SyntaxError: invalid syntax
+
+        Return type uses  ->  before the
+        final colon:
+
+           def add(x: int, y: int) -> int:
+
+
+  (c)   Type hints do NOT prevent bad
+        input at runtime
+
+        Python does not check hints. If
+        you must enforce a type at
+        runtime, do it explicitly with an
+        isinstance  check inside the
+        function.
+
+        Code:
+
+           def add(x: int, y: int) -> int:
+               if not isinstance(x, int) or not isinstance(y, int):
+                   raise TypeError("expected int")
+               return x + y
+
+
+  (d)   Missing import from typing
+
+        Code:
+
+           def make() -> List[int]:
+               return [1, 2, 3]
+
+        Run:
+           NameError: name 'List' is not
+           defined
+
+        Either:
+
+        -  Use the modern lowercase syntax:
+
+              def make() -> list[int]:
+
+        -  Or import from typing:
+
+              from typing import List
+              def make() -> List[int]:
+
+
+In section 18 we look at VIRTUAL ENVIRONMENTS
+--  isolated Python setups for a
+project  --  and how to create one with
+python3 -m venv .venv .

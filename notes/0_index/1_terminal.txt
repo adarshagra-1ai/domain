@@ -1,0 +1,11 @@
+Terminal  --  Computer & terminal basics
+
+Terminal has 3 small parts:
+
+   1   What a file system is
+       (file, folder, path, absolute vs relative)
+
+   2   What a terminal is and why we use it
+
+   3   Core commands  (one-line meaning of each):
+       pwd, ls, cd, mkdir, touch, cat, rm, mv, cp

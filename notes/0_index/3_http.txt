@@ -1,0 +1,6 @@
+HTTP  --  Backend framework basics
+
+HTTP has 1 small part:
+
+   1   HTTP idea:  request, response, method,
+       status
