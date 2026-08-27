@@ -1,0 +1,335 @@
+A.10  --  Conditions  (if / elif / else,
+          truthy / falsy)
+
+1)  What a condition is
+
+A CONDITION is an expression that Python
+evaluates to either  True  or  False .
+Conditions decide which block of code runs.
+
+
+2)  Comparison operators
+
+     ==     equal to
+     !=     not equal to
+     <      less than
+     >      greater than
+     <=     less than or equal
+     >=     greater than or equal
+
+Code:
+
+     print(5 == 5)
+     print(5 != 3)
+     print(5 < 10)
+     print("a" == "a")
+     print("a" == "A")
+
+Output:
+     True
+     True
+     True
+     True
+     False
+
+Notes:
+
+  -  ==  is comparison. Different from  = ,
+     which is assignment.
+  -  Strings compare CHARACTER BY CHARACTER
+     and are case-sensitive.
+
+
+3)  Logical operators  (and, or, not)
+
+Combine or invert conditions.
+
+     and    both sides must be True
+     or     at least one side must be True
+     not    invert True <-> False
+
+Code:
+
+     x = 7
+     print(x > 0 and x < 10)
+     print(x < 0 or x > 5)
+     print(not (x == 7))
+
+Output:
+     True
+     True
+     False
+
+
+4)  if  statement
+
+Syntax:
+
+     if <condition>:
+         <indented block>
+
+  -  The condition ends with a colon  : .
+  -  The block below MUST be indented
+     (4 spaces by convention).
+  -  All lines with the same indentation
+     are part of that block.
+
+Code:
+
+     x = 10
+     if x > 0:
+         print("positive")
+         print("keep going")
+
+Output:
+     positive
+     keep going
+
+
+If the condition is False, the whole block
+is skipped:
+
+Code:
+
+     x = -5
+     if x > 0:
+         print("positive")
+     print("done")
+
+Output:  done
+
+
+5)  if / else
+
+Adds a fallback block that runs when the
+condition is False.
+
+Syntax:
+
+     if <condition>:
+         <block A>
+     else:
+         <block B>
+
+Code:
+
+     age = 15
+     if age >= 18:
+         print("adult")
+     else:
+         print("minor")
+
+Output:  minor
+
+
+6)  if / elif / else
+
+Add more branches with  elif  (short for
+"else if"). Python checks conditions in
+order and runs the FIRST one that is True.
+The rest are skipped.
+
+Syntax:
+
+     if <cond1>:
+         <block A>
+     elif <cond2>:
+         <block B>
+     elif <cond3>:
+         <block C>
+     else:
+         <block D>
+
+You can have any number of  elif  branches.
+The final  else  is optional.
+
+Code:
+
+     score = 72
+     if score >= 90:
+         grade = "A"
+     elif score >= 75:
+         grade = "B"
+     elif score >= 60:
+         grade = "C"
+     else:
+         grade = "F"
+     print(grade)
+
+Output:  C
+
+Only ONE branch runs. Once a condition
+matches, Python skips all remaining
+branches.
+
+
+7)  Nested  if
+
+You can put an  if  inside another  if .
+
+Code:
+
+     age    = 20
+     income = 50000
+     if age >= 18:
+         if income > 30000:
+             print("eligible")
+         else:
+             print("under income")
+     else:
+         print("under age")
+
+Output:  eligible
+
+Often the same logic reads better with
+and :
+
+Code:
+
+     if age >= 18 and income > 30000:
+         print("eligible")
+
+
+8)  Truthy and falsy values
+
+Any value used as a condition is converted
+to  True  or  False  by Python. Some values
+count as "false" without a comparison; the
+rest count as "true".
+
+
+FALSY values  (evaluate to False):
+
+     False
+     None
+     0
+     0.0
+     ""            (empty string)
+     []            (empty list)
+     ()            (empty tuple)
+     {}            (empty dict)
+     set()         (empty set)
+
+
+TRUTHY values  (evaluate to True):
+
+     Everything else  --  any non-zero
+     number, any non-empty string, any
+     non-empty collection, and so on.
+
+
+Code:
+
+     if "":
+         print("shown")
+     else:
+         print("empty string is falsy")
+
+     if [0]:
+         print("non-empty list is truthy")
+
+     if 0:
+         print("shown")
+     else:
+         print("0 is falsy")
+
+Output:
+     empty string is falsy
+     non-empty list is truthy
+     0 is falsy
+
+
+Common shortcut  --  check if a collection
+is non-empty:
+
+     items = [10, 20]
+     if items:
+         print("have items")
+
+Output:  have items
+
+
+9)  Ternary expression  (one-line if / else)
+
+     <value_if_true> if <condition> else <value_if_false>
+
+Code:
+
+     age  = 20
+     kind = "adult" if age >= 18 else "minor"
+     print(kind)
+
+Output:  adult
+
+Read left to right: "kind is  'adult'  if
+age >= 18 , else it is  'minor' ".
+
+Use it when the whole thing fits on one
+line and stays readable. Otherwise write a
+normal  if / else .
+
+
+10)  Common errors
+
+  (a)   Using  =  instead of  ==
+
+        Code:
+
+           if x = 5:
+
+        Run:
+
+           SyntaxError: invalid syntax
+
+        =  is assignment.  ==  is
+        comparison. Use  ==  in
+        conditions.
+
+
+  (b)   Missing colon
+
+        Code:
+
+           if x > 0
+               print("positive")
+
+        Run:
+
+           SyntaxError: expected ':'
+
+        Every  if , elif , else  header
+        line ends with a colon.
+
+
+  (c)   Bad indentation
+
+        Code:
+
+           if x > 0:
+           print("positive")
+
+        Run:
+
+           IndentationError: expected an
+           indented block
+
+        The block under  if  must be
+        indented (4 spaces).
+
+
+  (d)   Mixing tabs and spaces
+
+        Python is strict about indentation.
+        Mixing tabs and spaces in the same
+        block gives:
+
+           TabError: inconsistent use of
+           tabs and spaces in indentation
+
+        Pick one (spaces are recommended)
+        and use it throughout.
+
+
+In A.11 we look at LOOPS  --  the tools
+for repeating work with  for , while ,
+break , and  continue .

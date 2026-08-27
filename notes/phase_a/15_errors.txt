@@ -1,0 +1,369 @@
+A.15  --  Errors  (try / except / else / finally,
+          raising errors)
+
+1)  What an exception is
+
+An EXCEPTION is Python's way of signaling
+that something went wrong at runtime. When
+an exception happens, the program STOPS at
+that point unless you catch it.
+
+You have already seen exceptions in earlier
+sections:
+
+     NameError
+     TypeError
+     ValueError
+     KeyError
+     IndexError
+     FileNotFoundError
+     ModuleNotFoundError
+
+Each of these is a kind of exception.
+
+
+2)  Basic try / except
+
+Wrap the risky code in a  try  block. Put
+the handler in an  except  block. If the
+try  block raises, control jumps to the
+except  block.
+
+Syntax:
+
+     try:
+         <risky code>
+     except:
+         <handler>
+
+Code:
+
+     try:
+         x = int("hello")
+     except:
+         print("could not convert")
+     print("done")
+
+Output:
+     could not convert
+     done
+
+Without the  try  , the  int("hello")
+line would crash the program with a
+ValueError . With  try/except  , the
+error is caught and the program keeps
+running.
+
+
+BUT: bare  except  (no exception type)
+catches EVERYTHING, including bugs you did
+not expect. Prefer catching a SPECIFIC
+exception (next section).
+
+
+3)  Catching a specific exception
+
+Name the exception type after  except .
+Only that type (and its subclasses) is
+caught.
+
+Code:
+
+     try:
+         x = int("hello")
+     except ValueError:
+         print("bad number")
+
+Output:  bad number
+
+
+If a different exception happens, this
+handler does NOT catch it:
+
+Code:
+
+     try:
+         y = 10 / 0
+     except ValueError:
+         print("bad number")
+
+Run:
+     ZeroDivisionError: division by zero
+
+
+4)  Catching multiple exception types
+
+Put multiple types in a TUPLE, or use
+multiple  except  blocks.
+
+
+One handler for multiple types:
+
+Code:
+
+     try:
+         x = int(input("number: "))
+         y = 10 / x
+     except (ValueError, ZeroDivisionError):
+         print("input problem")
+
+
+Different handlers for different types:
+
+Code:
+
+     try:
+         x = int(input("number: "))
+         y = 10 / x
+     except ValueError:
+         print("not a number")
+     except ZeroDivisionError:
+         print("cannot divide by zero")
+
+Python checks each  except  in order and
+runs the FIRST one that matches.
+
+
+5)  Getting the error object  --  except X as e
+
+If you need details about what went wrong,
+capture the exception with  as .
+
+Code:
+
+     try:
+         int("hello")
+     except ValueError as e:
+         print("error:", e)
+
+Output:
+     error: invalid literal for int() with
+     base 10: 'hello'
+
+e  is the exception object; printing it
+shows the message. You can also inspect
+its type and attributes.
+
+
+6)  else  block  --  runs when no exception happened
+
+Attach an  else  after the last  except .
+It runs only if the  try  block finished
+WITHOUT raising.
+
+Syntax:
+
+     try:
+         <risky code>
+     except <ErrType>:
+         <handler>
+     else:
+         <code that runs on success>
+
+Code:
+
+     try:
+         x = int("42")
+     except ValueError:
+         print("failed")
+     else:
+         print("success", x)
+
+Output:
+     success 42
+
+Use  else  for code that should ONLY run
+if the risky call succeeded. It keeps the
+try  block short (only the risky line
+inside).
+
+
+7)  finally  block  --  ALWAYS runs
+
+Attach  finally  after everything else. It
+runs whether or not an exception happened
+in the  try  block, and even if you
+return  or  raise  inside.
+
+Syntax:
+
+     try:
+         <risky code>
+     except <ErrType>:
+         <handler>
+     else:
+         <success block>
+     finally:
+         <always block>
+
+Code:
+
+     try:
+         print("try")
+         raise ValueError("oops")
+     except ValueError:
+         print("except")
+     finally:
+         print("finally")
+
+Output:
+     try
+     except
+     finally
+
+finally  is the place for CLEANUP:
+closing files, releasing locks,
+disconnecting from a database. It runs no
+matter what.
+
+Note: for FILE handling, the  with  block
+(A.13) does the same cleanup
+automatically, so you usually do not need
+try/finally  for that.
+
+
+8)  Raising your own errors  --  raise
+
+Use  raise <ExceptionType>(<message>)  to
+signal an error yourself. This is how you
+say "this input is not acceptable" or
+"this state should never happen".
+
+Code:
+
+     def divide(a, b):
+         if b == 0:
+             raise ValueError("b cannot be zero")
+         return a / b
+
+     print(divide(10, 2))
+     print(divide(10, 0))
+
+Run:
+     5.0
+     ValueError: b cannot be zero
+
+
+Common built-in exceptions to raise:
+
+     ValueError            value has the
+                           wrong content
+     TypeError             value has the
+                           wrong type
+     KeyError              key not in a
+                           dict
+     IndexError            index out of
+                           range
+     FileNotFoundError     path missing
+     NotImplementedError   code path not
+                           implemented yet
+     RuntimeError          generic runtime
+                           problem
+
+
+Re-raising  --  no argument after raise
+
+Inside an  except  block, a plain  raise
+re-throws the current exception. Useful
+when you want to log something first and
+then let the exception bubble up.
+
+Code:
+
+     try:
+         int("hello")
+     except ValueError:
+         print("logging: bad conversion")
+         raise
+
+
+9)  Custom exception classes  (brief)
+
+You can define your own exception type by
+subclassing  Exception . This is useful
+when you want callers to catch a specific
+kind of error from your code.
+
+Code:
+
+     class InvalidAgeError(Exception):
+         pass
+
+     def set_age(age):
+         if age < 0:
+             raise InvalidAgeError("negative age")
+         return age
+
+     try:
+         set_age(-1)
+     except InvalidAgeError as e:
+         print("caught:", e)
+
+Output:  caught: negative age
+
+Full details on defining classes come in
+A.16.
+
+
+10)  Common errors and anti-patterns
+
+  (a)   Bare except
+
+        Code:
+
+           try:
+               do_work()
+           except:
+               pass
+
+        Catches EVERYTHING, including
+        KeyboardInterrupt  and
+        SystemExit . Also hides real bugs.
+        Catch specific types instead.
+
+
+  (b)   Swallowing errors silently
+
+        Code:
+
+           try:
+               do_work()
+           except Exception:
+               pass
+
+        The  except  runs but does
+        nothing. The error is lost. If you
+        must continue, at least log it:
+
+           except Exception as e:
+               print("error:", e)
+
+
+  (c)   Catching too broad
+
+        Code:
+
+           try:
+               config = json.loads(text)
+           except Exception:
+               config = {}
+
+        Better to name the exact expected
+        types:
+
+           except (ValueError, TypeError):
+               config = {}
+
+
+  (d)   Try block too large
+
+        A  try  block should wrap the
+        SMALLEST piece of code that might
+        raise. Wrapping a whole function
+        makes it hard to know which line
+        raised.
+
+
+In A.16 we look at CLASSES  --  how to
+define your own types with attributes
+and methods.

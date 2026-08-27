@@ -1,0 +1,18 @@
+PHASE B  --  Backend framework basics
+
+Phase B has 6 small parts:
+
+   B.1   HTTP idea:  request, response, method,
+         status
+
+   B.2   FastAPI hello-world route
+
+   B.3   Path params, query params, JSON body
+
+   B.4   Pydantic model to validate input
+
+   B.5   SQLite basics:  create table, insert,
+         select, update, delete
+
+   B.6   Talking to SQLite from Python
+         ( sqlite3  module)

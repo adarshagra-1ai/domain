@@ -1,0 +1,13 @@
+PHASE C  --  Auth and multi-user
+
+Phase C has 4 small parts:
+
+   C.1   Password hashing:  why (bcrypt idea)
+
+   C.2   JWT and cookies:  how they work
+         together
+
+   C.3   Login route and session cookie
+
+   C.4   "Active project" concept for
+         multi-tenant apps

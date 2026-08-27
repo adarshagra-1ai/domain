@@ -1,0 +1,270 @@
+A.3  --  Variables and naming rules
+
+1)  What a variable is
+
+A variable is a NAMED SLOT that holds a value.
+You give the slot a name, put a value in it,
+and later refer to the value by that name.
+
+Code:
+
+     name = "adarsh"
+     age  = 25
+
+  -  name  is a variable holding the string
+     "adarsh" .
+  -  age  is a variable holding the number
+     25 .
+
+
+2)  Creating (or updating) a variable
+
+Syntax:
+
+     <name>  =  <value>
+
+The single  =  sign is the ASSIGNMENT
+operator. It means "put the value on the
+right into the slot on the left". It is NOT
+the math "equals" sign.
+
+Rules:
+
+  -  The NAME goes on the LEFT.
+  -  The VALUE goes on the RIGHT.
+  -  Python creates the variable if it did
+     not exist, or REPLACES its content if
+     it did.
+
+
+Example  --  create, then update:
+
+Code:
+
+     x = 10
+     print(x)
+
+Output:  10
+
+Code:
+
+     x = 99
+     print(x)
+
+Output:  99
+
+The second  x = 99  does NOT create a new
+variable. It replaces the value in the same
+slot named  x .
+
+
+3)  Using a variable
+
+Once created, use its NAME anywhere a value
+would go.
+
+Code:
+
+     greeting = "hello"
+     print(greeting)
+
+Output:  hello
+
+
+You can also use a variable to compute a
+new value and assign that back to itself:
+
+Code:
+
+     count = 5
+     count = count + 1
+     print(count)
+
+Output:  6
+
+Read the middle line as:  "take the current
+value of  count , add 1, and put the result
+back into  count ".
+
+
+4)  Hard rules for variable names
+
+Python ENFORCES these. Break one and the
+program will not run.
+
+  (a)   Allowed characters:  letters (a-z,
+        A-Z), digits (0-9), and the
+        underscore  _  . No spaces, no
+        dashes, no dots, no other symbols.
+
+           OK :   name   user_id   count2   _tmp
+           BAD:   user-id   first name
+                  2ndTry.value
+
+
+  (b)   A name must NOT start with a digit.
+
+           OK :   count2   x1
+           BAD:   2count   1st
+
+
+  (c)   Names are CASE-SENSITIVE.
+        age ,  Age , and  AGE  are three
+        different variables.
+
+
+  (d)   You cannot use a RESERVED WORD (a
+        word Python has kept for its own
+        syntax) as a variable name. The full
+        list:
+
+           False   None    True    and
+           as      assert  async   await
+           break   class   continue def
+           del     elif    else    except
+           finally for     from    global
+           if      import  in      is
+           lambda  nonlocal not     or
+           pass    raise   return  try
+           while   with    yield
+
+        Using any of these as a variable
+        name gives a  SyntaxError .
+
+
+5)  Style conventions (soft rules)
+
+These are not enforced by Python, but every
+Python codebase follows them. Use them from
+day one.
+
+  (a)   Use  snake_case  for variable names:
+        all lowercase, words separated by
+        underscores.
+
+           GOOD:  user_name   total_price
+                  is_active
+           BAD :  UserName    TotalPrice
+                  isActive
+
+
+  (b)   Use DESCRIPTIVE names. A future
+        reader (including future you) should
+        know what the value is FOR without
+        reading the surrounding code.
+
+           GOOD:  total_price   student_count
+                  first_name
+           BAD :  a   b   x   tmp   data2
+
+
+  (c)   Short counter variables inside a
+        short loop can be  i ,  j ,  k  by
+        convention. Do NOT use  i / j / k
+        for anything meaningful outside a
+        counter.
+
+
+6)  Multiple assignment in one line
+
+Python lets you assign several variables in
+one line, separated by commas.
+
+Code:
+
+     x, y = 10, 20
+     print(x)
+     print(y)
+
+Output:
+     10
+     20
+
+This is equivalent to two lines:
+
+     x = 10
+     y = 20
+
+Use it when it makes the code SHORTER and
+CLEARER, not just to save keystrokes.
+
+
+7)  Common errors
+
+  (a)   Using a name that was never set
+
+        Code:
+
+           print(greeting)
+
+        Run:
+
+           NameError: name 'greeting' is not defined
+
+        You asked Python to look up a
+        variable  greeting  that does not
+        exist. Create it first:
+        greeting = "hi"  before printing.
+
+
+  (b)   Wrong case
+
+        Code:
+
+           name = "adarsh"
+           print(Name)
+
+        Run:
+
+           NameError: name 'Name' is not defined
+
+        name  and  Name  are different
+        variables. Match the case exactly.
+
+
+  (c)   Name starts with a digit
+
+        Code:
+
+           2count = 5
+
+        Run:
+
+           SyntaxError: invalid decimal literal
+
+        Names cannot start with a digit.
+        Use  count2  or  second_count .
+
+
+  (d)   Using a reserved word
+
+        Code:
+
+           for = 3
+
+        Run:
+
+           SyntaxError: invalid syntax
+
+        for  is a Python keyword. Rename to
+        for_count  or similar.
+
+
+  (e)   Space in the name
+
+        Code:
+
+           first name = "adarsh"
+
+        Run:
+
+           SyntaxError: invalid syntax
+
+        Python sees  first  and  name  as
+        two separate words. Use an
+        underscore:  first_name = "adarsh" .
+
+
+In A.4 we will look at the built-in DATA
+TYPES a value can be (int, float, str,
+bool).

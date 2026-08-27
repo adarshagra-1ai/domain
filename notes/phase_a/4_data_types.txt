@@ -1,0 +1,312 @@
+A.4  --  Data types  (int, float, str, bool)
+
+1)  What a "data type" is
+
+Every value in Python has a TYPE. The type
+tells Python what kind of value it is and
+what operations make sense on it.
+
+     42       -- an integer (a whole number)
+     3.14     -- a float (a decimal number)
+     "hello"  -- a string (text)
+     True     -- a boolean (a yes/no value)
+
+The type controls what you can do with the
+value. You can multiply two integers, but
+you cannot multiply two strings the same
+way. Knowing the type is often the first
+thing you need to know about a variable.
+
+
+2)  The four basic types in this section
+
+     int      ->  whole numbers
+     float    ->  decimal numbers
+     str      ->  text
+     bool     ->  True or False
+
+Python has more built-in types (list, dict,
+tuple, set, and others). Those come in
+sections A.6 through A.9. Here we focus on
+these four scalar types  --  values that
+hold a single piece of data at a time.
+
+
+3)  int  --  integer  (whole numbers)
+
+Write them directly, no quotes.
+
+Code:
+
+     age  = 25
+     year = 2026
+     temp = -5
+     big  = 1_000_000
+
+Notes:
+
+  -  No decimal point.
+  -  Can be negative (leading  -  ).
+  -  Underscores  _  can be used as digit
+     separators for readability
+     ( 1_000_000  reads as one million;
+     Python treats it exactly as
+     1000000 ).
+
+
+Basic arithmetic:
+
+     +     addition           7 + 3    ->  10
+     -     subtraction        7 - 3    ->   4
+     *     multiplication     7 * 3    ->  21
+     /     division           7 / 3    ->   2.333...
+                              (always returns a
+                               float)
+     //    floor division     7 // 3   ->   2
+                              (divide, drop the
+                               fractional part)
+     %     modulo             7 % 3    ->   1
+                              (the remainder after
+                               dividing)
+     **    exponent           2 ** 3   ->   8
+                              (2 raised to the
+                               power of 3)
+
+
+Example:
+
+Code:
+
+     x = 7
+     y = 3
+     print(x + y)
+     print(x // y)
+     print(x % y)
+
+Output:
+     10
+     2
+     1
+
+
+4)  float  --  floating-point  (decimal numbers)
+
+Write them with a decimal point.
+
+Code:
+
+     pi    = 3.14
+     price = 99.99
+     ratio = 0.5
+     tiny  = -0.001
+
+Notes:
+
+  -  A decimal point makes the number a
+     float, even if the fractional part is
+     0 (so  2.0  is a float, not an int).
+  -  All the arithmetic operators from
+     int  work on floats too.
+  -  The  /  operator ALWAYS returns a
+     float, even when the answer is a
+     whole number.
+
+
+Code:
+
+     print(6 / 2)
+     print(2.0 + 3)
+
+Output:
+     3.0
+     5.0
+
+6 / 2  gave  3.0  (not  3 ) because  /
+always returns a float. Mixing an int with
+a float ( 2.0 + 3 ) also gives a float.
+
+
+5)  str  --  string  (text)
+
+Wrap text in double quotes  " ... "  or
+single quotes  ' ... '  . Both work.
+
+Code:
+
+     name   = "adarsh"
+     city   = 'delhi'
+     empty  = ""
+     digits = "12345"
+
+Notes:
+
+  -  "12345"  is a STRING, not a number,
+     because it is inside quotes.
+  -  An empty string  ""  is a valid value
+     (a string with zero characters).
+  -  Full deep dive on string operations
+     (indexing, slicing, methods) comes in
+     A.5.
+
+
+6)  bool  --  boolean  (True or False)
+
+Only two possible values, both CAPITALIZED:
+
+     True
+     False
+
+They are usually produced by COMPARISONS.
+
+Code:
+
+     print(5 > 3)
+     print(5 == 3)
+     print("a" == "a")
+
+Output:
+     True
+     False
+     True
+
+The  ==  operator (two equals signs) means
+"is equal to". It is different from  =
+(single equals), which assigns a value.
+The full set of comparison operators, and
+"truthy vs falsy", come in A.10.
+
+You can also assign booleans directly:
+
+     is_active = True
+     is_admin  = False
+
+
+7)  Check the type  --  type()
+
+The built-in function  type(x)  returns the
+type of the value  x .
+
+Code:
+
+     print(type(42))
+     print(type(3.14))
+     print(type("hello"))
+     print(type(True))
+
+Output:
+     <class 'int'>
+     <class 'float'>
+     <class 'str'>
+     <class 'bool'>
+
+Read  <class 'int'>  as "the type is int ".
+The  class  wording will make full sense in
+A.16 (classes). For now,  type()  is your
+quick way to answer "what type is this
+value?".
+
+
+8)  Convert between types
+
+Python has built-in "conversion" functions:
+
+     int(x)     ->  convert  x  to an int
+     float(x)   ->  convert  x  to a float
+     str(x)     ->  convert  x  to a string
+     bool(x)    ->  convert  x  to a boolean
+
+They take a value of one type and produce a
+NEW value of the target type. The original
+value is not changed.
+
+
+Common conversions:
+
+Code:
+
+     print(int(3.7))
+     print(int("42"))
+     print(float("3.14"))
+     print(str(2026))
+     print(bool(1))
+     print(bool(0))
+
+Output:
+     3
+     42
+     3.14
+     2026
+     True
+     False
+
+
+Notes:
+
+  -  int(3.7)  gives  3  (drops the
+     fractional part; does NOT round).
+  -  int("42")  works because the string
+     looks like a valid whole number.
+     int("hello")  would fail with a
+     ValueError .
+  -  bool(0)  is  False .  bool(1)  (or
+     any non-zero number) is  True . Full
+     "truthy vs falsy" rules come in A.10.
+
+
+9)  Common errors
+
+  (a)   Mixing incompatible types
+
+        Code:
+
+           x = "5"
+           y = 3
+           print(x + y)
+
+        Run:
+
+           TypeError: can only concatenate
+           str (not "int") to str
+
+        "5"  is a string, not a number.
+        Python does not know whether to
+        add them as numbers or join them
+        as text. Convert first:
+
+           print(int(x) + y)     ->  8
+           print(x + str(y))     ->  "53"
+
+
+  (b)   Converting an invalid string
+
+        Code:
+
+           n = int("hello")
+
+        Run:
+
+           ValueError: invalid literal for int()
+           with base 10: 'hello'
+
+        "hello"  cannot be turned into an
+        integer. Only strings that look
+        like valid numbers convert cleanly.
+
+
+  (c)   Assignment vs comparison
+
+        Code:
+
+           if x = 5:
+
+        Run:
+
+           SyntaxError: invalid syntax
+
+        A single  =  is assignment, not
+        comparison. Use  ==  in
+        comparisons.
+
+
+In A.5 we go deep into strings  --
+indexing, slicing, and common methods.

@@ -1,0 +1,197 @@
+A.18  --  Virtual environment  (what and why,
+          create, activate, deactivate)
+
+1)  What a virtual environment is
+
+A VIRTUAL ENVIRONMENT (or "venv") is an
+isolated Python setup for ONE project. It
+gives that project its own copy of Python
+tools and its own place to install
+packages  --  separate from the system
+Python and from other projects.
+
+Inside a venv you can:
+
+  -  install packages without touching the
+     system Python.
+  -  pin a package to a specific version
+     for this project without affecting
+     others.
+  -  delete the whole thing at any time
+     without harming your system.
+
+
+2)  Why you need one
+
+Two big reasons:
+
+  (a) DIFFERENT PROJECTS NEED DIFFERENT
+      VERSIONS. Project A may need
+      requests 2.28  , Project B may need
+      requests 2.32 . If you install
+      globally, one project breaks the
+      other.
+
+  (b) THE SYSTEM Python is often managed
+      by the operating system itself.
+      Installing packages globally can
+      corrupt the system or require
+      sudo . A venv avoids both.
+
+Rule of thumb: every Python project gets
+its own virtual environment.
+
+
+3)  Creating a venv
+
+Command:
+
+     python3 -m venv <folder-name>
+
+Convention: name the folder  .venv  (with
+a leading dot). Some people use  venv
+without the dot. Both work; pick one and
+stick with it.
+
+     python3 -m venv .venv
+
+What happens:
+
+  -  A new folder  .venv  is created in
+     your current folder.
+  -  Inside it, Python installs a private
+     copy of the interpreter and the
+     package machinery.
+
+Verify:
+
+     ls -la .venv/
+
+
+4)  What is inside .venv/  (brief look)
+
+     .venv/
+     +-- bin/            Linux/macOS: python and pip
+                         live here
+     +-- lib/            installed packages go here
+     +-- pyvenv.cfg      small config file
+
+You do NOT edit any of these by hand. The
+tools take care of them.
+
+
+5)  Activating the venv
+
+On Linux:
+
+     source .venv/bin/activate
+
+What changes when active:
+
+  -  Your prompt gets a  (.venv)  prefix,
+     for example:
+
+        (.venv) adarsh@laptop:~/myproj$
+
+  -  python3  and  pip  now point at the
+     ones inside  .venv/bin/  .
+  -  Packages you install go into
+     .venv/lib/ , not the system.
+
+Verify:
+
+     which python3
+
+Output (example):
+
+     /home/adarsh/myproj/.venv/bin/python3
+
+The path points INTO your project's
+.venv , which confirms you are inside the
+venv.
+
+
+6)  Working inside the venv
+
+Once active, run Python and pip as usual.
+They now work only for this project.
+
+     python3 hello.py
+     pip install requests
+     pip list
+
+pip install requests  puts  requests
+inside  .venv , not globally. Other
+projects are not affected.
+
+
+7)  Deactivating
+
+To leave the venv, run:
+
+     deactivate
+
+The  (.venv)  prefix disappears from your
+prompt, and  python3  /  pip  point back
+at the system versions.
+
+Every NEW terminal starts DEACTIVATED and
+needs a fresh  source .venv/bin/activate .
+
+
+8)  Deleting a venv
+
+A venv is just a folder. To delete it:
+
+     rm -rf .venv
+
+Nothing is lost outside that folder. You
+can recreate it any time with
+python3 -m venv .venv .
+
+
+9)  Common gotchas
+
+  (a)   Forgot to activate
+
+        If you run  pip install requests
+        without activating the venv, the
+        package goes to the SYSTEM Python.
+        Always check the prompt for
+        (.venv)  before installing.
+
+
+  (b)   Wrong Python inside venv
+
+        A venv is tied to the Python that
+        created it. If you built the venv
+        with  python3.10  and later
+        install  python3.12  , the venv
+        keeps using 3.10. To upgrade,
+        delete and recreate with the newer
+        python3 .
+
+
+  (c)   Copying or moving the venv folder
+
+        A venv contains ABSOLUTE PATHS
+        inside its config. Moving the
+        folder to a new location or new
+        machine usually breaks it. Just
+        recreate it in the new place.
+
+
+  (d)   Activating on the wrong shell
+
+        source .venv/bin/activate  is for
+        bash and zsh. For fish and
+        PowerShell, there are separate
+        activate scripts inside the venv's
+        bin/  folder. Look for
+        activate.fish  or  Activate.ps1 .
+
+
+In A.19 we look at  pip  and
+requirements.txt  --  how to install
+packages and how to save the list of
+packages for a project.

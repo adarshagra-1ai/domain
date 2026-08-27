@@ -1,0 +1,11 @@
+PHASE 0  --  Computer & Terminal Basics
+
+Phase 0 has 3 small parts:
+
+   0.1  What a file system is
+        (file, folder, path, absolute vs relative)
+
+   0.2  What a terminal is and why we use it
+
+   0.3  Core commands  (one-line meaning of each):
+        pwd, ls, cd, mkdir, touch, cat, rm, mv, cp
