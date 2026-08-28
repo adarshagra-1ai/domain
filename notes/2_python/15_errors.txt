@@ -124,6 +124,67 @@ Python checks each  except  in order and
 runs the FIRST one that matches.
 
 
+How this actually runs (important):
+
+  -  Code inside  try  runs line by line.
+  -  The MOMENT a line raises an
+     exception, the rest of the  try
+     block is SKIPPED.
+  -  Python then walks the  except
+     clauses TOP TO BOTTOM.
+  -  The FIRST  except  whose type
+     matches runs. All OTHER  except
+     blocks are SKIPPED, even if they
+     would also match.
+  -  After that, execution continues on
+     the line AFTER the whole
+     try / except  (the program does not
+     crash).
+  -  If NO exception was raised, none of
+     the  except  blocks run.
+
+
+Walk through the example above:
+
+  Case 1  --  user types  "hello" :
+     int("hello")  raises  ValueError .
+     y = 10 / x  never runs.
+     except ValueError  matches  ->
+     prints  "not a number" .
+     except ZeroDivisionError  is not
+     even checked.
+
+  Case 2  --  user types  "0" :
+     int("0")  gives  0  (no error).
+     10 / 0  raises  ZeroDivisionError .
+     except ValueError  does not match.
+     except ZeroDivisionError  matches
+     ->  prints  "cannot divide by zero" .
+
+  Case 3  --  user types  "5" :
+     No exception at all. Neither
+     except  block runs.
+
+
+Order matters  --  a common trap:
+
+     try:
+         x = int(input())
+     except Exception:
+         print("some error")
+     except ValueError:
+         print("not a number")
+
+Exception  is the PARENT of
+ValueError , so the first  except
+catches EVERYTHING. The second
+except ValueError  can never run  --
+it becomes DEAD code.
+
+Rule: put SPECIFIC exceptions first,
+GENERAL ones (like  Exception ) last.
+
+
 5)  Getting the error object  --  except X as e
 
 If you need details about what went wrong,

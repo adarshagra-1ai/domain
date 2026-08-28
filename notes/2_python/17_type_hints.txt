@@ -71,6 +71,76 @@ Code:
      meaningful.
 
 
+What if you pass the WRONG type?
+
+Short answer: Python DOES NOT stop you.
+Type hints are ONLY hints  --  they are
+not enforced at runtime. The function
+still runs with whatever you passed.
+
+Take the  add  function above:
+
+     def add(x: int, y: int) -> int:
+         return x + y
+
+Case 1  --  correct types:
+
+     add(2, 3)
+     ->  5
+
+Case 2  --  strings passed instead:
+
+     add("hi", "there")
+     ->  "hithere"
+
+     Python did not complain about the
+     hints. The  +  operator works on
+     strings too (it concatenates), so
+     the function returned a  str , even
+     though the hint said  int .
+
+Case 3  --  mixed types:
+
+     add("hi", 3)
+     ->  TypeError: can only concatenate
+         str (not "int") to str
+
+     Here the error came from the  +
+     operator inside the function, NOT
+     from the type hint. Python raised
+     it because  str + int  itself is
+     invalid  --  the hint had nothing
+     to do with it.
+
+Case 4  --  a list and an int:
+
+     add([1, 2], 3)
+     ->  TypeError: can only concatenate
+         list (not "int") to list
+
+     Same story: the error is from  + ,
+     not from the hint.
+
+
+So who DOES check the hints?
+
+  -  Your EDITOR / IDE  --  VS Code,
+     PyCharm, etc. show a yellow / red
+     underline when a call looks wrong.
+  -  Some libraries (for example
+     FastAPI and Pydantic) DO enforce
+     hints at runtime  --  but that is
+     the LIBRARY doing the check, not
+     Python itself.
+
+Rule of thumb: treat type hints as
+DOCUMENTATION plus a tool for editors
+and checkers. Do not rely on them to
+block bad input at runtime  --  if you
+need that, add an explicit  isinstance
+check or use a library like Pydantic.
+
+
 4)  Basic built-in types
 
      int      whole number
@@ -117,14 +187,6 @@ Code:
      lookup: dict[str, int]   = {"a": 1, "b": 2}
 
 
-Older syntax  (Python 3.8 and older, or
-codebases that support both):
-
-     from typing import List, Dict, Tuple, Set
-
-     scores: List[int]        = [90, 85, 78]
-     lookup: Dict[str, int]   = {"a": 1, "b": 2}
-
 If you are on modern Python (3.9+), prefer
 the lowercase built-in style
 ( list[int] , dict[str, int] ). Use
@@ -147,8 +209,6 @@ Code:
          if name == "adarsh":
              return {"age": 25}
          return None
-
-     result: Optional[dict] = find("unknown")
 
 Using the  |  syntax (Python 3.10+):
 

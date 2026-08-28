@@ -108,6 +108,15 @@ notes/  . The leading number is the order I learn
 them. You may adjust the order, but tell me WHY if
 you do.
 
+The list below is not fixed. If a question comes
+up outside this list (for example "what is a
+driver?"), create a new topic folder for it right
+away using the next unused number, add its intro
+in  0_index/  , and drop the note inside. The
+"Future topics" section further down is only a
+rough plan  --  we can add, skip, or reorder as
+we go.
+
 --- 1_terminal  -  Computer & terminal basics ---
    1  What a file system is (folder, file, path,
       absolute vs relative)
@@ -169,6 +178,10 @@ you do.
    3   Login route and session cookie
    4   "Active project" concept for multi-tenant
        apps
+
+--- 7_drivers  -  Device/protocol drivers ---
+   1   What a driver is (protocol adapter,
+       transport, isolation)
 
 --- Future topics  (folder numbers assigned as we
     start them) ---
@@ -269,6 +282,7 @@ folder. It has TWO top-level sub-folders:
     |    |    +-- 4_fastapi.txt
     |    |    +-- 5_sqlite.txt
     |    |    +-- 6_auth.txt
+    |    |    +-- 7_drivers.txt
     |    +-- 1_terminal/
     |    |    +-- 1_file_system.txt
     |    |    +-- 2_terminal.txt
@@ -281,6 +295,7 @@ folder. It has TWO top-level sub-folders:
     |    +-- 4_fastapi/
     |    +-- 5_sqlite/
     |    +-- 6_auth/
+    |    +-- 7_drivers/
     |    +-- ...                      (future topic folders)
     +-- programs/                     <- hands-on code
          +-- index.htm

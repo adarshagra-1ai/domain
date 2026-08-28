@@ -1,0 +1,135 @@
+1  --  What a driver is
+
+1)  Why drivers are needed
+
+The Okas box has to control many kinds of
+devices from many different companies:
+
+  -  KNX light switches
+  -  Philips Hue bulbs
+  -  Lutron shades
+  -  TVs, ACs, door stations, etc.
+
+Each of these speaks its own "language" and
+uses its own way to receive commands. The
+engine (the main program inside the box)
+cannot know all these languages by itself.
+
+So we split the job:
+
+  -  The engine sends ONE simple instruction
+     like  "turn light X on"  in a generic
+     form.
+  -  Somebody else takes that generic
+     instruction and turns it into the exact
+     command the specific device understands.
+
+That "somebody else" is a DRIVER. One driver
+per brand or protocol.
+
+
+2)  What a driver is
+
+A driver is a small program that does three
+jobs:
+
+  (a) Speak ONE vendor's or protocol's
+      language (KNX, Hue, Lutron, ...).
+
+  (b) Own its own way of talking to that
+      device or its hub. Common ways include:
+         TCP  (Transmission Control Protocol)
+         UDP  (User Datagram Protocol)
+         HTTP (Hypertext Transfer Protocol)
+         WebSocket
+         serial
+         MQTT (Message Queuing Telemetry
+               Transport)
+
+  (c) Take a generic command from the engine
+      and translate it into the exact message
+      the device expects.
+
+One driver = one protocol / one vendor. If
+tomorrow a new brand of device is added, a new
+driver is written for it. The engine itself
+does not change.
+
+
+3)  Command flow  (turn kitchen light on)
+
+Left to right:
+
+     engine  ->  driver  ->  hub  ->  device
+
+Step by step:
+
+  1)  A rule fires in the engine, or the user
+      taps a button in the app.
+
+  2)  The engine sends a generic command
+      ("light 'kitchen' -> ON") to the correct
+      driver.
+
+  3)  The driver builds the exact message the
+      device expects  --  a KNX telegram, an
+      HTTP request to a Hue Bridge, etc.
+
+  4)  The driver sends that message over its
+      chosen transport (KNX bus, HTTP, ...).
+
+  5)  The device turns on.
+
+Status flows the other way too. When the
+device changes state (someone flips the switch
+by hand), the device tells its hub, the hub
+tells the driver, and the driver reports the
+new state back to the engine.
+
+
+4)  Trusted vs untrusted drivers
+
+There are two kinds:
+
+  (a) FIRST-PARTY driver
+      Written by the Okas team. Trusted. Runs
+      right next to the engine.
+      Example: the built-in KNX driver.
+
+  (b) THIRD-PARTY driver
+      Written by an outside integrator. Not
+      fully trusted. Runs inside a SANDBOX
+      with strict limits on memory, CPU
+      (Central Processing Unit), and network
+      so a buggy driver cannot crash the whole
+      box.
+
+Both kinds plug into the engine the same way.
+The difference is only how much the box trusts
+them and how tightly it is boxed in.
+
+
+5)  Where drivers live in the code
+
+Inside the Okas box code, drivers live at:
+
+     src/okas_drivers/
+
+Files already there:
+
+     knx_codec.py   turns Python objects into
+                    KNX bytes and back
+
+     knx_ip.py      talks to a KNX / IP
+                    (Internet Protocol)
+                    gateway over the network
+
+     knx_sim.py     simulated KNX device used
+                    in tests
+
+     sim_hub.py     simulated hub, used when
+                    no real hardware is
+                    connected
+
+Together they form the current KNX driver plus
+a small test simulator.

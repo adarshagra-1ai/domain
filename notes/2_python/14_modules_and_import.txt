@@ -305,6 +305,20 @@ line is JSON text; the second line is a
 Python dict.
 
 
+Two useful  random  functions:
+
+     random.choice(seq)
+        Pick ONE random element from a
+        sequence (list, tuple, string).
+        Every element has an equal chance.
+        Empty sequence  ->  IndexError .
+
+     random.randint(a, b)
+        Return a random integer between
+        a  and  b , BOTH ENDS INCLUDED.
+        a  and  b  must be integers, and
+        a <= b  (else  ValueError ).
+
 Code:
 
      import random
@@ -313,6 +327,14 @@ Code:
      print(random.randint(1, 6))
 
 Output:  (varies each run)
+
+
+A close cousin to know:
+
+     random.randrange(1, 6)   gives 1..5
+     (6 EXCLUDED), but
+     random.randint(1, 6)     gives 1..6
+     (6 INCLUDED). Don't mix them up.
 
 
 Code:
@@ -377,7 +399,54 @@ searches in this order:
          pip installs third-party
          modules).
 
-You can inspect the full list at runtime:
+You can inspect the full list at runtime.
+Before we run the code, a quick word on
+sys  and  sys.path .
+
+The  sys  module is part of the standard
+library. It lets your program talk to the
+Python INTERPRETER itself  --  things
+like the version, the command-line
+arguments, exiting the program, and the
+list of folders Python searches for
+modules.
+
+A few useful names in  sys :
+
+     sys.version     Python version string
+     sys.platform    "linux" , "win32" ,
+                     "darwin" (mac)
+     sys.argv        list of command-line
+                     arguments given to
+                     the script
+     sys.exit()      stop the program now
+     sys.path        list of folders where
+                     Python looks for
+                     modules to import
+
+sys.path  is a plain Python LIST of
+folder paths (strings). When you write
+import x , Python walks this list top to
+bottom and looks for  x.py  (or an  x/
+package) in each folder. The FIRST match
+wins  --  the rest are ignored.
+
+A typical  sys.path  looks like:
+
+     /home/adarsh/myproject
+     /usr/lib/python3.12
+     /usr/lib/python3.12/lib-dynload
+     /home/adarsh/.local/lib/python3.12/
+         site-packages
+     /usr/lib/python3/dist-packages
+
+
+Because it is a plain list, you CAN
+modify it at runtime with
+sys.path.append("/some/folder") . Avoid
+doing this in normal code  --  keep your
+imports predictable and rely on the
+standard search order.
 
 Code:
 
