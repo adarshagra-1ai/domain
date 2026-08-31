@@ -1,0 +1,99 @@
+signal module
+
+
+1. WHAT A SIGNAL IS
+
+A signal is a small message that the operating system sends to a running program to tell it something. It is NOT a Python thing; it is an operating-system thing. Python just gives you a way to react to signals from inside your program.
+
+Typical uses:
+  - You press Ctrl-C in the terminal. The OS sends the signal SIGINT to your program.
+  - You run  kill 12345  from another terminal. The OS sends SIGTERM to the program with process id 12345.
+  - The OS itself may send signals in certain conditions (child process ended, alarm timer fired, and so on).
+
+Each signal has a name in ALL-CAPS starting with  SIG . The Python module that lets you work with them is  signal  .
+
+
+2. THE THREE SIGNALS TO KNOW FIRST
+
+  - SIGINT (Signal Interrupt)
+      Sent when the user presses Ctrl-C in the terminal.
+      Default behaviour: Python raises KeyboardInterrupt and the program exits.
+      You CAN catch it and run cleanup code first.
+
+  - SIGTERM (Signal Terminate)
+      Sent by  kill <pid>  or by a process manager (systemd, docker stop, kubernetes) asking your program to "please shut down cleanly".
+      Default behaviour: program exits immediately with no cleanup.
+      You SHOULD catch it in long-running server programs and do a clean shutdown.
+
+  - SIGKILL (Signal Kill)
+      Sent by  kill -9 <pid>  . Immediate forced kill.
+      You CANNOT catch or ignore this. The OS terminates the process with no chance to react. Do not try to handle it.
+
+There are many more signals (SIGHUP, SIGCHLD, SIGUSR1, and so on) but 90% of the time you only care about SIGINT and SIGTERM.
+
+
+3. HOW TO REACT TO A SIGNAL
+
+The main API is  signal.signal(sig, handler)  . It registers a function to be called whenever that signal arrives.
+
+    import signal
+
+    def on_shutdown(signum, frame):
+        print("received signal", signum, "- cleaning up")
+        # do cleanup here
+        raise SystemExit(0)
+
+    signal.signal(signal.SIGINT, on_shutdown)
+    signal.signal(signal.SIGTERM, on_shutdown)
+
+The handler function must take TWO parameters:
+  - signum  -> the integer number of the signal that arrived
+  - frame   -> the current stack frame (usually ignored)
+
+After registration, whenever SIGINT or SIGTERM arrives, Python interrupts whatever it was doing and calls  on_shutdown  .
+
+
+4. A CONCRETE EXAMPLE
+
+Save this as  signal_demo.py :
+
+    import signal
+    import time
+
+    def on_signal(signum, frame):
+        print("caught signal", signum, "- exiting cleanly")
+        raise SystemExit(0)
+
+    signal.signal(signal.SIGINT, on_signal)
+    signal.signal(signal.SIGTERM, on_signal)
+
+    print("running, press Ctrl-C to stop")
+    while True:
+        time.sleep(1)
+
+Run:
+
+    python3 signal_demo.py
+
+Output:
+
+    running, press Ctrl-C to stop
+
+Now press Ctrl-C. Output continues:
+
+    ^Ccaught signal 2 - exiting cleanly
+
+Signal number 2 is SIGINT. If instead you ran the program in the background and then did  kill <pid>  from another terminal, you would see  caught signal 15  , because SIGTERM is number 15.
+
+
+5. COMMON MISTAKES
+
+  - Trying to catch SIGKILL. You cannot. The OS kills the process instantly. If your program needs to guarantee cleanup, do it on SIGTERM and hope no one uses  kill -9  .
+
+  - Doing heavy work inside a signal handler. Signal handlers should be tiny — flip a flag, set an event, and return. Any long work belongs in the main program flow, guided by that flag.
+
+  - Registering a signal handler in a background thread. Signals in Python can only be registered from the MAIN thread. Registering from a worker thread raises ValueError.
+
+  - Assuming signals work the same on Windows. Windows has a very limited set of signals. Server code that uses SIGTERM is designed for Linux/macOS, which is the normal deployment target.
+
+  - Mixing plain  signal.signal(...)  with  asyncio  . If you already have an asyncio event loop running, prefer  loop.add_signal_handler(sig, callback)  so the callback runs safely inside the loop instead of interrupting whatever coroutine happens to be executing.

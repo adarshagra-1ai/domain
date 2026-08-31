@@ -1,0 +1,90 @@
+relative imports
+
+
+1. WHAT A RELATIVE IMPORT IS
+
+A relative import is an  import  statement that uses a leading DOT to say "look for this module inside the SAME package as me", instead of writing the full package path from the top.
+
+    from .clock import RealClock         # relative
+    from myapp.clock import RealClock    # absolute (same thing, full path)
+
+Both lines above load the same  RealClock  class. The first one is shorter and works no matter what the outer package is renamed to.
+
+
+2. ABSOLUTE VS RELATIVE IMPORT
+
+  - ABSOLUTE import: writes the full path from the top-level package downwards. Example:  from myapp.clock import RealClock . Works from anywhere, easy to read, but breaks if you rename the outer package.
+
+  - RELATIVE import: uses dots to say where the target is RELATIVE to the file doing the import. Example:  from .clock import RealClock . Shorter, and it does not care what the outer package is called, but it only works INSIDE a package.
+
+Rule of thumb: for imports WITHIN the same package, relative is usually cleaner. For imports across different packages, absolute is clearer.
+
+
+3. WHAT THE DOTS MEAN
+
+Each dot means "one level up in the package tree".
+
+    from .        module_or_thing        # same package
+    from ..       module_or_thing        # parent package (one level up)
+    from ...      module_or_thing        # grandparent package (two levels up)
+
+You will see  .  and  ..  most of the time. Three or more dots are rare and usually a sign that the folder structure needs a rethink.
+
+
+4. A CONCRETE EXAMPLE
+
+Imagine this small package:
+
+    myapp/
+    +-- __init__.py
+    +-- __main__.py
+    +-- clock.py
+    +-- core.py
+    +-- utils/
+         +-- __init__.py
+         +-- helpers.py
+
+clock.py :
+
+    class RealClock:
+        def now(self):
+            return "12:00"
+
+core.py :
+
+    from .clock import RealClock          # same-package import: .clock means "clock.py in MY package"
+
+    class OkasCore:
+        def __init__(self):
+            self.clock = RealClock()
+
+utils/helpers.py :
+
+    from ..clock import RealClock         # go UP one level (out of utils/), then find clock.py
+
+The number of dots matches how far up you need to walk from the current file to reach the target.
+
+
+5. RULES YOU MUST FOLLOW
+
+  - Relative imports work ONLY inside a package. The folder containing the file must have an  __init__.py  , and the file must be reached by Python as part of a package (not run as a standalone script).
+
+  - You CANNOT run a file that uses relative imports directly with  python3 path/to/file.py . Doing so gives the error:
+        ImportError: attempted relative import with no known parent package
+    You must run it as a module instead:
+        python3 -m myapp
+
+  - The dots go on the LEFT side of the module name, and there is NO space between the dots and the name:  from .clock import RealClock  , not  from . clock  .
+
+
+6. COMMON MISTAKES
+
+  - Running a package file directly with  python3 file.py  when it uses relative imports. Fix: run with  python3 -m package_name  from the project root.
+
+  - Forgetting the  __init__.py  in the folder. Without that file, Python does not treat the folder as a package, so relative imports have no "parent" to resolve against.
+
+  - Using the wrong number of dots. One dot too few and you look in the wrong place; one dot too many and you walk outside the package. Count carefully: the number of dots equals how many folders up you go.
+
+  - Mixing styles inconsistently in the same project. Not a bug, but harder to read. Pick one style per project (usually: relative for same-package, absolute for cross-package) and stick to it.
+
+  - Trying to use a relative import in a plain script (a  .py  file sitting outside any package). Scripts must use absolute imports.

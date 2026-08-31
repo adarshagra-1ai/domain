@@ -74,6 +74,16 @@ The list below is not fixed. If a question comes up outside this list (for examp
    20  Project structure: the  src/  folder convention
    21  Packages and the program entry point: __init__.py and __main__.py
    22   __main__.py  walkthrough: docstring, imports, and argparse deep dive
+   23  __pycache__ folder and .pyc bytecode files
+   24  json module: dump, dumps, load, loads and Python <-> JSON type mapping
+   25  relative imports: dot syntax for same-package and parent-package imports
+   26  lazy / local imports: import inside a function and when to use it
+   27  keyword-only arguments: the bare  *  separator in function signatures
+   28  from __future__ import annotations and modern type hints ( int | None , list[str] , dict[str, int] )
+   29  signal module: SIGINT, SIGTERM and signal handlers
+   30  asyncio basics: sync vs async, coroutines,  async def  and  await
+   31  asyncio event loop,  asyncio.run  ,  asyncio.gather  , tasks and  get_running_loop
+   32  asyncio.Event and  loop.add_signal_handler  (graceful shutdown pattern)
 
 --- 3_http  -  HTTP basics ---
    1   HTTP idea: request, response, method, status

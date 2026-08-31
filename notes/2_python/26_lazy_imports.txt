@@ -1,0 +1,95 @@
+lazy / local imports
+
+
+1. WHAT A LAZY IMPORT IS
+
+A "lazy" or "local" import is an  import  statement written INSIDE a function body instead of at the top of the file. The import only runs when that function is actually called, not when the file is first loaded.
+
+    # top-level import (normal)
+    import json
+
+    def read_config(path):
+        # local import (lazy)
+        import yaml
+        with open(path) as fh:
+            return yaml.safe_load(fh)
+
+Here  json  loads immediately when the file is imported. But  yaml  only loads the first time  read_config  is actually called. If nobody ever calls  read_config  , the yaml module never loads at all.
+
+
+2. HOW IT IS DIFFERENT FROM A TOP-LEVEL IMPORT
+
+  - TOP-LEVEL import: runs ONCE, at the moment Python first loads the file. Every function in the file can see the imported name from that point on.
+
+  - LOCAL import: runs EVERY time the function is called, but Python caches loaded modules internally. So the first call actually loads the module; every later call is basically free — it just looks up an already-loaded module in memory.
+
+The end effect: local imports move the "cost" of importing from file-load time to function-call time (and only for the first call).
+
+
+3. WHY WE DO IT
+
+Three real reasons. If none of these apply, keep the import at the top — that is the default.
+
+  (a) BREAK A CIRCULAR IMPORT
+      Sometimes file A needs something from file B, and file B needs something from file A. If both use top-level imports, Python cannot resolve them and raises ImportError. Moving one of the imports INSIDE a function delays it until after both files have finished loading, which breaks the cycle.
+
+  (b) OPTIONAL OR HEAVY DEPENDENCY
+      Some libraries are big and slow to load, or are only needed for one specific feature. Loading them at the top slows down every program start-up, even when the feature is not used. Putting the import inside the feature's function means you only pay that cost when the feature actually runs.
+
+  (c) CONDITIONAL / RUNTIME-DECIDED IMPORT
+      When you need to import DIFFERENT modules based on a runtime flag (a CLI argument, an environment variable, a config value), a local import inside an  if  branch is the cleanest way. Only one of the branches runs, so only one of the modules loads.
+
+
+4. A CONCRETE EXAMPLE FOR EACH REASON
+
+Reason (a) — breaking a circular import:
+
+    # file: user.py
+    def get_admin():
+        from orders import last_order      # local, not top-level
+        return last_order()
+
+    # file: orders.py
+    from user import get_admin              # top-level is fine here
+
+If  user.py  put  from orders import last_order  at the top and  orders.py  put  from user import get_admin  at the top, both files would try to finish loading each other at the same time and Python would fail. Moving one to a local import fixes the cycle.
+
+Reason (b) — heavy optional dependency:
+
+    def make_plot(points):
+        import matplotlib.pyplot as plt    # heavy library, only load when actually plotting
+        plt.plot(points)
+        plt.show()
+
+If the program does not call  make_plot , matplotlib never loads and startup stays fast.
+
+Reason (c) — runtime-decided import:
+
+    def get_driver(use_simulator):
+        if use_simulator:
+            from drivers.simulator import SimDriver
+            return SimDriver()
+        else:
+            from drivers.hardware import HardwareDriver
+            return HardwareDriver()
+
+Only the branch that runs loads its module. If the user picked the simulator, the real-hardware driver code is never even imported.
+
+
+5. DOWNSIDES TO KNOW
+
+  - HIDDEN DEPENDENCIES. When someone reads the top of the file, they cannot see everything the file depends on. They have to scan every function too. This makes the file slightly harder to understand at a glance.
+
+  - LATE FAILURE. A missing library will not fail at program start-up; it will fail only when the function is first called. That could be minutes into a running program, which is a worse debugging experience than a clear failure at import time.
+
+  - SLIGHT RUNTIME COST. Every time the function runs, Python re-reads the import line. The FIRST call actually loads the module (real work). Every call after that is very fast, because Python already has the module saved in memory and just looks it up by name. Normally you never notice this cost. But if the function is called millions of times inside a fast loop, even that tiny lookup starts to add up — in that case, move the import to the top of the file.
+
+
+6. COMMON MISTAKES
+
+  - Using a local import for NO reason. If the module is cheap to load, always used, and there is no circular problem, put it at the top. Local imports should be a deliberate choice, not a habit.
+
+  - Putting a local import inside a hot loop that runs millions of times per second. The lookup is fast but not free. Move it out of the loop, or up to a top-level import.
+
+  - Forgetting to actually write the  import  line inside the function and relying on a top-level name that is not there. This gives a NameError at call time instead of at file-load time. Harder to trace.
+

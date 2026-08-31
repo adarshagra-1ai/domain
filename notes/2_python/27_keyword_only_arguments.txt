@@ -1,0 +1,101 @@
+keyword-only arguments
+
+
+1. WHAT A KEYWORD-ONLY ARGUMENT IS
+
+A keyword-only argument is a function parameter that the caller MUST pass by name, not by position. You mark it by placing a bare  *  (star) in the parameter list; everything AFTER the star becomes keyword-only.
+
+    def connect(host, port, *, use_ssl=False, timeout=30):
+        ...
+
+    connect("localhost", 8080, use_ssl=True)          # OK
+    connect("localhost", 8080, True)                  # TypeError!
+
+In the second call, Python refuses to accept  True  as a positional argument for  use_ssl , because the bare  *  in the definition said "everything past this point must be given by keyword name".
+
+
+2. THE BARE STAR SYNTAX
+
+The rule is simple:
+
+    def f(a, b, *, c, d):
+        ...
+
+  - Everything BEFORE the  *   ->  can be passed positionally OR by keyword.
+  - The  *  itself is just a marker. It is not a real parameter; it does not receive a value.
+  - Everything AFTER the  *   ->  MUST be passed by keyword name.
+
+Keyword-only parameters can have default values or not. If they have no default, the caller MUST supply them by name — omitting them is a TypeError.
+
+    def f(a, b, *, c, d=10):
+        ...
+
+    f(1, 2, c=3)           # OK, d defaults to 10
+    f(1, 2, c=3, d=4)      # OK
+    f(1, 2)                # TypeError: missing required keyword-only argument: 'c'
+    f(1, 2, 3, 4)          # TypeError: too many positional arguments
+
+
+3. WHY WE DO IT
+
+Three practical reasons:
+
+  (a) READABILITY AT THE CALL SITE
+      Compare these two calls:
+          create_user("Adarsh", 25, True, False, True)
+          create_user("Adarsh", 25, is_admin=True, send_email=False, active=True)
+      The second one tells you at a glance what each argument means. When a function has several boolean or flag-like parameters, forcing them to be keyword-only makes every call self-documenting.
+
+  (b) PREVENT WRONG-ORDER BUGS
+      If a function has parameters  (retry_count, timeout, verbose) and callers pass them positionally, a small reorder in the definition later can silently swap values — no error, just wrong behaviour. Keyword-only forces the caller to name each one, so reorders in the definition do not break existing calls.
+
+  (c) SAFER API EVOLUTION
+      You can add new keyword-only parameters later WITHOUT breaking old code, because old callers never used positions for them anyway. Positional parameters are much harder to rearrange or add to without breaking existing callers.
+
+
+4. A CONCRETE EXAMPLE
+
+Without keyword-only:
+
+    def send_message(user, text, urgent=False, silent=False):
+        print(user, text, urgent, silent)
+
+    send_message("Adarsh", "hi", True, False)   # what do True and False mean here?
+
+With keyword-only:
+
+    def send_message(user, text, *, urgent=False, silent=False):
+        print(user, text, urgent, silent)
+
+    send_message("Adarsh", "hi", urgent=True)             # crystal clear
+    send_message("Adarsh", "hi", True)                    # TypeError — good, forces clarity
+
+The keyword-only version rules out the confusing call form entirely.
+
+
+5. RELATION TO *args
+
+Do not confuse a BARE  *  with  *args :
+
+  - *args collects extra positional arguments into a tuple. It IS a parameter and receives values.
+  - A bare  *  by itself receives NOTHING. It is only a separator that marks the boundary between positional and keyword-only parameters.
+
+If you already have a  *args  in the definition, everything AFTER  *args  is automatically keyword-only, and you do not need a bare  *  as well:
+
+    def f(a, *args, b, c=10):        # b and c are keyword-only
+        ...
+
+    f(1, 2, 3, b=99)                 # a=1, args=(2, 3), b=99, c=10
+
+
+6. COMMON MISTAKES
+
+  - Trying to pass a keyword-only argument by position. Gives  TypeError: too many positional arguments  . Fix: use the name.
+
+  - Forgetting the bare  *  when you meant to. Without it, everything is positional-or-keyword and the safety is lost. If you want to force keyword-only, add the  *  .
+
+  - Writing  def f(*, a, b):  and then calling  f(1, 2)  . Fails. Correct call:  f(a=1, b=2)  .
+
+  - Confusing a bare  *  with  *args  . They look similar but do different things:  *  is only a separator,  *args  is a real parameter that collects a tuple.
+
+  - Putting the  *  in the wrong place. Everything AFTER it becomes keyword-only, everything BEFORE stays flexible — get the split right for your API.

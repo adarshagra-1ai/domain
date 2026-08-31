@@ -1,0 +1,155 @@
+json module
+
+
+1. WHAT JSON IS
+
+JSON (JavaScript Object Notation) is a plain-text format for storing and exchanging structured data. It looks a lot like a Python dictionary written as text. Any program in any language can read and write JSON, which is why it is the standard format for talking between different systems.
+
+
+2. WHY WE USE IT
+
+  - To save structured data to a file so it survives after the program ends (config files, saved settings, bundle files).
+  - To send data from one system to another over a network (a Python backend sending data to a JavaScript frontend, one server calling another).
+  - To read a config file that a human or another tool wrote.
+
+Basically: whenever you need to freeze a Python object into text, or turn some text back into a Python object, JSON is the usual choice.
+
+
+3. JSON SYNTAX BASICS
+
+JSON has only six kinds of values:
+
+  - object       { "key": value, "key": value }
+  - array        [ value, value, value ]
+  - string       "hello"      (double quotes only)
+  - number       42    3.14
+  - boolean      true    false     (lowercase)
+  - null         null              (lowercase)
+
+Strict rules to remember:
+  - Keys inside an object MUST be strings in DOUBLE quotes. Single quotes are not allowed.
+  - Strings MUST use DOUBLE quotes. 'hello' is invalid JSON.
+  - NO trailing comma after the last item in an object or array.
+  - Booleans are lowercase: true , false (not True , False).
+  - Null is lowercase: null (not None).
+
+Example of a valid JSON piece of text:
+
+    {
+        "name": "Adarsh",
+        "age": 25,
+        "is_admin": true,
+        "tags": ["python", "linux"],
+        "address": null
+    }
+
+
+4. PYTHON <-> JSON TYPE MAPPING
+
+When Python converts to and from JSON, the types line up like this:
+
+    Python          JSON
+    ------          ----
+    dict            object
+    list            array
+    str             string
+    int, float      number
+    True            true
+    False           false
+    None            null
+
+Things that DO NOT map to JSON directly and will raise an error if you try:
+  - tuple  (Python will actually convert this to a JSON array, so it works, but you get back a list when you load it — the tuple-ness is lost)
+  - set    (no direct match — error)
+  - custom class instances  (no direct match — error)
+  - datetime objects        (no direct match — error)
+
+
+5. THE FOUR MAIN FUNCTIONS
+
+The json module gives you four functions you will use 95% of the time. There is an easy trick to remember them: the "s" at the end of the name means "string".
+
+    Function          Direction                        Works with
+    --------          ---------                        ----------
+    json.dumps(obj)   Python object -> JSON string     an in-memory string
+    json.loads(s)     JSON string -> Python object     an in-memory string
+    json.dump(obj,f)  Python object -> JSON file       an open file object
+    json.load(f)      JSON file -> Python object       an open file object
+
+Say them out loud:
+  - "dump s" -> dump to string
+  - "load s" -> load from string
+  - "dump"   -> dump to file
+  - "load"   -> load from file
+
+You must  import json  at the top of your file before using any of these.
+
+
+6. A CONCRETE EXAMPLE
+
+Say you want to save some settings to a file, then load them back later.
+
+Step 1 — save a Python dict to a file:
+
+    import json
+
+    settings = {
+        "name": "Adarsh",
+        "port": 8099,
+        "debug": True,
+        "tags": ["python", "linux"]
+    }
+
+    with open("settings.json", "w") as fh:
+        json.dump(settings, fh, indent=4)
+
+After running, the file  settings.json  on disk looks like this:
+
+    {
+        "name": "Adarsh",
+        "port": 8099,
+        "debug": true,
+        "tags": [
+            "python",
+            "linux"
+        ]
+    }
+
+Notice that Python's  True  became JSON's  true  automatically.
+
+The  indent=4  argument is optional — it makes the JSON pretty-printed with 4-space indentation. Without it, everything goes on one line, which is smaller but harder to read.
+
+Step 2 — load it back into Python:
+
+    import json
+
+    with open("settings.json") as fh:
+        settings = json.load(fh)
+
+    print(settings["name"])   # Adarsh
+    print(settings["port"])   # 8099
+    print(type(settings))     # <class 'dict'>
+
+You get back a normal Python dict and can use it like any other dict.
+
+If instead you had a JSON string in memory (not a file), you would use  loads  and  dumps :
+
+    import json
+
+    text = '{"name": "Adarsh", "port": 8099}'
+    data = json.loads(text)      # text -> dict
+    print(data["name"])          # Adarsh
+
+    back_to_text = json.dumps(data)   # dict -> text
+    print(back_to_text)               # {"name": "Adarsh", "port": 8099}
+
+
+7. COMMON MISTAKES
+
+  - Using single quotes in a JSON file. '{"name": "Adarsh"}' -> valid. "{'name': 'Adarsh'}" -> INVALID JSON, will raise json.JSONDecodeError.
+  - Leaving a trailing comma. {"a": 1, "b": 2,} -> INVALID JSON.
+  - Forgetting to open the file first. json.load takes a file OBJECT (something returned by open), not a file path string. json.load("settings.json") is wrong; json.load(open("settings.json")) works, but the right pattern is  with open(...) as fh: json.load(fh) .
+  - Mixing up load and loads. If you have text, use loads / dumps. If you have a file object, use load / dump. Passing a string to json.load will raise an error.
+  - Trying to dump a set or a custom class. json.dumps({1, 2, 3}) raises TypeError. Convert to a list first: json.dumps(list({1, 2, 3})) .
+  - Expecting to get a tuple back. If you save a tuple, you get back a list. JSON has no tuple type.
+  - Confusing JSON booleans and Python booleans in the file. In JSON they are true / false (lowercase). If you type True inside a .json file by hand, it will fail to parse.

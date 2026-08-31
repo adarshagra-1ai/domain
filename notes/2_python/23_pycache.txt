@@ -1,0 +1,97 @@
+__pycache__
+
+
+1. WHAT IT IS
+
+__pycache__ is a folder that Python creates automatically. It sits next to your .py files and holds the compiled version of those files. You never create it by hand and you never edit anything inside it.
+
+
+2. WHAT IS INSIDE IT
+
+Inside __pycache__ you will find files that end in .pyc . A .pyc file is a "compiled Python" file. It is not source code you can read. It is a lower-level form of your .py file called bytecode. Bytecode is what the Python interpreter actually runs; the .py source is converted to bytecode first, then executed.
+
+The file names inside look like this:
+
+    greetings.cpython-311.pyc
+
+Breakdown of that name:
+  - greetings       -> the original module name (from greetings.py)
+  - cpython         -> the Python implementation used (CPython is the standard one)
+  - 311             -> the Python version (3.11)
+  - .pyc            -> compiled Python bytecode
+
+
+3. WHY PYTHON CREATES IT
+
+Speed. Compiling .py source to bytecode takes a small amount of time. If Python did this every single time you imported a module, program start-up would be slower. So Python compiles the module once, sayesves the bytecode inside __pycache__ , and next time it just reads that cached .pyc file directly. This makes imports faster on the second run and later runs.
+
+Python also checks whether the .py source has changed since the .pyc was saved. If the source is newer, Python recompiles and updates the .pyc . So you never get "stale" behaviour from an old cache.
+
+
+4. WHEN IT GETS CREATED
+
+__pycache__ is created only when a module is IMPORTED, not when a script is run directly.
+
+  - If you run  python3 hello.py  and hello.py does not import anything of yours, no __pycache__ is created.
+  - If hello.py imports another file of yours (say  import greetings ), then Python compiles greetings.py and creates __pycache__/ next to it with greetings.cpython-311.pyc inside.
+
+
+5. A CONCRETE EXAMPLE
+
+Start with two files in the same folder:
+
+    programs/
+    +-- greetings.py
+    +-- hello.py
+
+greetings.py :
+
+    def say_hi(name):
+        print("hi", name)
+
+hello.py :
+
+    import greetings
+    greetings.say_hi("Adarsh")
+
+Folder BEFORE running anything:
+
+    programs/
+    +-- greetings.py
+    +-- hello.py
+
+Now run:
+
+    python3 hello.py
+
+Output:
+
+    hi Adarsh
+
+Folder AFTER running:
+
+    programs/
+    +-- greetings.py
+    +-- hello.py
+    +-- __pycache__/
+         +-- greetings.cpython-311.pyc
+
+Notice: only greetings got a .pyc (because it was imported). hello.py was run directly, so no .pyc for it.
+
+
+6. IS IT SAFE TO DELETE
+
+Yes. You can delete the whole __pycache__ folder any time. Nothing breaks. The next time you import those modules, Python will just create it again. Deleting it is sometimes useful when you feel something weird is happening and you want a clean rebuild of the cache.
+
+To delete it from the terminal:
+
+    rm -rf __pycache__
+
+
+7. COMMON MISTAKES AND CONFUSIONS
+
+  - Thinking it is junk or malware. It is not. It is a normal Python folder.
+  - Trying to open a .pyc file in a text editor. Do not bother; it is binary bytecode, not readable text.
+  - Editing files inside __pycache__ . Never do this. Always edit the .py source; the .pyc will be regenerated from it.
+  - Expecting to see __pycache__ after running a single script with no imports. It only appears when something gets imported.
+  - Seeing many __pycache__ folders in a big project and panicking. Every folder that has imported Python files will get its own __pycache__ next to those files. This is normal.
