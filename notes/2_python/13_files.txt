@@ -1,17 +1,14 @@
-13  --  Reading and writing files
-          (open, with, read, write, modes r/w/a)
+13  --  Reading and writing files  (open, with, read, write, modes r/w/a)
 
 1)  What file I/O is
 
-File I/O means Input / Output on files.
-Your Python program can:
+File I/O means Input / Output on files. Your Python program can:
 
      -  READ text from a file on disk.
      -  WRITE text into a file on disk.
      -  APPEND text to the end of a file.
 
-The main tool is the built-in  open()
-function.
+The main tool is the built-in  open()  function.
 
 
 2)  open()  --  the basic form
@@ -20,14 +17,10 @@ Syntax:
 
      f = open(<path>, <mode>)
 
-     -  <path>  is a string with the file
-                path (relative or absolute).
-     -  <mode>  is a short code string
-                like  "r" , "w" , "a" .
+     -  <path>  is a string with the file path (relative or absolute).
+     -  <mode>  is a short code string like  "r" , "w" , "a" .
 
-open()  returns a FILE OBJECT. You use its
-methods to read or write, and you must
-CLOSE it when done.
+open()  returns a FILE OBJECT. You use its methods to read or write, and you must CLOSE it when done.
 
 
 3)  Modes
@@ -67,18 +60,14 @@ CLOSE it when done.
                      is treated as
                      strings.
 
-Most everyday work uses  "r" , "w" , "a"
-in text mode.
+Most everyday work uses  "r" , "w" , "a"  in text mode.
 
 
 4)  A note about print()'s  end=  and  sep=
 
-Before we look at file examples, here is
-a small detail about  print()  that shows
-up in the code below.
+Before we look at file examples, here is a small detail about  print()  that shows up in the code below.
 
-print()  has two optional parameters
-that control formatting:
+print()  has two optional parameters that control formatting:
 
      end     what to add at the very end
              of the output. Default is
@@ -109,9 +98,7 @@ Behavior:
      print("hello", end=" ")   adds a space
      print("hello", end="---") adds "---"
 
-If you pass  end=""  , the next print
-continues on the SAME line instead of a
-fresh line.
+If you pass  end=""  , the next print continues on the SAME line instead of a fresh line.
 
 
 Examples with  sep :
@@ -128,27 +115,19 @@ Output:
      abc
 
 
-This matters for reading files below,
-because each line returned by
-readline()  already ends with its own
-newline character  \n . Passing  end=""
-to  print  keeps the output from
-becoming double-spaced.
+This matters for reading files below, because each line returned by  readline()  already ends with its own newline character  \n . Passing  end=""  to  print  keeps the output from becoming double-spaced.
 
 
 5)  Reading a file  --  the recommended pattern
 
-Use a  with  block. It automatically
-CLOSES the file at the end, even if an
-error happens inside.
+Use a  with  block. It automatically CLOSES the file at the end, even if an error happens inside.
 
 Syntax:
 
      with open(<path>, <mode>) as f:
          <indented block>
 
-Once the block ends,  f  is closed. You
-do not have to call  f.close()  yourself.
+Once the block ends,  f  is closed. You do not have to call  f.close()  yourself.
 
 
 Whole file at once  --  f.read()
@@ -164,8 +143,7 @@ Output:  (all text in notes.txt)
 
 One line at a time  --  for loop
 
-Best for big files, or when you want to
-process line by line.
+Best for big files, or when you want to process line by line.
 
 Code:
 
@@ -173,10 +151,7 @@ Code:
          for line in f:
              print(line)
 
-Each  line  includes its trailing newline
-\n .  print()  adds another newline, so
-lines may look double-spaced. Strip if
-needed:
+Each  line  includes its trailing newline  \n .  print()  adds another newline, so lines may look double-spaced. Strip if needed:
 
 Code:
 
@@ -187,10 +162,7 @@ Code:
 
 One line on demand  --  f.readline()
 
-Reads exactly ONE line from the current
-position and moves the cursor forward.
-Returns  ""  (empty string) when the end
-of the file is reached.
+Reads exactly ONE line from the current position and moves the cursor forward. Returns  ""  (empty string) when the end of the file is reached.
 
 Code:
 
@@ -207,17 +179,10 @@ Output:
      second
      third
 
-Each string returned by  readline()
-already includes its trailing newline
-\n . Using  end=""  in the print
-prevents the double-newline that would
-happen with plain  print(first) . See
-section 4 for the full  end=  and
-sep=  details.
+Each string returned by  readline()  already includes its trailing newline  \n . Using  end=""  in the print prevents the double-newline that would happen with plain  print(first) . See section 4 for the full  end=  and  sep=  details.
 
 
-Alternative style  --  strip the newline,
-let  print  add its own:
+Alternative style  --  strip the newline, let  print  add its own:
 
      first = f.readline().rstrip()
      print(first)
@@ -241,8 +206,7 @@ Output:
      second
      third
 
-The empty-string check is how you detect
-end of file with  readline() .
+The empty-string check is how you detect end of file with  readline() .
 
 
 All lines into a list  --  f.readlines()
@@ -274,43 +238,19 @@ readline()  vs  readlines()  --  the difference
 
 When to use which:
 
-  -  readline()      for line-by-line
-                     processing where you
-                     want fine control
-                     (skip a header, stop
-                     early, read while a
-                     condition holds).
-
-  -  readlines()     for small files when
-                     you want all lines
-                     available as a list
-                     to index or slice.
-
-  -  for line in f:  the SIMPLEST pattern
-                     for reading a file
-                     line by line. Prefer
-                     this over
-                     readline()  in most
-                     cases. It handles the
-                     "stop at end of file"
-                     logic for you.
+  -  readline()      for line-by-line processing where you want fine control (skip a header, stop early, read while a condition holds).
+  -  readlines()     for small files when you want all lines available as a list to index or slice.
+  -  for line in f:  the SIMPLEST pattern for reading a file line by line. Prefer this over  readline()  in most cases. It handles the "stop at end of file" logic for you.
 
 
 Memory note:
 
-     f.readlines()  loads the WHOLE
-     remaining file into memory as a
-     list. For big files (hundreds of MB,
-     or more), this can crash the
-     program. Prefer  for line in f:  ,
-     which reads one line at a time.
+     f.readlines()  loads the WHOLE remaining file into memory as a list. For big files (hundreds of MB, or more), this can crash the program. Prefer  for line in f:  , which reads one line at a time.
 
 
 6)  Writing to a file  --  f.write()
 
-"w"  mode empties the file first. Use it
-when you want to REPLACE the file with
-new content.
+"w"  mode empties the file first. Use it when you want to REPLACE the file with new content.
 
 Code:
 
@@ -326,30 +266,21 @@ After this,  hello.txt  contains:
 
 Notes:
 
-  -  f.write()  does NOT add newlines
-     for you. Include  \n  yourself if
-     you want line breaks.
-  -  You can call  f.write()  many times
-     inside the same  with  block.
-  -  Existing content in the file is
-     WIPED as soon as  open  runs with
-     "w"  --  even before you write
-     anything.
+  -  f.write()  does NOT add newlines for you. Include  \n  yourself if you want line breaks.
+  -  You can call  f.write()  many times inside the same  with  block.
+  -  Existing content in the file is WIPED as soon as  open  runs with  "w"  --  even before you write anything.
 
 
 7)  Appending  --  "a"  mode
 
-"a"  mode keeps the existing content and
-adds new content at the END of the file.
+"a"  mode keeps the existing content and adds new content at the END of the file.
 
 Code:
 
      with open("log.txt", "a") as f:
          f.write("new event\n")
 
-If  log.txt  already had text, this
-leaves it intact and adds  new event\n
-at the end.
+If  log.txt  already had text, this leaves it intact and adds  new event\n  at the end.
 
 Common uses:
 
@@ -359,8 +290,7 @@ Common uses:
 
 8)  Explicit close  (only if not using with)
 
-If you skip the  with  block, you must
-call  f.close()  yourself.
+If you skip the  with  block, you must call  f.close()  yourself.
 
 Code:
 
@@ -370,8 +300,7 @@ Code:
 
 Downsides:
 
-  -  If an error happens before  close ,
-     the file stays open.
+  -  If an error happens before  close , the file stays open.
   -  Easy to forget.
 
 Rule of thumb: always use  with .
@@ -392,10 +321,7 @@ Rule of thumb: always use  with .
            such file or directory:
            'missing.txt'
 
-        Check the path with  ls  in the
-        terminal, or use  "a"  /  "w"
-        when creating a new file is
-        intended.
+        Check the path with  ls  in the terminal, or use  "a"  /  "w"  when creating a new file is intended.
 
 
   (b)   Writing to a directory
@@ -410,8 +336,7 @@ Rule of thumb: always use  with .
            IsADirectoryError: [Errno 21]
            Is a directory: 'Documents'
 
-        The path must be a file, not a
-        folder.
+        The path must be a file, not a folder.
 
 
   (c)   Mixing text and binary
@@ -425,9 +350,7 @@ Rule of thumb: always use  with .
 
            UnicodeDecodeError: ...
 
-        Binary files (images, PDFs, mp3)
-        must be read in  "rb"  mode
-        (read binary), not  "r"  mode.
+        Binary files (images, PDFs, mp3) must be read in  "rb"  mode (read binary), not  "r"  mode.
 
 
   (d)   Forgetting the newline
@@ -441,10 +364,7 @@ Rule of thumb: always use  with .
 
         File contains:  abc  (one line).
 
-        Add  "\n"  where you want line
-        breaks.
+        Add  "\n"  where you want line breaks.
 
 
-In section 14 we look at MODULES and IMPORT  --
-splitting code across files and using
-libraries.
+In section 14 we look at MODULES and IMPORT  --  splitting code across files and using libraries.

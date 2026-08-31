@@ -1,9 +1,0 @@
-FastAPI  --  Backend framework basics
-
-FastAPI has 3 small parts:
-
-   1   FastAPI hello-world route
-
-   2   Path params, query params, JSON body
-
-   3   Pydantic model to validate input

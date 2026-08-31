@@ -2,21 +2,16 @@
 
 1)  What a tuple is
 
-A TUPLE is an ORDERED collection of values,
-like a list. The one big difference:
+A TUPLE is an ORDERED collection of values, like a list. The one big difference:
 
-  -  A tuple is IMMUTABLE. Once created,
-     you cannot add, remove, or change its
-     items.
+  -  A tuple is IMMUTABLE. Once created, you cannot add, remove, or change its items.
 
-Everything else feels like a list  --
-ordered items, 0-based indexing, slicing.
+Everything else feels like a list  --  ordered items, 0-based indexing, slicing.
 
 
 2)  Creating a tuple
 
-Use parentheses  ( )  with items separated
-by commas.
+Use parentheses  ( )  with items separated by commas.
 
 Code:
 
@@ -40,12 +35,10 @@ Output:
      <class 'tuple'>
      <class 'int'>
 
-Without the comma,  (5)  is just the number
-5  wrapped in parentheses, not a tuple.
+Without the comma,  (5)  is just the number  5  wrapped in parentheses, not a tuple.
 
 
-Parentheses are optional if the meaning is
-clear:
+Parentheses are optional if the meaning is clear:
 
 Code:
 
@@ -57,8 +50,7 @@ Output:
      (10, 20)
      <class 'tuple'>
 
-Even so, always writing the  ( )  makes
-code easier to read.
+Even so, always writing the  ( )  makes code easier to read.
 
 
 3)  Indexing and slicing
@@ -91,12 +83,9 @@ Run:
      support item assignment
 
 
-You also cannot use  append , insert ,
-remove , pop , or  del  on a tuple's
-items.
+You also cannot use  append , insert ,  remove , pop , or  del  on a tuple's items.
 
-If you need a "changed" tuple, build a new
-one:
+If you need a "changed" tuple, build a new one:
 
 Code:
 
@@ -109,8 +98,7 @@ Output:  ('yellow', 'green', 'blue')
 
 5)  Common operations still work
 
-Because tuples are read-only sequences, you
-still get:
+Because tuples are read-only sequences, you still get:
 
      len(t)              length
      t[i]                indexing
@@ -139,8 +127,7 @@ Output:
 
 6)  Unpacking
 
-You can assign a tuple to multiple variables
-at once  --  called UNPACKING.
+You can assign a tuple to multiple variables at once  --  called UNPACKING.
 
 Code:
 
@@ -161,8 +148,7 @@ Code:
      x, y = 10, 20
 
 
-Star unpacking gathers extra items into a
-list:
+Star unpacking gathers extra items into a list:
 
 Code:
 
@@ -181,52 +167,16 @@ Output:
 
 Use a TUPLE when:
 
-  -  The collection is FIXED and should not
-     change (a point  (x, y)  , an
-     (r, g, b)  color, a database row).
-  -  You want to return MULTIPLE values
-     from a function (functions covered in
-     section 12; a Python function returns a
-     tuple by default when you  return
-     more than one value).
-  -  You need a value to use as a
-     DICTIONARY KEY. Lists are unhashable
-     and cannot be dict keys; tuples can.
+  -  The collection is FIXED and should not change (a point  (x, y)  , an  (r, g, b)  color, a database row).
+  -  You want to return MULTIPLE values from a function (functions covered in section 12; a Python function returns a tuple by default when you  return  more than one value).
+  -  You need a value to use as a DICTIONARY KEY. Lists are unhashable and cannot be dict keys; tuples can.
 
-Use a LIST when the collection is expected
-to grow, shrink, or change.
+Use a LIST when the collection is expected to grow, shrink, or change.
 
 
 8)  Common errors
 
-  (a)   Trying to modify a tuple
-
-        Code:
-
-           t = (1, 2, 3)
-           t[0] = 99
-
-        Run:
-
-           TypeError: 'tuple' object does
-           not support item assignment
-
-
-  (b)   Forgetting the comma in a one-item
-        tuple
-
-        Code:
-
-           t = (5)
-           print(type(t))
-
-        Output:  <class 'int'>
-
-        Add the comma:  t = (5,) .
-
-
-  (c)   Unpacking with wrong number of
-        names
+  (a)   Unpacking with wrong number of names
 
         Code:
 
@@ -237,10 +187,7 @@ to grow, shrink, or change.
            ValueError: too many values to
            unpack (expected 2)
 
-        Either add another name, or use
-        star unpacking:
-        x, y, *rest = (1, 2, 3) .
+        Either add another name, or use star unpacking:  x, y, *rest = (1, 2, 3) .
 
 
-In section 9 we look at SETS  --  collections of
-UNIQUE values.
+In section 9 we look at SETS  --  collections of UNIQUE values.

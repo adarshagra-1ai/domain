@@ -1,6 +1,0 @@
-Drivers  --  Device/protocol drivers
-
-Drivers has 1 small part:
-
-   1   What a driver is (protocol adapter,
-       transport, isolation)

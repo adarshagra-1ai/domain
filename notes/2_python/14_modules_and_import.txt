@@ -1,21 +1,12 @@
-14  --  Modules and import
-          (own module, standard library,
-           third-party module)
+14  --  Modules and import  (own module, standard library, third-party module)
 
 1)  What a module is
 
-A MODULE is a Python file ( .py ) whose
-contents (variables, functions, classes)
-can be used from OTHER Python files by
-IMPORTING it.
+A MODULE is a Python file ( .py ) whose contents (variables, functions, classes) can be used from OTHER Python files by IMPORTING it.
 
-You have already been writing modules
-without knowing it. Every  .py  file is a
-module.
+You have already been writing modules without knowing it. Every  .py  file is a module.
 
-A LIBRARY (or "package") is usually a
-collection of related modules bundled
-together.
+A LIBRARY (or "package") is usually a collection of related modules bundled together.
 
 
 2)  import  --  the basic form
@@ -24,8 +15,7 @@ Syntax:
 
      import <module_name>
 
-After this line, you can use the names
-inside that module with dot syntax:
+After this line, you can use the names inside that module with dot syntax:
 
      <module_name>.<name>
 
@@ -40,18 +30,12 @@ Output:
      3.141592653589793
      4.0
 
-math  is a module in Python's STANDARD
-LIBRARY (built-in, no install needed).
-pi  is a variable inside it;
-sqrt  is a function inside it.
+math  is a module in Python's STANDARD LIBRARY (built-in, no install needed).  pi  is a variable inside it;  sqrt  is a function inside it.
 
 
-3)  from ... import ...   --  bring specific
-    names into scope
+3)  from ... import ...   --  bring specific names into scope
 
-Sometimes you only need one or two names
-from a module. Import them directly and
-use them without the module prefix.
+Sometimes you only need one or two names from a module. Import them directly and use them without the module prefix.
 
 Code:
 
@@ -64,18 +48,13 @@ Output:
      3.141592653589793
      5.0
 
-Now  pi  and  sqrt  are directly
-available, no  math.  prefix.
+Now  pi  and  sqrt  are directly available, no  math.  prefix.
 
 
-Avoid  from module import *  (star
-import). It brings in every name and can
-silently overwrite your own variables.
-Explicit is better.
+Avoid  from module import *  (star import). It brings in every name and can silently overwrite your own variables. Explicit is better.
 
 
-4)  import ... as ...   --  give the module a
-    shorter name (alias)
+4)  import ... as ...   --  give the module a shorter name (alias)
 
 Handy for modules with long names.
 
@@ -101,11 +80,9 @@ You can also alias a specific name:
 
 5)  Your own module
 
-Any  .py  file in your CWD (or on the
-Python search path) can be imported.
+Any  .py  file in your CWD (or on the Python search path) can be imported.
 
-Suppose you have a file  helpers.py  in
-the same folder as your main script:
+Suppose you have a file  helpers.py  in the same folder as your main script:
 
      helpers.py
      ----------
@@ -140,16 +117,12 @@ You can also use  from helpers import ... :
      print(greet("adarsh"))
 
 
-Note: the module NAME is the file name
-WITHOUT  .py . So  helpers.py  is
-imported as  import helpers  (not
-import helpers.py ).
+Note: the module NAME is the file name WITHOUT  .py . So  helpers.py  is imported as  import helpers  (not  import helpers.py ).
 
 
 6)  Standard library  --  a taste
 
-Python ships with a large STANDARD LIBRARY.
-Some commonly used modules:
+Python ships with a large STANDARD LIBRARY. Some commonly used modules:
 
      math         math functions and
                   constants
@@ -169,26 +142,16 @@ Some commonly used modules:
 Small examples:
 
 
-Before we use the  json  module, a
-quick word on what JSON is.
+Before we use the  json  module, a quick word on what JSON is.
 
-JSON (JavaScript Object Notation) is a
-TEXT format for representing data. The
-name comes from JavaScript, but it is
-now used by every major language for
-exchanging data (between programs, over
-the network, in config files, etc.).
+JSON (JavaScript Object Notation) is a TEXT format for representing data. The name comes from JavaScript, but it is now used by every major language for exchanging data (between programs, over the network, in config files, etc.).
 
 Key facts:
 
-  -  It is plain TEXT (a string). Not
-     binary.
-  -  Human-readable  --  you can open a
-     JSON file and understand it.
-  -  Structure looks a lot like a Python
-     dict, so it maps to Python cleanly.
-  -  Web APIs almost always exchange
-     data as JSON.
+  -  It is plain TEXT (a string). Not binary.
+  -  Human-readable  --  you can open a JSON file and understand it.
+  -  Structure looks a lot like a Python dict, so it maps to Python cleanly.
+  -  Web APIs almost always exchange data as JSON.
 
 
 A JSON example:
@@ -218,23 +181,13 @@ JSON types map to Python types like this:
 
 Small differences from Python:
 
-  -  Keys in a JSON object MUST be
-     DOUBLE-QUOTED strings. In Python
-     dicts, keys can be any hashable
-     type.
-  -  JSON booleans are LOWERCASE
-     ( true , false ). Python uses
-     True , False .
-  -  JSON's "no value" is  null .
-     Python uses  None .
-  -  JSON forbids trailing commas after
-     the last item. Python allows them.
-  -  JSON only allows DOUBLE quotes for
-     strings. Python allows single or
-     double.
+  -  Keys in a JSON object MUST be DOUBLE-QUOTED strings. In Python dicts, keys can be any hashable type.
+  -  JSON booleans are LOWERCASE ( true , false ). Python uses  True , False .
+  -  JSON's "no value" is  null . Python uses  None .
+  -  JSON forbids trailing commas after the last item. Python allows them.
+  -  JSON only allows DOUBLE quotes for strings. Python allows single or double.
 
-The Python  json  module handles all of
-these differences for you.
+The Python  json  module handles all of these differences for you.
 
 
 About  json.dumps  and  json.loads :
@@ -248,13 +201,7 @@ About  json.dumps  and  json.loads :
               JSON string INTO a Python
               object.
 
-The names use the  s  suffix for
-"string". Without the  s
-( json.dump  and  json.load ) the same
-functions work with FILE OBJECTS
-instead of strings  --  useful when you
-want to save or read JSON directly to
-or from a file.
+The names use the  s  suffix for "string". Without the  s  ( json.dump  and  json.load ) the same functions work with FILE OBJECTS instead of strings  --  useful when you want to save or read JSON directly to or from a file.
 
 
 Common shape of both functions:
@@ -300,9 +247,7 @@ Why the two output lines look different:
         SINGLE quotes  --  Python's
         default way of printing a dict.
 
-They represent the SAME data. The first
-line is JSON text; the second line is a
-Python dict.
+They represent the SAME data. The first line is JSON text; the second line is a Python dict.
 
 
 Two useful  random  functions:
@@ -348,15 +293,12 @@ Code:
 Output:  (varies)
 
 
-You do NOT need to install any of these
---  they come with Python.
+You do NOT need to install any of these  --  they come with Python.
 
 
 7)  Third-party modules
 
-Anything NOT in the standard library is
-called a THIRD-PARTY module. You install
-it with  pip . Common ones:
+Anything NOT in the standard library is called a THIRD-PARTY module. You install it with  pip . Common ones:
 
      requests    HTTP requests
      fastapi     web framework we will
@@ -364,9 +306,7 @@ it with  pip . Common ones:
      litellm     LLM library we will use
                  in the AI agent topic later
 
-Basic install command (details and best
-practice with virtual environments come
-in section 18 and section 19):
+Basic install command (details and best practice with virtual environments come in section 18 and section 19):
 
      pip install <name>
 
@@ -374,8 +314,7 @@ For example:
 
      pip install requests
 
-After installing, use it like any other
-module:
+After installing, use it like any other module:
 
      import requests
 
@@ -385,8 +324,7 @@ module:
 
 8)  Where does Python look for modules?
 
-When you write  import x , Python
-searches in this order:
+When you write  import x , Python searches in this order:
 
      1.  Built-in modules.
      2.  The folder of the running script
@@ -399,17 +337,9 @@ searches in this order:
          pip installs third-party
          modules).
 
-You can inspect the full list at runtime.
-Before we run the code, a quick word on
-sys  and  sys.path .
+You can inspect the full list at runtime. Before we run the code, a quick word on  sys  and  sys.path .
 
-The  sys  module is part of the standard
-library. It lets your program talk to the
-Python INTERPRETER itself  --  things
-like the version, the command-line
-arguments, exiting the program, and the
-list of folders Python searches for
-modules.
+The  sys  module is part of the standard library. It lets your program talk to the Python INTERPRETER itself  --  things like the version, the command-line arguments, exiting the program, and the list of folders Python searches for modules.
 
 A few useful names in  sys :
 
@@ -424,12 +354,7 @@ A few useful names in  sys :
                      Python looks for
                      modules to import
 
-sys.path  is a plain Python LIST of
-folder paths (strings). When you write
-import x , Python walks this list top to
-bottom and looks for  x.py  (or an  x/
-package) in each folder. The FIRST match
-wins  --  the rest are ignored.
+sys.path  is a plain Python LIST of folder paths (strings). When you write  import x , Python walks this list top to bottom and looks for  x.py  (or an  x/  package) in each folder. The FIRST match wins  --  the rest are ignored.
 
 A typical  sys.path  looks like:
 
@@ -441,12 +366,7 @@ A typical  sys.path  looks like:
      /usr/lib/python3/dist-packages
 
 
-Because it is a plain list, you CAN
-modify it at runtime with
-sys.path.append("/some/folder") . Avoid
-doing this in normal code  --  keep your
-imports predictable and rely on the
-standard search order.
+Because it is a plain list, you CAN modify it at runtime with  sys.path.append("/some/folder") . Avoid doing this in normal code  --  keep your imports predictable and rely on the standard search order.
 
 Code:
 
@@ -459,20 +379,15 @@ Output:  (list of directories)
 
 9)  __name__ == "__main__"
 
-At the bottom of many Python files you
-will see:
+At the bottom of many Python files you will see:
 
      if __name__ == "__main__":
          <code to run when the file is
           executed directly>
 
-This block runs ONLY when you execute the
-file directly with  python3 file.py . If
-another file  import s it, the block does
-NOT run.
+This block runs ONLY when you execute the file directly with  python3 file.py . If another file  import s it, the block does NOT run.
 
-Useful when a module both EXPORTS
-functions AND can run as a script.
+Useful when a module both EXPORTS functions AND can run as a script.
 
 
 10)  Common errors
@@ -488,35 +403,18 @@ functions AND can run as a script.
         Reasons:
 
         -  You mistyped the module name.
-        -  The file  helpers.py  is not
-           in your CWD.
-        -  You are trying to import a
-           third-party module you have
-           not installed yet
-           ( pip install <name>  first).
+        -  The file  helpers.py  is not in your CWD.
+        -  You are trying to import a third-party module you have not installed yet ( pip install <name>  first).
 
 
   (b)   Circular import
 
-        Two files each import each other.
-        You get partly-loaded modules and
-        confusing  ImportError  s.
-        Restructure so one file does not
-        depend on the other, or move the
-        shared code into a third file.
+        Two files each import each other. You get partly-loaded modules and confusing  ImportError  s. Restructure so one file does not depend on the other, or move the shared code into a third file.
 
 
   (c)   Shadowing a standard-library name
 
-        If you save a file called
-        math.py  in the same folder as
-        your script, then  import math
-        will import YOUR file, not the
-        real  math  library. Avoid
-        standard-library names for your
-        own module files.
+        If you save a file called  math.py  in the same folder as your script, then  import math  will import YOUR file, not the real  math  library. Avoid standard-library names for your own module files.
 
 
-In section 15 we look at ERRORS  --
-try / except / else / finally , and
-raising your own errors.
+In section 15 we look at ERRORS  --  try / except / else / finally , and raising your own errors.

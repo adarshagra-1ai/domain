@@ -1,14 +1,8 @@
-12  --  Functions  (def, arguments, return,
-          default arguments, *args, **kwargs,
-          scope)
+12  --  Functions  (def, arguments, return, default arguments, *args, **kwargs, scope)
 
 1)  What a function is
 
-A FUNCTION is a named block of code you can
-run whenever you want, as many times as you
-want. Instead of copying the same code in
-many places, you write it once and CALL it
-by name.
+A FUNCTION is a named block of code you can run whenever you want, as many times as you want. Instead of copying the same code in many places, you write it once and CALL it by name.
 
 A function can:
 
@@ -28,11 +22,8 @@ Syntax:
 Rules:
 
   -  def  starts the definition.
-  -  <name>  follows the same naming rules
-     as variables (section 3): snake_case,
-     descriptive.
-  -  (<parameters>)  is a comma-separated
-     list, possibly empty.
+  -  <name>  follows the same naming rules as variables (section 3): snake_case, descriptive.
+  -  (<parameters>)  is a comma-separated list, possibly empty.
   -  The header ends with a colon  : .
   -  The block below must be INDENTED.
 
@@ -51,18 +42,13 @@ Output:
      hello
      hello
 
-Defining a function does NOT run its body.
-It just remembers the definition. The body
-runs only when you CALL the function
-( greet() ).
+Defining a function does NOT run its body. It just remembers the definition. The body runs only when you CALL the function ( greet() ).
 
 
 3)  Parameters and arguments
 
-  -  A PARAMETER is a name in the function
-     definition (inside  ( ) ).
-  -  An ARGUMENT is the actual VALUE passed
-     when the function is called.
+  -  A PARAMETER is a name in the function definition (inside  ( ) ).
+  -  An ARGUMENT is the actual VALUE passed when the function is called.
 
 Code:
 
@@ -76,8 +62,7 @@ Output:
      hello, adarsh
      hello, priya
 
-Here  name  is the parameter;  "adarsh"
-and  "priya"  are the arguments.
+Here  name  is the parameter;  "adarsh"  and  "priya"  are the arguments.
 
 
 Multiple parameters, comma-separated:
@@ -97,10 +82,7 @@ Output:
 
 4)  return  --  send a value back
 
-The  return  statement ends the function
-and hands a value back to the caller. The
-caller can save it in a variable, print
-it, or use it in an expression.
+The  return  statement ends the function and hands a value back to the caller. The caller can save it in a variable, print it, or use it in an expression.
 
 Code:
 
@@ -118,10 +100,8 @@ Output:
 
 Notes:
 
-  -  A function without  return  returns
-     None  by default.
-  -  You can  return  early to end the
-     function before the last line.
+  -  A function without  return  returns  None  by default.
+  -  You can  return  early to end the function before the last line.
 
 
 Code:
@@ -151,15 +131,12 @@ Code:
 
 Output:  1 9
 
-A comma-separated  return  packs the
-values into a tuple. Unpacking (see section 8)
-splits them out.
+A comma-separated  return  packs the values into a tuple. Unpacking (see section 8) splits them out.
 
 
 5)  Default arguments
 
-Give a parameter a DEFAULT value with  = .
-The caller can then skip that argument.
+Give a parameter a DEFAULT value with  = . The caller can then skip that argument.
 
 Code:
 
@@ -173,16 +150,14 @@ Output:
      hello, adarsh
      hi, priya
 
-Rule: parameters WITH defaults must come
-AFTER parameters WITHOUT defaults.
+Rule: parameters WITH defaults must come AFTER parameters WITHOUT defaults.
 
      def bad(x=1, y): ...       <-  invalid
 
 
 6)  Positional vs keyword arguments
 
-You can pass arguments by POSITION (the
-usual way) or by KEYWORD ( name=value ).
+You can pass arguments by POSITION (the usual way) or by KEYWORD ( name=value ).
 
 Code:
 
@@ -198,22 +173,16 @@ Output:
      12
      12
 
-Keyword arguments make the intent clear at
-the call site and let you skip earlier
-optional arguments.
+Keyword arguments make the intent clear at the call site and let you skip earlier optional arguments.
 
 
 7)  *args  --  variable number of positional arguments
 
-Sometimes you do not know in advance how
-many positional arguments the caller will
-pass. Use  *args  in the parameter list.
+Sometimes you do not know in advance how many positional arguments the caller will pass. Use  *args  in the parameter list.
 
-The name  args  is just a convention; you
-can pick any name.
+The name  args  is just a convention; you can pick any name.
 
-Inside the function,  args  is a TUPLE of
-the extra positional arguments.
+Inside the function,  args  is a TUPLE of the extra positional arguments.
 
 Code:
 
@@ -235,9 +204,7 @@ Output:
 
 8)  **kwargs  --  variable number of keyword arguments
 
-Same idea, but for KEYWORD arguments.
-Inside the function,  kwargs  is a DICT
-of name -> value.
+Same idea, but for KEYWORD arguments. Inside the function,  kwargs  is a DICT of name -> value.
 
 Code:
 
@@ -265,16 +232,12 @@ Code:
 Output:
      1 2 (3, 4) {'x': 10, 'y': 20}
 
-Order in the parameter list:  regular ,
-*args , then  **kwargs .
+Order in the parameter list:  regular ,  *args , then  **kwargs .
 
 
 9)  Scope  --  where a name is visible
 
-Names created INSIDE a function are LOCAL
-to that function. They exist only while
-the function runs. From outside the
-function, they do not exist.
+Names created INSIDE a function are LOCAL to that function. They exist only while the function runs. From outside the function, they do not exist.
 
 Code:
 
@@ -289,13 +252,10 @@ Run:
      100
      NameError: name 'x' is not defined
 
-x  was born inside  demo  and died when
-demo  finished.
+x  was born inside  demo  and died when  demo  finished.
 
 
-Names created OUTSIDE any function are
-GLOBAL. They are visible everywhere,
-including inside functions (for READING).
+Names created OUTSIDE any function are GLOBAL. They are visible everywhere, including inside functions (for READING).
 
 Code:
 
@@ -309,9 +269,7 @@ Code:
 Output:  100
 
 
-Assigning to a name inside a function
-creates a NEW LOCAL name, even if a
-global with the same name exists:
+Assigning to a name inside a function creates a NEW LOCAL name, even if a global with the same name exists:
 
 Code:
 
@@ -328,12 +286,10 @@ Output:
      200
      100
 
-The global  total  was NOT changed. The
-function created its own local  total .
+The global  total  was NOT changed. The function created its own local  total .
 
 
-To modify a global from inside a function,
-declare it with  global :
+To modify a global from inside a function, declare it with  global :
 
 Code:
 
@@ -348,17 +304,12 @@ Code:
 
 Output:  200
 
-In most cases, avoid  global . Prefer to
-return a new value from the function and
-assign it in the caller.
+In most cases, avoid  global . Prefer to return a new value from the function and assign it in the caller.
 
 
 10)  Docstring  (brief)
 
-The first string inside a function is its
-DOCSTRING  --  a short description of
-what the function does. Tools and editors
-show it as help text.
+The first string inside a function is its DOCSTRING  --  a short description of what the function does. Tools and editors show it as help text.
 
 Code:
 
@@ -370,8 +321,7 @@ Code:
 
 Output:  Return the sum of x and y.
 
-Docstrings are optional. Add them for
-functions that do non-obvious work.
+Docstrings are optional. Add them for functions that do non-obvious work.
 
 
 11)  Common errors
@@ -389,9 +339,7 @@ functions that do non-obvious work.
            TypeError: add() missing 1
            required positional argument: 'y'
 
-        Pass all required arguments, or
-        give them defaults in the
-        definition.
+        Pass all required arguments, or give them defaults in the definition.
 
 
   (b)   Non-default parameter after default
@@ -407,20 +355,10 @@ functions that do non-obvious work.
            default follows parameter with a
            default
 
-        Parameters with defaults must come
-        AFTER those without.
+        Parameters with defaults must come AFTER those without.
 
 
-  (c)   Using a local name outside the
-        function
-
-        Same as the scope example above.
-        Referring to a local variable from
-        outside the function raises a
-        NameError .
-
-
-  (d)   Forgetting to return
+  (c)   Forgetting to return
 
         Code:
 
@@ -432,11 +370,7 @@ functions that do non-obvious work.
 
         Output:  None
 
-        The function COMPUTED  x + y  but
-        never returned it. Without a
-        return , the function gives back
-        None .
+        The function COMPUTED  x + y  but never returned it. Without a  return , the function gives back  None .
 
 
-In section 13 we look at reading and writing
-FILES  --  open , with , read , write .
+In section 13 we look at reading and writing FILES  --  open , with , read , write .

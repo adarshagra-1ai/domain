@@ -1,0 +1,95 @@
+INDEX  --  Bird's-eye view of every topic and its parts.
+
+
+===================================================================
+1_terminal  --  Computer & terminal basics
+===================================================================
+
+Terminal has 3 small parts:
+
+   1   What a file system is (file, folder, path, absolute vs relative)
+   2   What a terminal is and why we use it
+   3   Core commands (one-line meaning of each): pwd, ls, cd, mkdir, touch, cat, rm, mv, cp
+
+
+===================================================================
+2_python  --  Python from zero
+===================================================================
+
+Python has 22 small parts:
+
+   1   What Python is; check install ( python3 --version )
+   2   First program: print("hello") in a .py file and run it
+   3   Variables and naming rules
+   4   Data types: int, float, str, bool
+   5   Strings and common string operations
+   6   Lists: create, add, remove, index, slice
+   7   Dictionaries: create, read, update, delete key-value pairs
+   8   Tuples: immutable ordered collections; when to use them
+   9   Sets: unique unordered collections; when to use them
+   10  Conditions: if / elif / else, truthy / falsy
+   11  Loops: for, while, break, continue, range
+   12  Functions: def, arguments, return, default arguments, *args, **kwargs, scope
+   13  Reading and writing files: open, with, read, write, modes ( r , w , a )
+   14  Modules and import: own module, standard library, third-party module
+   15  Errors: try / except / else / finally, raising errors
+   16  Classes: class, __init__, self, methods, attributes, and a working look at inheritance
+   17  Type hints: variables, function params, return types, Optional, List, Dict
+   18  Virtual environment: what and why, create ( python3 -m venv .venv ), activate, deactivate
+   19  pip and requirements.txt workflow
+   20  Project structure: the  src/  folder convention
+   21  Packages and the program entry point: __init__.py and __main__.py
+   22   __main__.py  walkthrough: docstring, imports, and argparse deep dive
+
+
+===================================================================
+3_http  --  Backend framework basics
+===================================================================
+
+HTTP has 1 small part:
+
+   1   HTTP idea: request, response, method, status
+
+
+===================================================================
+4_fastapi  --  Backend framework basics
+===================================================================
+
+FastAPI has 3 small parts:
+
+   1   FastAPI hello-world route
+   2   Path params, query params, JSON body
+   3   Pydantic model to validate input
+
+
+===================================================================
+5_sqlite  --  Backend framework basics
+===================================================================
+
+SQLite has 2 small parts:
+
+   1   SQLite basics: create table, insert, select, update, delete
+   2   Talking to SQLite from Python ( sqlite3  module)
+
+
+===================================================================
+6_auth  --  Auth and multi-user
+===================================================================
+
+Auth has 4 small parts:
+
+   1   Password hashing: why (bcrypt idea)
+   2   JWT and cookies: how they work together
+   3   Login route and session cookie
+   4   "Active project" concept for multi-tenant apps
+
+
+===================================================================
+7_home_automation  --  the industry and how it solves the smart-device problem
+===================================================================
+
+Home automation has 3 small parts:
+
+   1  The problem: many device "islands", and the pain that causes for end users and installers
+   2  The solution: one central controller with drivers, unified data model, one app, state management, scenes, local-first control and an installer dashboard
+   3  Who builds this in the market: DIY open-source, big-tech consumer, premium commercial integrators, and the professional-integrator segment where Vyom sits

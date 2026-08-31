@@ -1,11 +1,8 @@
-10  --  Conditions  (if / elif / else,
-          truthy / falsy)
+10  --  Conditions  (if / elif / else, truthy / falsy)
 
 1)  What a condition is
 
-A CONDITION is an expression that Python
-evaluates to either  True  or  False .
-Conditions decide which block of code runs.
+A CONDITION is an expression that Python evaluates to either  True  or  False . Conditions decide which block of code runs.
 
 
 2)  Comparison operators
@@ -34,10 +31,8 @@ Output:
 
 Notes:
 
-  -  ==  is comparison. Different from  = ,
-     which is assignment.
-  -  Strings compare CHARACTER BY CHARACTER
-     and are case-sensitive.
+  -  ==  is comparison. Different from  = , which is assignment.
+  -  Strings compare CHARACTER BY CHARACTER and are case-sensitive.
 
 
 3)  Logical operators  (and, or, not)
@@ -69,10 +64,8 @@ Syntax:
          <indented block>
 
   -  The condition ends with a colon  : .
-  -  The block below MUST be indented
-     (4 spaces by convention).
-  -  All lines with the same indentation
-     are part of that block.
+  -  The block below MUST be indented (4 spaces by convention).
+  -  All lines with the same indentation are part of that block.
 
 Code:
 
@@ -86,8 +79,7 @@ Output:
      keep going
 
 
-If the condition is False, the whole block
-is skipped:
+If the condition is False, the whole block is skipped:
 
 Code:
 
@@ -101,8 +93,7 @@ Output:  done
 
 5)  if / else
 
-Adds a fallback block that runs when the
-condition is False.
+Adds a fallback block that runs when the condition is False.
 
 Syntax:
 
@@ -124,10 +115,7 @@ Output:  minor
 
 6)  if / elif / else
 
-Add more branches with  elif  (short for
-"else if"). Python checks conditions in
-order and runs the FIRST one that is True.
-The rest are skipped.
+Add more branches with  elif  (short for "else if"). Python checks conditions in order and runs the FIRST one that is True. The rest are skipped.
 
 Syntax:
 
@@ -140,8 +128,7 @@ Syntax:
      else:
          <block D>
 
-You can have any number of  elif  branches.
-The final  else  is optional.
+You can have any number of  elif  branches. The final  else  is optional.
 
 Code:
 
@@ -158,9 +145,7 @@ Code:
 
 Output:  C
 
-Only ONE branch runs. Once a condition
-matches, Python skips all remaining
-branches.
+Only ONE branch runs. Once a condition matches, Python skips all remaining branches.
 
 
 7)  Nested  if
@@ -181,8 +166,7 @@ Code:
 
 Output:  eligible
 
-Often the same logic reads better with
-and :
+Often the same logic reads better with  and :
 
 Code:
 
@@ -192,10 +176,7 @@ Code:
 
 8)  Truthy and falsy values
 
-Any value used as a condition is converted
-to  True  or  False  by Python. Some values
-count as "false" without a comparison; the
-rest count as "true".
+Any value used as a condition is converted to  True  or  False  by Python. Some values count as "false" without a comparison; the rest count as "true".
 
 
 FALSY values  (evaluate to False):
@@ -213,9 +194,7 @@ FALSY values  (evaluate to False):
 
 TRUTHY values  (evaluate to True):
 
-     Everything else  --  any non-zero
-     number, any non-empty string, any
-     non-empty collection, and so on.
+     Everything else  --  any non-zero number, any non-empty string, any non-empty collection, and so on.
 
 
 Code:
@@ -239,8 +218,7 @@ Output:
      0 is falsy
 
 
-Common shortcut  --  check if a collection
-is non-empty:
+Common shortcut  --  check if a collection is non-empty:
 
      items = [10, 20]
      if items:
@@ -261,12 +239,9 @@ Code:
 
 Output:  adult
 
-Read left to right: "kind is  'adult'  if
-age >= 18 , else it is  'minor' ".
+Read left to right: "kind is  'adult'  if  age >= 18 , else it is  'minor' ".
 
-Use it when the whole thing fits on one
-line and stays readable. Otherwise write a
-normal  if / else .
+Use it when the whole thing fits on one line and stays readable. Otherwise write a normal  if / else .
 
 
 10)  Common errors
@@ -281,9 +256,7 @@ normal  if / else .
 
            SyntaxError: invalid syntax
 
-        =  is assignment.  ==  is
-        comparison. Use  ==  in
-        conditions.
+        =  is assignment.  ==  is comparison. Use  ==  in conditions.
 
 
   (b)   Missing colon
@@ -297,8 +270,7 @@ normal  if / else .
 
            SyntaxError: expected ':'
 
-        Every  if , elif , else  header
-        line ends with a colon.
+        Every  if , elif , else  header line ends with a colon.
 
 
   (c)   Bad indentation
@@ -313,23 +285,17 @@ normal  if / else .
            IndentationError: expected an
            indented block
 
-        The block under  if  must be
-        indented (4 spaces).
+        The block under  if  must be indented (4 spaces).
 
 
   (d)   Mixing tabs and spaces
 
-        Python is strict about indentation.
-        Mixing tabs and spaces in the same
-        block gives:
+        Python is strict about indentation. Mixing tabs and spaces in the same block gives:
 
            TabError: inconsistent use of
            tabs and spaces in indentation
 
-        Pick one (spaces are recommended)
-        and use it throughout.
+        Pick one (spaces are recommended) and use it throughout.
 
 
-In section 11 we look at LOOPS  --  the tools
-for repeating work with  for , while ,
-break , and  continue .
+In section 11 we look at LOOPS  --  the tools for repeating work with  for , while ,  break , and  continue .

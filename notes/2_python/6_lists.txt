@@ -2,23 +2,17 @@
 
 1)  What a list is
 
-A LIST is an ORDERED collection of values.
-The values can be of any type, and the same
-list can hold different types together.
+A LIST is an ORDERED collection of values. The values can be of any type, and the same list can hold different types together.
 
 Two key properties:
 
-  -  ORDERED   --  items keep the order in
-                   which you put them.
-  -  MUTABLE   --  you can add, remove, and
-                   change items after the
-                   list has been created.
+  -  ORDERED   --  items keep the order in which you put them.
+  -  MUTABLE   --  you can add, remove, and change items after the list has been created.
 
 
 2)  Creating a list
 
-Use square brackets  [ ]  , items separated
-by commas.
+Use square brackets  [ ]  , items separated by commas.
 
 Code:
 
@@ -31,10 +25,8 @@ Code:
 Notes:
 
   -  An empty list is  []  (zero items).
-  -  Items can be different types in the
-     same list.
-  -  Lists can contain other lists
-     ("nested" list).
+  -  Items can be different types in the same list.
+  -  Lists can contain other lists ("nested" list).
 
 
 3)  Length  --  len()
@@ -54,8 +46,7 @@ Output:
 
 4)  Indexing
 
-Same rules as strings: indexes start at 0,
-and negative indexes count from the end.
+Same rules as strings: indexes start at 0, and negative indexes count from the end.
 
      nums   =   [10, 20, 30, 40]
      idx       0   1   2   3
@@ -93,13 +84,11 @@ Output:
 
 5)  Slicing
 
-Same syntax as strings:  lst[start:stop]
-and  lst[start:stop:step] .
+Same syntax as strings:  lst[start:stop]  and  lst[start:stop:step] .
 
   -  start   INCLUDED (0-based).
   -  stop    NOT included.
-  -  If omitted, start defaults to 0 and
-     stop defaults to  len(lst) .
+  -  If omitted, start defaults to 0 and stop defaults to  len(lst) .
 
 
 Code:
@@ -120,14 +109,12 @@ Output:
      [10, 30, 50]
      [50, 40, 30, 20, 10]
 
-A slice returns a NEW list. It does not
-change the original.
+A slice returns a NEW list. It does not change the original.
 
 
 6)  Lists are MUTABLE  --  change items in place
 
-Unlike strings, you CAN change items in a
-list.
+Unlike strings, you CAN change items in a list.
 
 Code:
 
@@ -138,8 +125,7 @@ Code:
 Output:  [99, 20, 30]
 
 
-You can also assign to a slice to replace a
-range:
+You can also assign to a slice to replace a range:
 
 Code:
 
@@ -149,15 +135,12 @@ Code:
 
 Output:  [10, 'a', 'b', 50]
 
-Positions  1 , 2 , 3  were replaced by
-"a"  and  "b" . The list SHRANK from 5
-items to 4.
+Positions  1 , 2 , 3  were replaced by  "a"  and  "b" . The list SHRANK from 5 items to 4.
 
 
 7)  Adding items
 
-  (a)   append(item)  --  add one item to
-                          the END.
+  (a)   append(item)  --  add one item to the END.
 
         Code:
 
@@ -169,8 +152,7 @@ items to 4.
         Output:  [10, 20, 30, 40]
 
 
-  (b)   insert(i, item)  --  insert  item
-                             at position  i .
+  (b)   insert(i, item)  --  insert  item  at position  i .
 
         Code:
 
@@ -181,9 +163,7 @@ items to 4.
         Output:  [10, 99, 20, 30]
 
 
-  (c)   extend(other)  --  add all items
-                           from another
-                           list to the END.
+  (c)   extend(other)  --  add all items from another list to the END.
 
         Code:
 
@@ -194,15 +174,10 @@ items to 4.
 
         Output:  [1, 2, 3, 4, 5]
 
-        Different from  a.append(b)  ,
-        which would give
-        [1, 2, [3, 4, 5]]  (a nested list
-        instead of a flat one).
+        Different from  a.append(b)  , which would give  [1, 2, [3, 4, 5]]  (a nested list instead of a flat one).
 
 
-  (d)   +   --  concatenate two lists into
-                a NEW list. The originals
-                are unchanged.
+  (d)   +   --  concatenate two lists into a NEW list. The originals are unchanged.
 
         Code:
 
@@ -221,9 +196,7 @@ items to 4.
 
 8)  Removing items
 
-  (a)   remove(value)  --  remove the FIRST
-                           item equal to
-                           value .
+  (a)   remove(value)  --  remove the FIRST item equal to  value .
 
         Code:
 
@@ -233,15 +206,10 @@ items to 4.
 
         Output:  [10, 30, 20]
 
-        Only the FIRST 20 was removed. If
-        value  is not in the list,
-        remove()  raises a  ValueError .
+        Only the FIRST 20 was removed. If  value  is not in the list,  remove()  raises a  ValueError .
 
 
-  (b)   pop(i)   --  remove the item at
-                     index  i  and RETURN
-                     it. Without an index,
-                     pops the LAST item.
+  (b)   pop(i)   --  remove the item at index  i  and RETURN it. Without an index, pops the LAST item.
 
         Code:
 
@@ -258,9 +226,7 @@ items to 4.
            [20, 30]
 
 
-  (c)   del   --  a statement that deletes
-                  an item by index, or a
-                  slice of items.
+  (c)   del   --  a statement that deletes an item by index, or a slice of items.
 
         Code:
 
@@ -275,8 +241,7 @@ items to 4.
            [20, 50]
 
 
-  (d)   clear()  --  empty the list
-                     completely.
+  (d)   clear()  --  empty the list completely.
 
         Code:
 
@@ -289,8 +254,7 @@ items to 4.
 
 9)  Membership and finding
 
-  (a)   in / not in  --  check if a value
-                         is in the list.
+  (a)   in / not in  --  check if a value is in the list.
 
         Code:
 
@@ -305,11 +269,7 @@ items to 4.
            True
 
 
-  (b)   index(value)  --  return the index
-                         of the FIRST item
-                         equal to  value .
-                         Raises  ValueError
-                         if not present.
+  (b)   index(value)  --  return the index of the FIRST item equal to  value . Raises  ValueError  if not present.
 
         Code:
 
@@ -319,9 +279,7 @@ items to 4.
         Output:  1
 
 
-  (c)   count(value)  --  return how many
-                         times  value
-                         appears.
+  (c)   count(value)  --  return how many times  value  appears.
 
         Code:
 
@@ -333,9 +291,7 @@ items to 4.
 
 10)  Sorting and reversing
 
-  (a)   sort()  --  sort the list IN PLACE
-                    (changes the original).
-                    Returns  None .
+  (a)   sort()  --  sort the list IN PLACE (changes the original). Returns  None .
 
         Code:
 
@@ -350,10 +306,7 @@ items to 4.
            nums.sort(reverse=True)
 
 
-  (b)   sorted(lst)  --  return a NEW
-                         sorted list without
-                         changing the
-                         original.
+  (b)   sorted(lst)  --  return a NEW sorted list without changing the original.
 
         Code:
 
@@ -367,8 +320,7 @@ items to 4.
            [10, 20, 30]
 
 
-  (c)   reverse()  --  reverse the list IN
-                       PLACE.
+  (c)   reverse()  --  reverse the list IN PLACE.
 
         Code:
 
@@ -396,9 +348,7 @@ items to 4.
 
 11)  Iterating over a list  (brief look)
 
-You will often want to do something with
-each item in a list. The tool for that is
-a  for  loop.
+You will often want to do something with each item in a list. The tool for that is a  for  loop.
 
 Code:
 
@@ -411,12 +361,9 @@ Output:
      20
      30
 
-Read  for n in nums:  as "take each item
-from  nums , one at a time, call it  n ,
-and run the indented block for it".
+Read  for n in nums:  as "take each item from  nums , one at a time, call it  n , and run the indented block for it".
 
-Full details on loops ( for , while ,
-range , break , continue ) are in section 11.
+Full details on loops ( for , while ,  range , break , continue ) are in section 11.
 
 
 12)  Common errors
@@ -433,8 +380,7 @@ range , break , continue ) are in section 11.
            IndexError: list index out of range
 
 
-  (b)   Removing a value that is not in
-        the list
+  (b)   Removing a value that is not in the list
 
         Code:
 
@@ -452,42 +398,4 @@ range , break , continue ) are in section 11.
                nums.remove(99)
 
 
-  (c)   append vs extend confusion
-
-        Code:
-
-           a = [1, 2]
-           b = [3, 4]
-           a.append(b)
-           print(a)
-
-        Output:  [1, 2, [3, 4]]
-
-        append  added the whole list as
-        ONE item. For a flat
-        [1, 2, 3, 4]  , use  extend  or
-        +  .
-
-
-  (d)   Forgetting that sort() returns None
-
-        Code:
-
-           nums = [30, 10, 20]
-           result = nums.sort()
-           print(result)
-
-        Output:  None
-
-        sort()  changes the list in place
-        and returns  None . The sorted
-        values are in  nums  itself:
-        print(nums)  gives
-        [10, 20, 30] .
-
-        If you want a NEW sorted list, use
-        sorted(nums)  instead.
-
-
-In section 7 we look at DICTIONARIES  --
-collections of KEY-VALUE pairs.
+In section 7 we look at DICTIONARIES  --  collections of KEY-VALUE pairs.

@@ -1,9 +1,0 @@
-SQLite  --  Backend framework basics
-
-SQLite has 2 small parts:
-
-   1   SQLite basics:  create table, insert,
-       select, update, delete
-
-   2   Talking to SQLite from Python
-       ( sqlite3  module)

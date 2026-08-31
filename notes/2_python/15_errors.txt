@@ -1,15 +1,10 @@
-15  --  Errors  (try / except / else / finally,
-          raising errors)
+15  --  Errors  (try / except / else / finally, raising errors)
 
 1)  What an exception is
 
-An EXCEPTION is Python's way of signaling
-that something went wrong at runtime. When
-an exception happens, the program STOPS at
-that point unless you catch it.
+An EXCEPTION is Python's way of signaling that something went wrong at runtime. When an exception happens, the program STOPS at that point unless you catch it.
 
-You have already seen exceptions in earlier
-sections:
+You have already seen exceptions in earlier sections:
 
      NameError
      TypeError
@@ -24,10 +19,7 @@ Each of these is a kind of exception.
 
 2)  Basic try / except
 
-Wrap the risky code in a  try  block. Put
-the handler in an  except  block. If the
-try  block raises, control jumps to the
-except  block.
+Wrap the risky code in a  try  block. Put the handler in an  except  block. If the  try  block raises, control jumps to the  except  block.
 
 Syntax:
 
@@ -48,24 +40,15 @@ Output:
      could not convert
      done
 
-Without the  try  , the  int("hello")
-line would crash the program with a
-ValueError . With  try/except  , the
-error is caught and the program keeps
-running.
+Without the  try  , the  int("hello")  line would crash the program with a  ValueError . With  try/except  , the error is caught and the program keeps running.
 
 
-BUT: bare  except  (no exception type)
-catches EVERYTHING, including bugs you did
-not expect. Prefer catching a SPECIFIC
-exception (next section).
+BUT: bare  except  (no exception type) catches EVERYTHING, including bugs you did not expect. Prefer catching a SPECIFIC exception (next section).
 
 
 3)  Catching a specific exception
 
-Name the exception type after  except .
-Only that type (and its subclasses) is
-caught.
+Name the exception type after  except . Only that type (and its subclasses) is caught.
 
 Code:
 
@@ -77,8 +60,7 @@ Code:
 Output:  bad number
 
 
-If a different exception happens, this
-handler does NOT catch it:
+If a different exception happens, this handler does NOT catch it:
 
 Code:
 
@@ -93,8 +75,7 @@ Run:
 
 4)  Catching multiple exception types
 
-Put multiple types in a TUPLE, or use
-multiple  except  blocks.
+Put multiple types in a TUPLE, or use multiple  except  blocks.
 
 
 One handler for multiple types:
@@ -120,28 +101,17 @@ Code:
      except ZeroDivisionError:
          print("cannot divide by zero")
 
-Python checks each  except  in order and
-runs the FIRST one that matches.
+Python checks each  except  in order and runs the FIRST one that matches.
 
 
 How this actually runs (important):
 
   -  Code inside  try  runs line by line.
-  -  The MOMENT a line raises an
-     exception, the rest of the  try
-     block is SKIPPED.
-  -  Python then walks the  except
-     clauses TOP TO BOTTOM.
-  -  The FIRST  except  whose type
-     matches runs. All OTHER  except
-     blocks are SKIPPED, even if they
-     would also match.
-  -  After that, execution continues on
-     the line AFTER the whole
-     try / except  (the program does not
-     crash).
-  -  If NO exception was raised, none of
-     the  except  blocks run.
+  -  The MOMENT a line raises an exception, the rest of the  try  block is SKIPPED.
+  -  Python then walks the  except  clauses TOP TO BOTTOM.
+  -  The FIRST  except  whose type matches runs. All OTHER  except  blocks are SKIPPED, even if they would also match.
+  -  After that, execution continues on the line AFTER the whole  try / except  (the program does not crash).
+  -  If NO exception was raised, none of the  except  blocks run.
 
 
 Walk through the example above:
@@ -175,20 +145,14 @@ Order matters  --  a common trap:
      except ValueError:
          print("not a number")
 
-Exception  is the PARENT of
-ValueError , so the first  except
-catches EVERYTHING. The second
-except ValueError  can never run  --
-it becomes DEAD code.
+Exception  is the PARENT of  ValueError , so the first  except  catches EVERYTHING. The second  except ValueError  can never run  --  it becomes DEAD code.
 
-Rule: put SPECIFIC exceptions first,
-GENERAL ones (like  Exception ) last.
+Rule: put SPECIFIC exceptions first, GENERAL ones (like  Exception ) last.
 
 
 5)  Getting the error object  --  except X as e
 
-If you need details about what went wrong,
-capture the exception with  as .
+If you need details about what went wrong, capture the exception with  as .
 
 Code:
 
@@ -201,16 +165,12 @@ Output:
      error: invalid literal for int() with
      base 10: 'hello'
 
-e  is the exception object; printing it
-shows the message. You can also inspect
-its type and attributes.
+e  is the exception object; printing it shows the message. You can also inspect its type and attributes.
 
 
 6)  else  block  --  runs when no exception happened
 
-Attach an  else  after the last  except .
-It runs only if the  try  block finished
-WITHOUT raising.
+Attach an  else  after the last  except . It runs only if the  try  block finished WITHOUT raising.
 
 Syntax:
 
@@ -233,18 +193,12 @@ Code:
 Output:
      success 42
 
-Use  else  for code that should ONLY run
-if the risky call succeeded. It keeps the
-try  block short (only the risky line
-inside).
+Use  else  for code that should ONLY run if the risky call succeeded. It keeps the  try  block short (only the risky line inside).
 
 
 7)  finally  block  --  ALWAYS runs
 
-Attach  finally  after everything else. It
-runs whether or not an exception happened
-in the  try  block, and even if you
-return  or  raise  inside.
+Attach  finally  after everything else. It runs whether or not an exception happened in the  try  block, and even if you  return  or  raise  inside.
 
 Syntax:
 
@@ -272,23 +226,14 @@ Output:
      except
      finally
 
-finally  is the place for CLEANUP:
-closing files, releasing locks,
-disconnecting from a database. It runs no
-matter what.
+finally  is the place for CLEANUP: closing files, releasing locks, disconnecting from a database. It runs no matter what.
 
-Note: for FILE handling, the  with  block
-(section 13) does the same cleanup
-automatically, so you usually do not need
-try/finally  for that.
+Note: for FILE handling, the  with  block (section 13) does the same cleanup automatically, so you usually do not need  try/finally  for that.
 
 
 8)  Raising your own errors  --  raise
 
-Use  raise <ExceptionType>(<message>)  to
-signal an error yourself. This is how you
-say "this input is not acceptable" or
-"this state should never happen".
+Use  raise <ExceptionType>(<message>)  to signal an error yourself. This is how you say "this input is not acceptable" or "this state should never happen".
 
 Code:
 
@@ -324,10 +269,7 @@ Common built-in exceptions to raise:
 
 Re-raising  --  no argument after raise
 
-Inside an  except  block, a plain  raise
-re-throws the current exception. Useful
-when you want to log something first and
-then let the exception bubble up.
+Inside an  except  block, a plain  raise  re-throws the current exception. Useful when you want to log something first and then let the exception bubble up.
 
 Code:
 
@@ -340,10 +282,7 @@ Code:
 
 9)  Custom exception classes  (brief)
 
-You can define your own exception type by
-subclassing  Exception . This is useful
-when you want callers to catch a specific
-kind of error from your code.
+You can define your own exception type by subclassing  Exception . This is useful when you want callers to catch a specific kind of error from your code.
 
 Code:
 
@@ -362,8 +301,7 @@ Code:
 
 Output:  caught: negative age
 
-Full details on defining classes come in
-section 16.
+Full details on defining classes come in section 16.
 
 
 10)  Common errors and anti-patterns
@@ -377,10 +315,7 @@ section 16.
            except:
                pass
 
-        Catches EVERYTHING, including
-        KeyboardInterrupt  and
-        SystemExit . Also hides real bugs.
-        Catch specific types instead.
+        Catches EVERYTHING, including  KeyboardInterrupt  and  SystemExit . Also hides real bugs. Catch specific types instead.
 
 
   (b)   Swallowing errors silently
@@ -392,9 +327,7 @@ section 16.
            except Exception:
                pass
 
-        The  except  runs but does
-        nothing. The error is lost. If you
-        must continue, at least log it:
+        The  except  runs but does nothing. The error is lost. If you must continue, at least log it:
 
            except Exception as e:
                print("error:", e)
@@ -409,8 +342,7 @@ section 16.
            except Exception:
                config = {}
 
-        Better to name the exact expected
-        types:
+        Better to name the exact expected types:
 
            except (ValueError, TypeError):
                config = {}
@@ -418,13 +350,7 @@ section 16.
 
   (d)   Try block too large
 
-        A  try  block should wrap the
-        SMALLEST piece of code that might
-        raise. Wrapping a whole function
-        makes it hard to know which line
-        raised.
+        A  try  block should wrap the SMALLEST piece of code that might raise. Wrapping a whole function makes it hard to know which line raised.
 
 
-In section 16 we look at CLASSES  --  how to
-define your own types with attributes
-and methods.
+In section 16 we look at CLASSES  --  how to define your own types with attributes and methods.

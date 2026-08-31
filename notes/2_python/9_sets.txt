@@ -6,26 +6,15 @@ A SET is a collection of UNIQUE values.
 
 Two key properties:
 
-  -  UNIQUE     --  duplicates are not
-                    allowed. Adding the same
-                    value twice stores it
-                    only once.
-  -  UNORDERED  --  items have NO fixed
-                    position. There is no
-                    s[0]  or  s[-1] .
-                    Indexing and slicing
-                    do not work.
+  -  UNIQUE     --  duplicates are not allowed. Adding the same value twice stores it only once.
+  -  UNORDERED  --  items have NO fixed position. There is no  s[0]  or  s[-1] . Indexing and slicing do not work.
 
-Sets are MUTABLE (you can add and remove
-items), but their items must be IMMUTABLE
-(numbers, strings, tuples). You cannot put
-a list inside a set.
+Sets are MUTABLE (you can add and remove items), but their items must be IMMUTABLE (numbers, strings, tuples). You cannot put a list inside a set.
 
 
 2)  Creating a set
 
-Use curly braces  { }  with items separated
-by commas.
+Use curly braces  { }  with items separated by commas.
 
 Code:
 
@@ -38,9 +27,7 @@ Empty set  --  a trap:
      bad  = {}          <- this is a DICT
      good = set()
 
-An empty  { }  is a DICTIONARY, not a set.
-For an empty set, use the  set()
-constructor.
+An empty  { }  is a DICTIONARY, not a set. For an empty set, use the  set()  constructor.
 
 Code:
 
@@ -63,8 +50,7 @@ Code:
 Output:  {1, 2, 3}
 
 
-The ORDER in which set items are printed
-is NOT guaranteed. Never depend on it.
+The ORDER in which set items are printed is NOT guaranteed. Never depend on it.
 
 
 3)  Adding items
@@ -80,13 +66,10 @@ is NOT guaranteed. Never depend on it.
 
         Output:  {1, 2, 3}
 
-        Adding  2  again did nothing  --
-        the value was already there.
+        Adding  2  again did nothing  --  the value was already there.
 
 
-  (b)   update(other)  --  add all items
-                          from another
-                          collection.
+  (b)   update(other)  --  add all items from another collection.
 
         Code:
 
@@ -99,10 +82,7 @@ is NOT guaranteed. Never depend on it.
 
 4)  Removing items
 
-  (a)   remove(item)  --  remove  item .
-                          Raises  KeyError
-                          if the item is
-                          not present.
+  (a)   remove(item)  --  remove  item . Raises  KeyError  if the item is not present.
 
         Code:
 
@@ -113,11 +93,7 @@ is NOT guaranteed. Never depend on it.
         Output:  {1, 3}
 
 
-  (b)   discard(item)  --  same as remove,
-                           but does NOTHING
-                           if the item is
-                           missing (no
-                           error).
+  (b)   discard(item)  --  same as remove, but does NOTHING if the item is missing (no error).
 
         Code:
 
@@ -129,11 +105,7 @@ is NOT guaranteed. Never depend on it.
         Output:  {1, 3}
 
 
-  (c)   pop()  --  remove and RETURN one
-                   arbitrary item. Since
-                   sets have no order, you
-                   cannot control which
-                   item is popped.
+  (c)   pop()  --  remove and RETURN one arbitrary item. Since sets have no order, you cannot control which item is popped.
 
         Code:
 
@@ -155,18 +127,12 @@ is NOT guaranteed. Never depend on it.
 
         Output:  set()
 
-        An empty set is printed as
-        set()  , not  {}  , because  {}
-        means an empty dict.
+        An empty set is printed as  set()  , not  {}  , because  {}  means an empty dict.
 
 
 5)  Membership  --  very fast
 
-The  in  check on a set is much faster
-than on a list (because sets use a hash
-lookup). For "does this value appear in a
-large collection?", a set is the right
-choice.
+The  in  check on a set is much faster than on a list (because sets use a hash lookup). For "does this value appear in a large collection?", a set is the right choice.
 
 Code:
 
@@ -181,15 +147,13 @@ Output:
 
 6)  Set operations  (union, intersection, etc.)
 
-Sets support classic math operations.
-Assume:
+Sets support classic math operations. Assume:
 
      a = {1, 2, 3, 4}
      b = {3, 4, 5, 6}
 
 
-  (a)   Union   --   a | b   OR
-                    a.union(b)
+  (a)   Union   --   a | b   OR  a.union(b)
 
         Every item that is in EITHER set.
 
@@ -200,8 +164,7 @@ Assume:
         Output:  {1, 2, 3, 4, 5, 6}
 
 
-  (b)   Intersection  --   a & b   OR
-                          a.intersection(b)
+  (b)   Intersection  --   a & b   OR  a.intersection(b)
 
         Every item that is in BOTH sets.
 
@@ -212,8 +175,7 @@ Assume:
         Output:  {3, 4}
 
 
-  (c)   Difference  --   a - b   OR
-                        a.difference(b)
+  (c)   Difference  --   a - b   OR  a.difference(b)
 
         Items in  a  that are NOT in  b .
 
@@ -224,9 +186,7 @@ Assume:
         Output:  {1, 2}
 
 
-  (d)   Symmetric difference  --   a ^ b
-                                  OR
-                a.symmetric_difference(b)
+  (d)   Symmetric difference  --   a ^ b   OR  a.symmetric_difference(b)
 
         Items in EITHER set but NOT both.
 
@@ -241,20 +201,14 @@ Assume:
 
 Use a SET when:
 
-  -  You need to DEDUPLICATE a collection
-     (  set(my_list)  removes duplicates).
-  -  You do many "is X in this collection?"
-     checks on a large collection (much
-     faster than a list).
-  -  You need math-style operations (union,
-     intersection, difference, symmetric
-     difference).
+  -  You need to DEDUPLICATE a collection ( set(my_list)  removes duplicates).
+  -  You do many "is X in this collection?" checks on a large collection (much faster than a list).
+  -  You need math-style operations (union, intersection, difference, symmetric difference).
 
 Do NOT use a set when:
 
   -  Order matters. Use a list.
-  -  You need indexing or slicing. Use a
-     list.
+  -  You need indexing or slicing. Use a list.
   -  Values must repeat. Use a list.
 
 
@@ -287,9 +241,7 @@ Do NOT use a set when:
            TypeError: 'set' object is not
            subscriptable
 
-        Sets are UNORDERED. If you need
-        position access, convert to a list
-        first:  list(s)[0] .
+        Sets are UNORDERED. If you need position access, convert to a list first:  list(s)[0] .
 
 
   (c)   remove() on a missing item
@@ -303,8 +255,7 @@ Do NOT use a set when:
 
            KeyError: 99
 
-        Use  discard()  if the item might
-        be missing.
+        Use  discard()  if the item might be missing.
 
 
   (d)   Unhashable item in a set
@@ -317,12 +268,7 @@ Do NOT use a set when:
 
            TypeError: unhashable type: 'list'
 
-        Lists are mutable and cannot be
-        set items. Use tuples:
-        s = {(1, 2), (3, 4)}  works.
+        Lists are mutable and cannot be set items. Use tuples:  s = {(1, 2), (3, 4)}  works.
 
 
-In section 10 we look at CONDITIONS  --  the
-if / elif / else  statement, and how
-Python decides what is  "truthy"  or
-"falsy" .
+In section 10 we look at CONDITIONS  --  the  if / elif / else  statement, and how Python decides what is  "truthy"  or  "falsy" .

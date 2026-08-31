@@ -1,0 +1,106 @@
+2  --  The solution: one central controller
+
+Home-automation companies install one central controller in the client's home  --  one hardware box plus its software. That box does all jobs.
+
+
+1)  Protocol translation (drivers)
+
+Inside the box, every supported brand has a small program called a DRIVER (some companies call it an "integration"). Each driver speaks that one brand's protocol:
+
+  -  The KNX driver talks to the KNX bus.
+
+  -  The Hue driver sends HTTP (HyperText Transfer Protocol) requests to the Hue Bridge.
+
+  -  The TV driver sends network commands to the TV's IP (Internet Protocol) address.
+
+The CORE ENGINE is the main program inside the box  --  the central brain that takes requests from the app, decides what needs to happen, and hands the work to the right driver. It does not know any brand's own language. It sends a generic instruction ("light X on") to the right driver, and the driver translates that into the exact format the target device expects.
+
+
+2)  Unified data model
+
+A DATA MODEL is the fixed shape (fields and their types) in which a system stores information about a thing.
+
+"Unified" does NOT mean every device has the exact same fields. A light has brightness, a TV has volume  --  those cannot be identical. Unified means every device shares the SAME base wrapper (common fields like  id ,  name ,  room ,  type ,  state ), and then extra fields are added based on  type . The outer shape is one; the inner details vary by device type.
+
+     Kitchen ceiling light
+       id          : 1001
+       name        : Kitchen ceiling
+       room        : Kitchen
+       type        : dimmable_light
+       state       : ON
+       brightness  : 80
+
+     Living room TV
+       id          : 1002
+       name        : Living TV
+       room        : Living room
+       type        : tv
+       state       : ON
+       volume      : 15
+       input       : HDMI1
+
+Notice the top five fields are identical in shape. Only the type-specific fields ( brightness  vs  volume ,  input ) differ.
+
+The user does not see the brand or the protocol  --  every device looks the same in the app's list, and the app knows how to render each  type .
+
+
+3)  One app, one UI (User Interface)
+
+The user opens a single app on the phone. All floors, rooms, and devices appear in one place, behind one login.
+
+
+4)  State management
+
+The box tracks the current state of every device. When someone flips a switch by hand, the device tells the box, and the box immediately updates the app. The state shown in the app is never stale (STALE means old / out-of-date  --  for example, the app still showing "light OFF" when the light is actually ON because someone switched it by hand).
+
+This is the core value of a home-automation company  --  reliable control plus reliable state, at all times.
+
+
+5)  Scenes, macros, automations
+
+  -  SCENE  --  a saved STATE (snapshot) of many devices at once. One tap sets all of them to those exact values, with no order and no delay between them. Example: "Movie Mode"  --  TV on, lights dim to 20%, AC set to 24, curtains close.
+
+  -  MACRO  --  a SEQUENCE of steps that run in order, one after another. Can include delays between steps and mix different device actions. Example: "Good Morning" macro  --  open the curtains, then wait 5 seconds, then bedroom lights to 40%, then geyser on, then coffee machine on.
+
+  So scene and macro are NOT the same. A scene is a "state to set"; a macro is a "list of steps to run". Some consumer apps (Alexa, Google Home, Apple Home) use the word "scene" loosely and allow delays inside it  --  that behaviour is really a macro. Pro systems (KNX, Lutron, Control4) keep the two clearly separate.
+
+  -  AUTOMATION  --  an event-based rule. A trigger (time, sensor, door open, button press) fires it. Example: "after 8 pm, if the main door opens, turn the hallway lights on". An automation can call a scene or a macro as its action.
+
+6)  Local-first control
+
+The box lives on the local network in the home. It is an EDGE device.
+
+EDGE, in networking, means the outer part of a network  --  the point where the physical world meets the digital network, close to where the data is made and where the user actually sits. An edge device does its work locally, right on that spot, instead of sending every task to a far-away server.
+
+The opposite of an edge device is a CLOUD device: a big server sitting in a remote DATA CENTRE (a large building full of servers, run by a company like Amazon, Google, or Microsoft).
+
+Everyday examples of edge devices:
+
+  -  the Wi-Fi router in the home,
+  -  a CCTV camera that runs face detection inside itself,
+  -  a phone editing a photo with no internet.
+
+Why edge is useful:
+
+  -  works even when the internet is down,
+  -  fast response, because there is no round trip to a far-away server,
+  -  data stays inside the home, which is better for privacy,
+  -  uses less internet bandwidth.
+
+Trade-offs:
+
+  -  smaller hardware than a cloud server, so less raw compute power,
+
+The box's control logic therefore runs at the edge, not in a remote data centre. Even if the internet is down, basic day-to-day control keeps working. The cloud is used only for initial configuration push and for remote access, not for daily use.
+
+
+7)  Installer dashboard
+
+The technician uses a web tool to commission the home:
+
+  -  draw the floor plan,
+  -  assign devices to rooms,
+  -  define scenes and automations,
+  -  set safety rules.
+
+The dashboard produces a CONFIGURATION FILE (usually signed JSON  --  JavaScript Object Notation). That file is delivered to the box; the box loads it, spawns the drivers (SPAWNS, in computing, means to start up / launch a program as a running process  --  the core engine creates a running copy of each driver it needs, so a KNX driver, a Hue driver, a TV driver, and so on all come alive inside the box), and starts controlling the home.

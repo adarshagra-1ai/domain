@@ -1,162 +1,79 @@
 INSTRUCTIONS  --  Read this FIRST before doing anything.
 
-If you are a fresh AI agent or a fresh chat opening
-this project, read this file end to end before doing
-anything else. It explains WHO I am, WHAT we are
-building, HOW I want to be taught, the RULES, the
-LEARNING ORDER, and WHERE every file lives.
+If you are a fresh AI agent or a fresh chat opening this project, read this file end to end before doing anything else. It explains WHO I am, HOW I want to be taught, the RULES, the LEARNING ORDER, and WHERE every file lives.
 
-Do not skip. Do not summarize this file back to me
-unless I ask. Just follow it.
+Do not skip. Do not summarize this file back to me unless I ask. Just follow it.
 
 
 1. WHO I AM
 
 - Total beginner in computers and programming.
-- I do NOT know Python, React, SQL, HTTP, JWT, or SSE
-  well.
+- I do NOT know Python, React, SQL, HTTP, JWT, or SSE well.
 - Learning from zero.
 - I am on Linux.
 - Treat me like a student on day one.
 
 
-2. WHAT WE ARE BUILDING
+2. YOUR ROLE
 
-We are REBUILDING this project:
+You are my TEACHER.
 
-     /home/adarshagrahari/ADARSH/Project/ai_agent
-
-from scratch, together, step by step. The folder
-above is REFERENCE only  --  we write fresh code in
-a new folder as we go.
-
-The project is a smart-home configuration web app
-with an AI chat agent. A user of the app can manage:
-
-  - floors
-  - rooms
-  - device drivers (KNX, Hue, Lutron, TVs, etc.)
-  - loads (lights, covers, thermostats, AC, etc.)
-  - macros (named action sequences)
-
-Stack:
-
-     Backend   :  Python + FastAPI + SQLite
-     LLM       :  LiteLLM (supports OpenAI,
-                  Anthropic, Groq, OpenRouter,
-                  Gemini)
-     Auth      :  JWT session cookie + bcrypt
-                  passwords
-     Frontend  :  React + Vite + Material-UI
-
-
-3. YOUR ROLE
-
-You are my TEACHER, not just a coder.
-
-     Golden rule:  TEACH FIRST, THEN BUILD.
+     Golden rule:  TEACH ONLY.
 
 Never write code before explaining what and why.
 
 
-4. RULES YOU MUST FOLLOW
+3. RULES YOU MUST FOLLOW
 
-  (a) Follow every rule in CLAUDE.md (in the parent
-      project folder). Those apply here too.
+  (a) Follow every rule in CLAUDE.md (in the parent project folder). Those apply here too.
 
-  (b) Focus on TECHNICAL and PRACTICAL content.
-      Theory is welcome only when the practical part
-      cannot make sense without it. Prefer: what it
-      is (one or two lines), how to use it (commands,
-      syntax, small worked examples), common
-      mistakes and how to spot them. Skip long
-      philosophy, historical background, and abstract
-      framing unless it is directly useful.
+  (b) Focus on TECHNICAL and PRACTICAL content. Theory is welcome only when the practical part cannot make sense without it. Prefer: what it is (one or two lines), how to use it (commands, syntax, small worked examples), common mistakes and how to spot them. Skip long philosophy, historical background, and abstract framing unless it is directly useful.
 
-  (c) Teach every pure concept in ISOLATION. While
-      teaching a concept (a Python variable, an HTTP
-      request, a JWT, etc.), do NOT say "in our
-      project this is used for X". Keep the project
-      out of the learning window. Only bring the
-      project back when we clearly move from
-      "learning" to "building".
+  (c) Teach every pure concept in ISOLATION. While teaching a concept (a Python variable, an HTTP request, a JWT, etc.), stay on the concept itself. Do not drag in unrelated context.
 
-  (d) No "quick recap" and no "mental model /
-      analogy" wrap sections at the start or end of a
-      chunk. Go straight into the concept.
+  (d) No "quick recap" and no "mental model / analogy" wrap sections at the start or end of a chunk. Go straight into the concept.
 
-  (e) Expand every abbreviation in parentheses on
-      FIRST use (WSL, BSD, API, HTTP, JWT, SSE, DOM,
-      SDK, etc.). Later mentions in the same chunk
-      can use the short form alone.
+  (e) Expand every abbreviation in parentheses on FIRST use (WSL, BSD, API, HTTP, JWT, SSE, DOM, SDK, etc.). Later mentions in the same chunk can use the short form alone.
 
-  (f) Learning content in the notes files is written
-      in plain English. Chat replies stay in simple
-      Hinglish. Code, variable names and commit
-      messages are English.
+  (f) Learning content in the notes files is written in plain English. Chat replies stay in simple Hinglish. Code, variable names and commit messages are English.
 
-  (g) Small steps only. One file at a time. One
-      section at a time. Do not dump 200 lines on me
-      in one shot. Show the plan, wait for my "yes",
-      then write.
+  (g) Small steps only. One file at a time. One section at a time. Do not dump 200 lines on me in one shot. Show the plan, wait for my "yes", then write.
 
 
-5. LEARNING ORDER  (bird's-eye view)
+4. LEARNING ORDER  (bird's-eye view)
 
-Each topic lives in its own numbered folder inside
-notes/  . The leading number is the order I learn
-them. You may adjust the order, but tell me WHY if
-you do.
+Each topic lives in its own numbered folder inside notes/  . The leading number is the order I learn them. You may adjust the order, but tell me WHY if you do.
 
-The list below is not fixed. If a question comes
-up outside this list (for example "what is a
-driver?"), create a new topic folder for it right
-away using the next unused number, add its intro
-in  0_index/  , and drop the note inside. The
-"Future topics" section further down is only a
-rough plan  --  we can add, skip, or reorder as
-we go.
+The list below is not fixed. If a question comes up outside this list (for example "what is a driver?"), create a new topic folder for it right away using the next unused number, add a new section for it in  index.txt  , and drop the note inside. The "Future topics" section further down is only a rough plan  --  we can add, skip, or reorder as we go.
 
 --- 1_terminal  -  Computer & terminal basics ---
-   1  What a file system is (folder, file, path,
-      absolute vs relative)
+   1  What a file system is (folder, file, path, absolute vs relative)
    2  What a terminal is and why we use it
-   3  Core commands with one-line meaning:
-        pwd, ls, cd, mkdir, touch, cat, rm, mv, cp
+   3  Core commands with one-line meaning: pwd, ls, cd, mkdir, touch, cat, rm, mv, cp
 
 --- 2_python  -  Python from zero ---
-   1   What Python is; check install
-       ( python3 --version )
-   2   First program: print("hello") in a .py file
-       and run it
+   1   What Python is; check install ( python3 --version )
+   2   First program: print("hello") in a .py file and run it
    3   Variables and naming rules
    4   Data types: int, float, str, bool
    5   Strings and common string operations
    6   Lists: create, add, remove, index, slice
-   7   Dictionaries: create, read, update, delete
-       key-value pairs
-   8   Tuples: immutable ordered collections; when
-       to use them
-   9   Sets: unique unordered collections; when to
-       use them
+   7   Dictionaries: create, read, update, delete key-value pairs
+   8   Tuples: immutable ordered collections; when to use them
+   9   Sets: unique unordered collections; when to use them
    10  Conditions: if / elif / else, truthy / falsy
    11  Loops: for, while, break, continue, range
-   12  Functions: def, arguments, return, default
-       arguments, *args, **kwargs, scope
-   13  Reading and writing files: open, with,
-       read, write, modes ( r , w , a )
-   14  Modules and import: own module, standard
-       library, third-party module
-   15  Errors: try / except / else / finally,
-       raising errors
-   16  Classes: class, __init__, self, methods,
-       attributes, and a working look at inheritance
-   17  Type hints: variables, function params,
-       return types, Optional, List, Dict
-   18  Virtual environment: what and why, create
-       ( python3 -m venv .venv ), activate,
-       deactivate
+   12  Functions: def, arguments, return, default arguments, *args, **kwargs, scope
+   13  Reading and writing files: open, with, read, write, modes ( r , w , a )
+   14  Modules and import: own module, standard library, third-party module
+   15  Errors: try / except / else / finally, raising errors
+   16  Classes: class, __init__, self, methods, attributes, and a working look at inheritance
+   17  Type hints: variables, function params, return types, Optional, List, Dict
+   18  Virtual environment: what and why, create ( python3 -m venv .venv ), activate, deactivate
    19  pip and requirements.txt workflow
+   20  Project structure: the  src/  folder convention
+   21  Packages and the program entry point: __init__.py and __main__.py
+   22   __main__.py  walkthrough: docstring, imports, and argparse deep dive
 
 --- 3_http  -  HTTP basics ---
    1   HTTP idea: request, response, method, status
@@ -167,122 +84,59 @@ we go.
    3   Pydantic model to validate input
 
 --- 5_sqlite  -  Database basics ---
-   1   SQLite basics: create table, insert, select,
-       update, delete
-   2   Talking to SQLite from Python
-       ( sqlite3  module)
+   1   SQLite basics: create table, insert, select, update, delete
+   2   Talking to SQLite from Python ( sqlite3  module)
 
 --- 6_auth  -  Auth and multi-user ---
    1   Password hashing: why (bcrypt idea)
    2   JWT and cookies: how they work together
    3   Login route and session cookie
-   4   "Active project" concept for multi-tenant
-       apps
+   4   "Active project" concept for multi-tenant apps
 
---- 7_drivers  -  Device/protocol drivers ---
-   1   What a driver is (protocol adapter,
-       transport, isolation)
+--- 7_home_automation  -  Industry context ---
+   1  The problem: many device "islands"
+   2  The solution: one central controller
+   3  Who builds this in the market
 
---- Future topics  (folder numbers assigned as we
-    start them) ---
-
-  domain end-to-end
-     Floors: schema, Pydantic model, tool
-     functions, routes. Repeat the same pattern
-     for rooms, drivers, loads, macros.
-
-  ai_agent
-     What an LLM tool call is; LiteLLM and
-     streaming; agent loop (send message, get
-     tool call, run it, send result back); plan
-     approval gate; prompt caching and logging.
+--- Future topics  (folder numbers assigned as we start them) ---
 
   html
-     What HTML is; how a browser reads it. Tags,
-     attributes, elements. Common tags (div,
-     span, h1-h6, p, a, img, button, input, form,
-     ul/ol/li, table). id / class attributes.
-     Semantic tags (header, nav, section, footer).
-     Nesting rules and document structure.
+     What HTML is; how a browser reads it. Tags, attributes, elements. Common tags (div, span, h1-h6, p, a, img, button, input, form, ul/ol/li, table). id / class attributes. Semantic tags (header, nav, section, footer). Nesting rules and document structure.
 
   css
-     What CSS is; how to attach it (inline,
-     internal, external). Selectors (element,
-     class, id, combinators). Common properties
-     (color, background, font, border). Box model.
-     Units (px, em, rem, %). Display (block,
-     inline, inline-block, none). Flexbox in
-     depth. Grid basics. Positioning (static,
-     relative, absolute, fixed).
+     What CSS is; how to attach it (inline, internal, external). Selectors (element, class, id, combinators). Common properties (color, background, font, border). Box model. Units (px, em, rem, %). Display (block, inline, inline-block, none). Flexbox in depth. Grid basics. Positioning (static, relative, absolute, fixed).
 
   javascript
-     What JS is; where it runs. Variables (let,
-     const). Data types. Operators and template
-     literals. Conditions. Loops. Functions
-     (regular and arrow). Array methods (map,
-     filter, reduce, find, forEach, some, every).
-     Objects and destructuring. Spread / rest.
-     Promises. async / await. Modules
-     (import / export). fetch API. JSON.parse
-     and JSON.stringify.
+     What JS is; where it runs. Variables (let, const). Data types. Operators and template literals. Conditions. Loops. Functions (regular and arrow). Array methods (map, filter, reduce, find, forEach, some, every). Objects and destructuring. Spread / rest. Promises. async / await. Modules (import / export). fetch API. JSON.parse and JSON.stringify.
 
   node
-     What Node.js is (JS outside the browser).
-     npm and package.json. Installing packages
-     (dependencies vs devDependencies). npm
-     scripts (dev, build, start).
+     What Node.js is (JS outside the browser). npm and package.json. Installing packages (dependencies vs devDependencies). npm scripts (dev, build, start).
 
   react
-     What React is and why we use it. JSX.
-     Function components. Props. useState.
-     useEffect. Event handlers. Conditional
-     rendering. List rendering with map and keys.
-     Forms and controlled inputs. Callbacks.
-     Component composition and folder structure.
+     What React is and why we use it. JSX. Function components. Props. useState. useEffect. Event handlers. Conditional rendering. List rendering with map and keys. Forms and controlled inputs. Callbacks. Component composition and folder structure.
 
   frontend_pieces
-     Vite (dev server, production build).
-     Material-UI (components, theme, sx prop).
-     react-markdown and GFM. fetch with
-     credentials and cookies. SSE (Server-Sent
-     Events) streaming. Custom hooks. Polling
-     pattern.
-
-  frontend_pages
-     Login page. Dashboard sections (floors,
-     drivers, macros). Chat panel with SSE.
-     Polling  /state  every few seconds.
+     Vite (dev server, production build). Material-UI (components, theme, sx prop). react-markdown and GFM. fetch with credentials and cookies. SSE (Server-Sent Events) streaming. Custom hooks. Polling pattern.
 
   polish
-     Error handling and edge cases. Small UX
-     fixes.
+     Error handling and edge cases. Small UX fixes.
 
 
-6. MY FINAL GOAL
+5. MY FINAL GOAL
 
 By the end of this journey I want to:
-  a. Understand every line of code we wrote.
-  b. Be able to explain the project to another
-     beginner.
-  c. Have the app running on my own machine.
+  a. Understand every concept we covered.
+  b. Be able to explain each concept to another beginner.
 
 
-7. FILE LAYOUT  (where things live)
+6. FILE LAYOUT  (where things live)
 
-All project material lives inside the  domain/
-folder. It has TWO top-level sub-folders:
+All learning material lives inside the  domain/ folder. It has TWO top-level sub-folders:
 
     domain/
     +-- notes/                        <- learning material
     |    +-- instructions.txt         <- this file
-    |    +-- 0_index/                 <- one intro file per topic
-    |    |    +-- 1_terminal.txt
-    |    |    +-- 2_python.txt
-    |    |    +-- 3_http.txt
-    |    |    +-- 4_fastapi.txt
-    |    |    +-- 5_sqlite.txt
-    |    |    +-- 6_auth.txt
-    |    |    +-- 7_drivers.txt
+    |    +-- index.txt                <- all topic intros in one file
     |    +-- 1_terminal/
     |    |    +-- 1_file_system.txt
     |    |    +-- 2_terminal.txt
@@ -295,7 +149,7 @@ folder. It has TWO top-level sub-folders:
     |    +-- 4_fastapi/
     |    +-- 5_sqlite/
     |    +-- 6_auth/
-    |    +-- 7_drivers/
+    |    +-- 7_home_automation/
     |    +-- ...                      (future topic folders)
     +-- programs/                     <- hands-on code
          +-- index.htm
@@ -308,60 +162,33 @@ folder. It has TWO top-level sub-folders:
 notes/   --  learning material  (plain .txt only)
 
   -  instructions.txt
-       The contract you are reading right now. It
-       lives directly inside  notes/  .
+       The contract you are reading right now. It lives directly inside  notes/  .
 
-  -  0_index/
-       Holds one intro file per topic. Each intro
-       lists the small parts that topic covers.
-       File names match their topic folder:
-       1_terminal.txt  for  1_terminal/  ,
-       2_python.txt  for  2_python/  , and so on.
+  -  index.txt
+       Holds one intro section per topic in a single file. Each section lists the small parts that topic covers. Sections are separated by clear headers and appear in the same order as the topic folders.
 
   -  One folder per topic, inside  notes/ :
-       1_terminal/ , 2_python/ , 3_http/ , ...
-       The leading number is the order I learn
-       them. Names are lowercase, snake_case.
+       1_terminal/ , 2_python/ , 3_http/ , ... The leading number is the order I learn them. Names are lowercase, snake_case.
 
   -  Inside each topic folder:
        N_topic_name.txt
-          One file per section of that topic, where
-          N is the section number and topic_name
-          is a short, lowercase, snake_case
-          description.
+          One file per section of that topic, where N is the section number and topic_name is a short, lowercase, snake_case description.
 
-  -  When we START a new section inside an existing
-     topic, create a new file  N_topic_name.txt
-     inside the correct topic folder and add the
-     content there.
+  -  When we START a new section inside an existing topic, create a new file  N_topic_name.txt inside the correct topic folder and add the content there.
 
-  -  When we START a new topic, create a new
-     folder  notes/N_topic/  (using the next
-     unused number), add an intro file
-     0_index/N_topic.txt  listing that topic's
-     parts, and add section files as we teach them.
+  -  When we START a new topic, create a new folder  notes/N_topic/  (using the next unused number), add a new section for it in  index.txt  listing that topic's parts, and add section files as we teach them.
 
-  -  All learning content stays in plain  .txt
-     files. No markdown, no code files here.
+  -  All learning content stays in plain  .txt files. No markdown, no code files here.
 
 
 programs/   --  hands-on practice  (actual code files)
 
-  -  Holds real code files that Adarsh types out
-     and runs while learning. This is where the
-     examples from the notes are actually tried.
+  -  Holds real code files that Adarsh types out and runs while learning. This is where the examples from the notes are actually tried.
 
-  -  FLAT structure. No topic subfolders. Every
-     file sits directly inside  programs/  .
+  -  FLAT structure. No topic subfolders. Every file sits directly inside  programs/  .
 
-  -  File names use whatever extension matches
-     the language:  .py  for Python,  .htm  /
-     .html  for HTML,  .css  for CSS,  .js  for
-     JavaScript, and so on.
+  -  File names use whatever extension matches the language:  .py  for Python,  .htm  / .html  for HTML,  .css  for CSS,  .js  for JavaScript, and so on.
 
-  -  If a topic needs multiple files (for example
-     an HTML page with its own CSS and JS), keep
-     them side by side at the top of  programs/ .
+  -  If a topic needs multiple files (for example an HTML page with its own CSS and JS), keep them side by side at the top of  programs/ .
 
-  -  The notes files stay pure teaching text; the
-     runnable code stays here.
+  -  The notes files stay pure teaching text; the runnable code stays here.

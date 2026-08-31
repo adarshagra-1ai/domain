@@ -1,10 +1,8 @@
-11  --  Loops  (for, while, break, continue,
-          range)
+11  --  Loops  (for, while, break, continue, range)
 
 1)  What a loop is
 
-A LOOP repeats a block of code many times.
-Python has two loop kinds:
+A LOOP repeats a block of code many times. Python has two loop kinds:
 
      for       repeats over the items of a
                sequence (list, tuple, string,
@@ -20,9 +18,7 @@ Syntax:
      for <name> in <sequence>:
          <indented block>
 
-Each round, the loop takes the NEXT item
-from  <sequence> , puts it into the variable
-<name> , and runs the block once.
+Each round, the loop takes the NEXT item from  <sequence> , puts it into the variable  <name> , and runs the block once.
 
 Code:
 
@@ -35,8 +31,7 @@ Output:
      30
 
 
-for  works on any iterable  --  list, tuple,
-string, dict, set, range.
+for  works on any iterable  --  list, tuple, string, dict, set, range.
 
 Code:
 
@@ -117,8 +112,7 @@ Output:
 
 4)  Loop with an index using enumerate()
 
-Sometimes you want BOTH the index and the
-item. Use  enumerate() .
+Sometimes you want BOTH the index and the item. Use  enumerate() .
 
 Code:
 
@@ -139,10 +133,7 @@ Syntax:
      while <condition>:
          <indented block>
 
-The block runs OVER AND OVER as long as the
-condition is True. Every round, the
-condition is checked FIRST. If it is False
-right away, the block never runs.
+The block runs OVER AND OVER as long as the condition is True. Every round, the condition is checked FIRST. If it is False right away, the block never runs.
 
 Code:
 
@@ -156,16 +147,12 @@ Output:
      1
      2
 
-Critical: something inside the loop must
-CHANGE so that the condition eventually
-becomes False. Otherwise you have an
-infinite loop.
+Critical: something inside the loop must CHANGE so that the condition eventually becomes False. Otherwise you have an infinite loop.
 
 
 6)  break  --  exit the loop early
 
-break  ends the loop immediately, no
-matter what the condition says.
+break  ends the loop immediately, no matter what the condition says.
 
 Code:
 
@@ -178,8 +165,7 @@ Output:
      1
      2
 
-The loop stopped as soon as  n == 3  was
-true. Values  4  and  5  are never seen.
+The loop stopped as soon as  n == 3  was true. Values  4  and  5  are never seen.
 
 
 break  works in both  for  and  while :
@@ -192,15 +178,12 @@ Code:
              break
      print("done")
 
-The  while True  loop looks like it runs
-forever, but the  break  gives it an exit
-door.
+The  while True  loop looks like it runs forever, but the  break  gives it an exit door.
 
 
 7)  continue  --  skip to the next round
 
-continue  ends the CURRENT round and jumps
-straight to the next one.
+continue  ends the CURRENT round and jumps straight to the next one.
 
 Code:
 
@@ -214,16 +197,12 @@ Output:
      3
      5
 
-For each even  n , the  print  line is
-SKIPPED and Python moves on to the next
-value.
+For each even  n , the  print  line is SKIPPED and Python moves on to the next value.
 
 
 8)  Nested loops
 
-A loop can sit inside another loop. The
-inner loop runs completely for EACH pass
-of the outer loop.
+A loop can sit inside another loop. The inner loop runs completely for EACH pass of the outer loop.
 
 Code:
 
@@ -240,15 +219,12 @@ Output:
      3 b
 
 
-break  and  continue  affect only the
-LOOP THEY ARE IN (the innermost one).
+break  and  continue  affect only the LOOP THEY ARE IN (the innermost one).
 
 
 9)  else  clause on loops  (brief)
 
-Both  for  and  while  can have an  else
-block. It runs when the loop finishes
-normally (no  break ).
+Both  for  and  while  can have an  else  block. It runs when the loop finishes normally (no  break ).
 
 Code:
 
@@ -264,8 +240,7 @@ Output:
      done
 
 
-If a  break  ends the loop early, the
-else  block is SKIPPED.
+If a  break  ends the loop early, the  else  block is SKIPPED.
 
 Code:
 
@@ -279,8 +254,7 @@ Code:
 Output:
      1
 
-The  "done"  is not printed because the
-break  fired.
+The  "done"  is not printed because the  break  fired.
 
 
 10)  Common errors
@@ -293,13 +267,7 @@ break  fired.
            while count < 3:
                print(count)
 
-        The loop runs forever because
-        count  is never updated. Add
-        count = count + 1  inside the
-        block. If you get stuck in an
-        infinite loop, press  Ctrl + C
-        in the terminal to stop the
-        program.
+        The loop runs forever because  count  is never updated. Add  count = count + 1  inside the block. If you get stuck in an infinite loop, press  Ctrl + C  in the terminal to stop the program.
 
 
   (b)   Off-by-one with  range
@@ -315,14 +283,10 @@ break  fired.
            3
            4
 
-        The  5  is NOT printed because
-        range(start, stop)  stops BEFORE
-        stop . To include 5, use
-        range(1, 6) .
+        The  5  is NOT printed because  range(start, stop)  stops BEFORE  stop . To include 5, use  range(1, 6) .
 
 
-  (c)   Modifying a list while looping
-        over it
+  (c)   Modifying a list while looping over it
 
         Code:
 
@@ -334,24 +298,14 @@ break  fired.
 
         Output:  [1, 3]
 
-        The output looks right for this
-        small case, but on larger lists
-        this pattern silently SKIPS items.
+        The output looks right for this small case, but on larger lists this pattern silently SKIPS items.
 
-        Do not add or remove items from a
-        list you are looping over. Loop
-        over a COPY  ( for n in nums[:] ) ,
-        or build a NEW list.
+        Do not add or remove items from a list you are looping over. Loop over a COPY  ( for n in nums[:] ) , or build a NEW list.
 
 
   (d)   Wrong indentation
 
-        Same as with  if  : the block
-        under  for  or  while  must be
-        indented. A missing indent gives
-        an  IndentationError .
+        Same as with  if  : the block under  for  or  while  must be indented. A missing indent gives an  IndentationError .
 
 
-In section 12 we look at FUNCTIONS  --  how to
-package a block of code with a name so
-you can reuse it.
+In section 12 we look at FUNCTIONS  --  how to package a block of code with a name so you can reuse it.

@@ -2,8 +2,7 @@
 
 1)  Three ways a route takes input
 
-A FastAPI route can receive data from
-three places in the request:
+A FastAPI route can receive data from three places in the request:
 
      PATH PARAMS   ->  part of the URL
                        itself
@@ -18,8 +17,7 @@ three places in the request:
 
 2)  Path parameters
 
-Put the name in curly braces in the path.
-Add a matching function argument.
+Put the name in curly braces in the path. Add a matching function argument.
 
 Code:
 
@@ -45,14 +43,9 @@ Output:
 
 Notes:
 
-  -  {user_id}  in the path must match
-     the argument name in the function.
-  -  The type hint  user_id: int  tells
-     FastAPI to CONVERT the value to int.
-  -  If the value cannot convert (for
-     example  curl .../users/hello ),
-     FastAPI returns  422 Unprocessable
-     Entity  automatically.
+  -  {user_id}  in the path must match the argument name in the function.
+  -  The type hint  user_id: int  tells FastAPI to CONVERT the value to int.
+  -  If the value cannot convert (for example  curl .../users/hello ), FastAPI returns  422 Unprocessable Entity  automatically.
 
 
 Type conversion in path params:
@@ -83,8 +76,7 @@ Output:
 
 3)  Query parameters
 
-Any function argument that is NOT part of
-the path is treated as a QUERY parameter.
+Any function argument that is NOT part of the path is treated as a QUERY parameter.
 
 Code:
 
@@ -100,14 +92,12 @@ Output:
 
      {"query":"python"}
 
-The  ?q=python  in the URL is the query
-string.
+The  ?q=python  in the URL is the query string.
 
 
 4)  Optional query params (with defaults)
 
-Give the parameter a default value. It
-becomes optional in the URL.
+Give the parameter a default value. It becomes optional in the URL.
 
 Code:
 
@@ -151,12 +141,9 @@ Output:
 
 6)  JSON body
 
-For POST / PUT / PATCH requests, the data
-usually comes in the request body as JSON.
+For POST / PUT / PATCH requests, the data usually comes in the request body as JSON.
 
-You accept it by declaring a Pydantic
-model as a parameter (deep dive in section 3).
-For now, the shape is:
+You accept it by declaring a Pydantic model as a parameter (deep dive in section 3). For now, the shape is:
 
 Code:
 
@@ -190,9 +177,7 @@ Full Pydantic details in section 3.
 
 7)  Path + query + body together
 
-You can mix all three in one route.
-FastAPI figures out which parameter
-comes from where:
+You can mix all three in one route. FastAPI figures out which parameter comes from where:
 
   -  In the path         ->  path param
   -  Has a Pydantic       ->  body
@@ -226,17 +211,12 @@ Response (status 422):
                        integer",
                  "input":"abc"}]}
 
-FastAPI validated the input against the
-int  type hint, saw the failure, and
-returned  422 Unprocessable Entity
-automatically  --  without your handler
-even running.
+FastAPI validated the input against the  int  type hint, saw the failure, and returned  422 Unprocessable Entity  automatically  --  without your handler even running.
 
 
 9)  Common errors
 
-  (a)   Name mismatch between path and
-        argument
+  (a)   Name mismatch between path and argument
 
         Code:
 
@@ -244,38 +224,17 @@ even running.
            def get_user(id: int):
                ...
 
-        The path uses  user_id  but the
-        function uses  id . FastAPI does
-        not know how to fill  id , and
-        the route breaks. Make the names
-        match.
+        The path uses  user_id  but the function uses  id . FastAPI does not know how to fill  id , and the route breaks. Make the names match.
 
 
-  (b)   Wrong type in the URL
+  (b)   Forgetting -H Content-Type on POST
 
-        curl .../users/abc  with a route
-        that expects  user_id: int  gives
-        422 Unprocessable Entity  from
-        FastAPI's validator.
+        Same as HTTP gotcha in the HTTP topic: with no  Content-Type: application/json , the body is not parsed as JSON.
 
 
-  (c)   Forgetting -H Content-Type on POST
+  (c)   Body vs query confusion
 
-        Same as HTTP gotcha in the HTTP topic: with
-        no  Content-Type:
-        application/json , the body is
-        not parsed as JSON.
+        Convention: use QUERY for FILTERING and OPTIONS. Use BODY for the CONTENT being created or updated. Do not send a big JSON payload as a query string.
 
 
-  (d)   Body vs query confusion
-
-        Convention: use QUERY for
-        FILTERING and OPTIONS. Use BODY
-        for the CONTENT being created or
-        updated. Do not send a big JSON
-        payload as a query string.
-
-
-In section 3 we look at PYDANTIC models  --
-how the body of a request gets validated
-and turned into a typed Python object.
+In section 3 we look at PYDANTIC models  --  how the body of a request gets validated and turned into a typed Python object.

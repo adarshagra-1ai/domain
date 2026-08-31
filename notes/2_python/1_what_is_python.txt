@@ -2,33 +2,23 @@
 
 1)  What Python is
 
-Python is a programming language  --  a set of
-rules for writing instructions a computer can
-run.
+Python is a programming language  --  a set of rules for writing instructions a computer can run.
 
 Facts you need for now:
 
-  -  One of the most popular languages, used
-     for web backends, data science,
-     automation, and AI.
-  -  Syntax is close to plain English, so it
-     is beginner-friendly.
-  -  Files with Python code have the extension
-     .py .
+  -  One of the most popular languages, used for web backends, data science, automation, and AI.
+  -  Syntax is close to plain English, so it is beginner-friendly.
+  -  Files with Python code have the extension  .py .
 
 
 2)  Python 2 vs Python 3  --  use Python 3
 
 Python has two major version families:
 
-  -  Python 2  --  released in 2000, retired
-     in 2020. Do NOT learn or use it.
-  -  Python 3  --  current, in active
-     development.
+  -  Python 2  --  released in 2000, retired in 2020. Do NOT learn or use it.
+  -  Python 3  --  current, in active development.
 
-On most modern systems the command name
-python2  does not exist anymore. Everything
-we write will run under Python 3.
+On most modern systems the command name  python2  does not exist anymore. Everything we write will run under Python 3.
 
 
 3)  Check if Python is installed
@@ -41,60 +31,38 @@ Expected output:
 
      Python 3.11.2
 
-The number after "Python" will vary depending
-on how new your system is. Any  3.something
-is fine for us.
+The number after "Python" will vary depending on how new your system is. Any  3.something  is fine for us.
 
 Short form of the same command:
 
      python3 -V
 
 
-If Python is installed, both commands print
-the version and return you to the prompt.
+If Python is installed, both commands print the version and return you to the prompt.
 
 If Python is NOT installed, you will see:
 
      bash: python3: command not found
 
-In that case, jump to section 5 below to
-install it.
+In that case, jump to section 5 below to install it.
 
 
 4)  python  vs  python3  --  a common gotcha
 
-Some systems also have a shorter command
-called  python . Behavior varies:
+Some systems also have a shorter command called  python . Behavior varies:
 
-  -  On modern Ubuntu / Debian / Raspberry
-     Pi OS,  python  often does not exist by
-     default; only  python3  is installed.
-     Typing  python  gives  "command not
-     found" .
+  -  On modern Ubuntu / Debian / Raspberry Pi OS,  python  often does not exist by default; only  python3  is installed. Typing  python  gives  "command not found" .
+  -  On some setups  python  is an alias pointing to Python 3. Then  python  and  python3  behave the same.
+  -  On very old systems,  python  used to mean Python 2. That is gone now, but you may still see old tutorials that assume it.
 
-  -  On some setups  python  is an alias
-     pointing to Python 3. Then  python  and
-     python3  behave the same.
-
-  -  On very old systems,  python  used to
-     mean Python 2. That is gone now, but
-     you may still see old tutorials that
-     assume it.
-
-Rule for us:  always type  python3
-explicitly. It works on every modern Linux
-without surprises.
+Rule for us:  always type  python3  explicitly. It works on every modern Linux without surprises.
 
 
 5)  Installing Python if missing
 
-Most modern Linux distributions ship Python 3
-pre-installed. If yours does not, install it
-with the distro's package manager.
+Most modern Linux distributions ship Python 3 pre-installed. If yours does not, install it with the distro's package manager.
 
-A "package manager" is the tool your Linux
-distro uses to install and update software.
-Which one you use depends on the distro:
+A "package manager" is the tool your Linux distro uses to install and update software. Which one you use depends on the distro:
 
   -  Ubuntu / Debian / Linux Mint
         sudo apt update
@@ -110,14 +78,7 @@ Which one you use depends on the distro:
         sudo zypper install python3
 
 
-About  sudo :  it means "run this command
-as the admin user". Installing system
-software needs admin rights, so package-
-manager commands are prefixed with  sudo .
-Your terminal will ask for your password the
-first time. Type it (nothing shows on
-screen, that is normal), press Enter, and
-the install proceeds.
+About  sudo :  it means "run this command as the admin user". Installing system software needs admin rights, so package-manager commands are prefixed with  sudo . Your terminal will ask for your password the first time. Type it (nothing shows on screen, that is normal), press Enter, and the install proceeds.
 
 
 Verify after install:
@@ -125,6 +86,4 @@ Verify after install:
      python3 --version
      Python 3.11.2
 
-Once a version number prints, you are ready
-for section section 2 (write your first Python
-program).
+Once a version number prints, you are ready for section 2 (write your first Python program).

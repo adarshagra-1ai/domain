@@ -2,9 +2,7 @@
 
 1)  What we will do
 
-Write a one-line Python program that prints
-the word  hello  to the terminal, save it as
-a  .py  file, and run it with  python3 .
+Write a one-line Python program that prints the word  hello  to the terminal, save it as a  .py  file, and run it with  python3 .
 
 
 2)  Create the file
@@ -12,37 +10,24 @@ a  .py  file, and run it with  python3 .
 Two easy ways to create  hello.py .
 
 
-Way A  --  from the terminal (no editor
-           needed):
+Way A  --  from the terminal (no editor needed):
 
      adarsh@laptop:~$  echo 'print("hello")' > hello.py
 
 Two new pieces here:
 
-  -  echo  is a shell command that prints
-     the text you give it. On its own,
+  -  echo  is a shell command that prints the text you give it. On its own,
 
         adarsh@laptop:~$  echo hello
         hello
 
      just prints  hello  to the screen.
 
-  -  The  >  symbol REDIRECTS the output of
-     the command on its left into the file
-     on the right, instead of printing it
-     to the screen. If the file does not
-     exist, it is created. If it exists,
-     its contents are OVERWRITTEN with the
-     new output.
+  -  The  >  symbol REDIRECTS the output of the command on its left into the file on the right, instead of printing it to the screen. If the file does not exist, it is created. If it exists, its contents are OVERWRITTEN with the new output.
 
-So the full line  echo 'print("hello")' > hello.py
-takes the text  print("hello")  and writes
-it into a new file called  hello.py .
+So the full line  echo 'print("hello")' > hello.py  takes the text  print("hello")  and writes it into a new file called  hello.py .
 
-Both  echo  and  >  will be studied in more
-detail in a later phase. For now use this
-one-liner as a quick "write one line to a
-file" trick.
+Both  echo  and  >  will be studied in more detail in a later phase. For now use this one-liner as a quick "write one line to a file" trick.
 
 Verify what got written:
 
@@ -52,10 +37,7 @@ Verify what got written:
 
 Way B  --  in a text editor:
 
-Open any text editor (VS Code, gedit, your
-IDE, etc.), create a new file named
-hello.py  in your current folder, put this
-one line inside:
+Open any text editor (VS Code, gedit, your IDE, etc.), create a new file named  hello.py  in your current folder, put this one line inside:
 
      print("hello")
 
@@ -64,54 +46,35 @@ Save the file.
 
 3)  What each piece of  print("hello")  means
 
-     print      ->  the NAME of a built-in
-                    Python function that
-                    prints text to the
-                    screen.
+     print      ->  the NAME of a built-in Python function that prints text to the screen.
 
-     ( ... )    ->  parentheses  --  they
-                    say "CALL this function
-                    with the values inside".
+     ( ... )    ->  parentheses  --  they say "CALL this function with the values inside".
 
-     "hello"    ->  a STRING (a piece of
-                    text). Strings in Python
-                    are wrapped in double
-                    quotes  "..."  or
-                    single quotes  '...' .
-                    Both work.
+     "hello"    ->  a STRING (a piece of text). Strings in Python are wrapped in double quotes  "..."  or single quotes  '...' . Both work.
 
-The whole line reads as:  "call the  print
-function with the string  hello ".
+The whole line reads as:  "call the  print  function with the string  hello ".
 
 
 4)  Run the file
 
-Make sure your CWD is the folder that
-contains  hello.py  (use  pwd  to check,
-cd  if needed).
+Make sure your CWD is the folder that contains  hello.py  (use  pwd  to check,  cd  if needed).
 
      adarsh@laptop:~$  python3 hello.py
      hello
 
-That is your first program. Python read the
-file, ran the one line, printed  hello ,
-and returned you to the prompt.
+That is your first program. Python read the file, ran the one line, printed  hello , and returned you to the prompt.
 
 Two things happened, in order:
 
   1)  You typed  python3 hello.py .
-  2)  The  python3  program opened
-      hello.py , executed each line top to
-      bottom, then exited.
+  2)  The  python3  program opened  hello.py , executed each line top to bottom, then exited.
 
-python3  is the INTERPRETER. Its job is to
-read  .py  files and run them.
+python3  is the INTERPRETER. Its job is to read  .py  files and run them.
 
 
 5)  Try small variations
 
-Same file, different content, same run
-command. Edit  hello.py , save, re-run.
+Same file, different content, same run command. Edit  hello.py , save, re-run.
 
 
 Change the text:
@@ -133,8 +96,7 @@ Run:
      adarsh@laptop:~$  python3 hello.py
      2025
 
-Numbers do NOT need quotes.  2025  is a
-number, not a string.
+Numbers do NOT need quotes.  2025  is a number, not a string.
 
 
 Two lines of output:
@@ -148,8 +110,7 @@ Run:
      line 1
      line 2
 
-Each  print  call ends with a newline, so
-the next  print  starts on a fresh line.
+Each  print  call ends with a newline, so the next  print  starts on a fresh line.
 
 
 6)  Common errors
@@ -159,9 +120,7 @@ the next  print  starts on a fresh line.
         adarsh@laptop:~$  python3 hello.py
         python3: can't open file '/home/adarsh/hello.py': [Errno 2] No such file or directory
 
-        Wrong CWD, or the file is not
-        exactly  hello.py . Fix with  pwd
-        and  ls .
+        Wrong CWD, or the file is not exactly  hello.py . Fix with  pwd  and  ls .
 
 
   (b)   Missing quotes
@@ -176,11 +135,7 @@ the next  print  starts on a fresh line.
             print(hello)
         NameError: name 'hello' is not defined
 
-        Without quotes, Python thinks  hello
-        is a variable name (not text).
-        Since no such variable was defined,
-        it errors. Add the quotes:
-        print("hello") .
+        Without quotes, Python thinks  hello  is a variable name (not text). Since no such variable was defined, it errors. Add the quotes:  print("hello") .
 
 
   (c)   Mismatched quotes
@@ -195,9 +150,7 @@ the next  print  starts on a fresh line.
                        ^^^^^^^^^
         SyntaxError: unterminated string literal
 
-        Opening quote and closing quote must
-        MATCH: both double  " ... "  or
-        both single  ' ... '  .
+        Opening quote and closing quote must MATCH: both double  " ... "  or both single  ' ... '  .
 
 
   (d)   python3 not found
@@ -205,11 +158,7 @@ the next  print  starts on a fresh line.
         adarsh@laptop:~$  python3 hello.py
         bash: python3: command not found
 
-        Python is not installed. Go back to
-        section 1 section 5.
+        Python is not installed. Go back to section 1 sub-section 5.
 
 
-Once you can create  hello.py , edit it,
-and run it with  python3 , you have the
-basic Python workflow. In section 3 we start
-storing data with variables.
+Once you can create  hello.py , edit it, and run it with  python3 , you have the basic Python workflow. In section 3 we start storing data with variables.

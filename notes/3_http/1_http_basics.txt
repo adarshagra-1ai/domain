@@ -1,24 +1,76 @@
-1  --  HTTP idea  (request, response,
-         method, status)
+1  --  HTTP idea  (request, response, method, status)
 
 1)  What HTTP is
 
-HTTP (HyperText Transfer Protocol) is the
-plain-text messaging rulebook that browsers,
-mobile apps, and command-line tools use to
-talk to servers on the web.
+HTTP (HyperText Transfer Protocol) is the plain-text messaging rulebook that browsers, mobile apps, and command-line tools use to talk to servers on the web.
 
 Facts you need for now:
 
-  -  Every time you open a web page, click
-     a link, or an app fetches data, HTTP
-     is doing the work under the hood.
-  -  HTTP is a TEXT-based protocol: the
-     messages are readable strings, not
-     binary.
-  -  The version most sites use today is
-     HTTP/1.1 or HTTP/2. From a beginner's
-     view they behave the same way.
+  -  Every time you open a web page, click a link, or an app fetches data, HTTP is doing the work under the hood.
+  -  HTTP is a TEXT-based protocol: the messages are readable strings, not binary.
+  -  The version most sites use today is HTTP/1.1 or HTTP/2. From a beginner's view they behave the same way.
+
+
+Quick terms used in the next section:
+
+  -  browser        A program like Chrome, Firefox, or Safari. You type a URL, it sends an HTTP request and renders the response on screen.
+
+  -  mobile app     An installed phone application (Instagram, Zomato, WhatsApp). It also sends HTTP requests internally, only the UI is native instead of a browser page.
+
+                    "native" here means the screens are built with the phone OS's own toolkit, not with HTML in a browser:
+
+                         Android    Java or
+                                    Kotlin +
+                                    Android
+                                    SDK widgets
+                         iOS        Swift +
+                                    iOS SDK
+                                    widgets
+
+                    Each platform needs its own code, but the app looks and feels like the phone's own system (real scroll, system fonts, native buttons). Data still flows over HTTP to a server, exactly like a browser does.
+
+  -  curl           A command-line tool for sending raw HTTP requests from the terminal, no browser needed. Example:
+
+                         curl https://example.com
+
+                    Prints the raw response to the terminal. Used heavily for testing and debugging APIs.
+
+  -  port           A numbered "door" on a server machine. One machine runs many programs; each one listens on its own port number (0 to 65535). Common ones:
+
+                         80      HTTP (plain)
+                         443     HTTPS (TLS,
+                                 encrypted)
+                         22      SSH
+                         5432    PostgreSQL
+
+                    When you open  https://example.com  the browser auto-connects to port 443. You can also write it explicitly:  https://example.com:443
+
+  -  API            Application Programming Interface. A set of URLs on a server that return raw DATA (usually JSON), not full web pages. It is how one program talks to another over HTTP.
+
+                    Website vs API for the same server:
+
+                         Website route
+                         GET /users/42
+                         ->  returns an HTML
+                             page a human
+                             reads in a
+                             browser.
+
+                         API route
+                         GET /api/users/42
+                         ->  returns JSON:
+                             {"id":42,
+                              "name":"Adarsh"}
+                             which another
+                             program parses.
+
+                    Real examples you use:
+
+                      -  Zomato app calls Zomato's API to load your feed.
+                      -  Weather widgets call a weather API to fetch today's temperature.
+                      -  Login-with-Google uses Google's API.
+
+                    "Calling an API" just means sending an HTTP request to one of these URLs. Everything in this file  --  methods, status codes, headers, bodies  --  applies directly to APIs.
 
 
 2)  Client-server model
@@ -35,11 +87,8 @@ HTTP is strictly ONE-WAY:
 Rules:
 
   -  The client always ASKS FIRST.
-  -  The server responds to that one
-     request and then stops.
-  -  Each request is INDEPENDENT (HTTP is
-     stateless by design; cookies and
-     tokens add state on top).
+  -  The server responds to that one request and then stops.
+  -  Each request is INDEPENDENT (HTTP is stateless by design; cookies and tokens add state on top).
 
 
 3)  Anatomy of an HTTP request
@@ -64,18 +113,19 @@ Example raw request:
 
 Breakdown:
 
-  -  GET                 the METHOD (what
-                         to do)
-  -  /users/42           the PATH (which
-                         resource)
-  -  HTTP/1.1            the protocol
-                         version
-  -  Host: ...           required header
-                         saying which
-                         server this is for
-  -  Accept: ...         header saying what
-                         response format
-                         the client wants
+  -  GET                 the METHOD (what to do)
+  -  /users/42           the PATH (which resource)
+  -  HTTP/1.1            the protocol version
+  -  Host: ...           required header saying which server this is for
+  -  Accept: ...         header saying what response format the client wants
+  -  User-Agent: ...     header telling the server which client is sending the request (browser name + version, or "curl/8.0.1", or a mobile app string). Servers use it for logs, analytics, and sometimes to send a different response per client.
+
+
+About parts 3 and 4 in this example:
+
+  -  blank line   The empty line right after the last header (User-Agent) IS the separator. It looks like nothing but it is required  --  it tells the server "headers end here".
+
+  -  body         Missing on purpose. GET requests almost never have a body; the request is fully described by the method + path + headers. A body example appears later with the POST / curl section.
 
 
 4)  Anatomy of an HTTP response
@@ -101,23 +151,16 @@ Example raw response:
 Breakdown:
 
   -  HTTP/1.1                the protocol
-  -  200                     the STATUS
-                             CODE (see
-                             section 6)
-  -  OK                      short reason
-                             phrase
-  -  Content-Type: ...       what kind of
-                             data is in
-                             the body
+  -  200                     the STATUS CODE (see section 6)
+  -  OK                      short reason phrase
+  -  Content-Type: ...       what kind of data is in the body
   -  Content-Length: ...     how many bytes
   -  {...}                   the body
 
 
-5)  HTTP methods  (what the request wants
-    to do)
+5)  HTTP methods  (what the request wants to do)
 
-The METHOD is the VERB of the request.
-Each one has a conventional meaning.
+The METHOD is the VERB of the request. Each one has a conventional meaning.
 
      GET       READ. Fetch a resource.
                Should not change anything
@@ -141,75 +184,116 @@ Each one has a conventional meaning.
                Useful for checking if a
                resource exists.
 
-     OPTIONS   Ask what methods and headers
-               are allowed. Used by
-               browsers for CORS
-               pre-flight.
-
-Rule of thumb:  GET should never change
-data on the server. Use POST / PUT /
-PATCH / DELETE for changes.
+Rule of thumb:  GET should never change data on the server. Use POST / PUT / PATCH / DELETE for changes.
 
 
-6)  Status codes  (what the response says
-    happened)
+PUT vs PATCH  (the common confusion)
 
-Every response has a 3-digit STATUS CODE.
-The FIRST digit tells you the family.
+Both update a resource. The difference is HOW MUCH of the object you send.
+
+Starting state on the server for user 42:
+
+     {
+       "id":    42,
+       "name":  "Adarsh",
+       "email": "a@x.com",
+       "age":   20
+     }
+
+
+Goal:  change only  age  from 20 to 21.
+
+
+PATCH  --  send ONLY the changed field:
+
+     PATCH /users/42
+     Content-Type: application/json
+
+     {"age": 21}
+
+Server keeps  name  and  email  as they were, updates  age . Final state:
+
+     {"id":42, "name":"Adarsh",
+      "email":"a@x.com", "age":21}
+
+
+PUT  --  send the FULL object, even the fields that are not changing:
+
+     PUT /users/42
+     Content-Type: application/json
+
+     {"id":42, "name":"Adarsh",
+      "email":"a@x.com", "age":21}
+
+Server replaces the whole record with the body you sent.
+
+DANGER with PUT:  if you send only  {"age": 21}  as a PUT, a strict server treats the missing  name  and  email  as "you want them gone" and can wipe them to null. Do NOT send partial data over PUT.
+
+
+Quick rule:
+
+     small change to a few fields   ->  PATCH
+     replacing the whole resource   ->  PUT
+
+
+6)  Status codes  (what the response says happened)
+
+Every response has a 3-digit STATUS CODE. The FIRST digit tells you the family.
 
      1xx   informational. Rare in practice.
 
+
      2xx   SUCCESS.
-             200   OK             standard
-                                  success
-             201   Created        a new
-                                  resource
-                                  was created
-             204   No Content     success,
-                                  but no
-                                  body
+
+       200  OK  --  standard success. Scenario:  GET /users/42  returns the user object. Any normal successful response with a body.
+
+       201  Created  --  a new resource was created. Scenario:  POST /users  with a new user body succeeds. Server returns 201 plus a  Location: /users/99  header pointing to the new resource.
+
+       204  No Content  --  success, no body. Scenario:  DELETE /users/42  succeeded. Nothing to send back, so the server returns 204 with an empty body.
+
 
      3xx   REDIRECT.
-             301   Moved Permanently
-             302   Found (temporary
-                         redirect)
-             304   Not Modified   cached
-                                  version is
-                                  still fresh
 
-     4xx   CLIENT error (your request is
-                         wrong).
-             400   Bad Request    malformed
-                                  input
-             401   Unauthorized   no valid
-                                  auth
-                                  credentials
-             403   Forbidden      auth is
-                                  valid but
-                                  not allowed
-             404   Not Found      resource
-                                  does not
-                                  exist
-             405   Method Not Allowed
-             409   Conflict       state clash
-             422   Unprocessable
-                   Entity         validation
-                                  failed
-             429   Too Many Requests
+       301  Moved Permanently. Scenario:  you hit  http://example.com  and the server permanently redirects to  https://example.com . Browsers cache this forever.
+
+       302  Found (temporary redirect). Scenario:  after login, the server sends 302 with  Location: /dashboard  to move you to the dashboard. Not cached long-term.
+
+       304  Not Modified  --  cached version is still fresh. Scenario:  your browser already has an image cached. It sends  If-None-Match: "abc123" . Server checks, sees nothing changed, returns 304 with empty body. Browser uses its cache.
+
+
+     4xx   CLIENT error (your request is wrong).
+
+       400  Bad Request  --  malformed input. Scenario:  you POST  {"age": "twenty"}  when the API expects a number, or the JSON is broken and the server cannot parse it.
+
+       401  Unauthorized  --  no valid auth credentials. Scenario:  you call  GET /me  without a token, or with an expired token. Fix: log in and send a valid  Authorization  header.
+
+       403  Forbidden  --  auth valid but action not allowed. Scenario:  you are logged in (token is valid) but you are a normal user trying to hit  DELETE /admin/users/1  which only admins can call.
+
+       404  Not Found  --  resource does not exist. Scenario:  GET /users/9999  and user 9999 does not exist. Or you typed the URL wrong:  /userr/42 .
+
+       405  Method Not Allowed. Scenario:  the route  /users/42  supports GET and PATCH, but you send DELETE. Server says "this URL exists, but not for this method". Response includes an  Allow: GET, PATCH  header.
+
+       409  Conflict  --  state clash. Scenario:  POST /users  with  email "a@x.com"  but that email is already taken (unique constraint). Or two people edit the same doc at once and the second save clashes.
+
+       422  Unprocessable Entity  --  validation failed. Scenario:  JSON parsed fine, but a field failed business rules:  age  is -5, or  email  is "not-an-email". Server usually returns a list of field-level errors.
+
+       429  Too Many Requests. Scenario:  you hit the same API 100 times in one second. Server rate-limits you and returns 429 with a  Retry-After: 30  header (wait 30 seconds).
+
 
      5xx   SERVER error (the server broke).
-             500   Internal Server Error
-             502   Bad Gateway    upstream
-                                  server
-                                  problem
-             503   Service Unavailable
-             504   Gateway Timeout
+
+       500  Internal Server Error. Scenario:  server-side code threw an uncaught exception  --  null-pointer, divide by zero, DB query blew up. Nothing you can do as a client; check server logs.
+
+       502  Bad Gateway  --  upstream server problem. Scenario:  your request went through a proxy or load-balancer (like nginx), which then tried to reach the real backend and got a broken/invalid reply. Common when the backend container just crashed.
+
+       503  Service Unavailable. Scenario:  server is up but temporarily cannot handle requests  --  under maintenance, overloaded, or still booting. Often paired with  Retry-After .
+
+       504  Gateway Timeout. Scenario:  same setup as 502, but the proxy waited for the backend and got no reply within the timeout window (backend too slow or hung).
 
 
 7)  Headers  (metadata about the message)
 
-Headers are  key: value  lines, one per
-line, in both requests and responses.
+Headers are  key: value  lines, one per line, in both requests and responses.
 
 
 Common request headers:
@@ -221,6 +305,38 @@ Common request headers:
      Content-Type: application/json
 
 
+Accept  vs  Content-Type  (in a request)
+
+They point in OPPOSITE directions. Both can appear in the same request.
+
+  -  Accept          "I WANT the response body in this format." Describes what the client wants back FROM the server.
+
+  -  Content-Type    "The body I AM SENDING is in this format." Describes what the client is sending TO the server (the request body).
+
+
+So in a POST:
+
+     POST /users HTTP/1.1
+     Host: api.example.com
+     Content-Type: application/json     <- I am sending JSON
+     Accept: application/json           <- send JSON back to me
+
+     {"name": "adarsh"}
+
+
+Common cases:
+
+  -  GET request       usually only  Accept  matters (no request body, so no  Content-Type ).
+  -  POST/PUT/PATCH    both matter.  Content-Type  for the body you send,  Accept  for the reply you want.
+  -  Response side     the server picks ONE format based on your  Accept , sends the body, and sets its OWN  Content-Type  in the response so you know how to read the reply.
+
+
+One more sanity check:
+
+  -  If  Content-Type  is wrong or missing on a POST, the server may fail to parse your body ( 400 Bad Request ).
+  -  If  Accept  is missing, most servers just default to their usual format (often JSON for APIs, HTML for web pages).
+
+
 Common response headers:
 
      Content-Type: application/json
@@ -229,27 +345,54 @@ Common response headers:
      Set-Cookie: session=abc; Path=/
 
 
-Header names are case-insensitive but
-usually written as  Title-Case  with
-hyphens.
+What is a "cache" ?
+
+A cache is a LOCAL COPY of something the client already downloaded, kept so the client does not have to fetch it again.
+
+  -  Browser cache      Chrome stores images, CSS, JS files on disk. Next time the same URL is requested, Chrome uses the local copy instead of hitting the network.
+
+  -  Why it matters     Faster page loads, less server load, less bandwidth.
+
+  -  Who controls it    The SERVER, via  Cache-Control  in the response.
+
+What is a "cookie" ?
+
+A cookie is a small key=value string that the SERVER asks the CLIENT to store and send back on every future request to the same site. This is how "logged in" state survives across page loads (HTTP itself is stateless).
+
+Flow:
+
+  1.  You POST /login with username + password.
+
+  2.  Server verifies, then responds with:
+
+           Set-Cookie: session=abc123; Path=/;
+                       HttpOnly; Secure
+
+  3.  Browser saves the cookie for that site.
+
+  4.  On EVERY future request to the same site, browser auto-adds:
+
+           Cookie: session=abc123
+
+  5.  Server reads  session=abc123 , looks it up in its session table, and knows it is you.
+
+Cache vs cookie in one line:
+
+  -  Cache   =  client stores the RESPONSE so it does not fetch again.
+  -  Cookie  =  client stores a SMALL IDENTIFIER and sends it back on every request so the server remembers who you are.
+
+
+Header names are case-insensitive but usually written as  Title-Case  with hyphens.
 
 
 8)  Body  (the actual payload)
 
 The BODY is optional. It carries data:
 
-  -  REQUESTS: mostly on POST, PUT, PATCH.
-     Usually JSON (JavaScript Object
-     Notation) for APIs; sometimes form
-     data or file uploads.
+  -  REQUESTS: mostly on POST, PUT, PATCH. Usually JSON (JavaScript Object Notation) for APIs; sometimes form data or file uploads.
+  -  RESPONSES: HTML for web pages, JSON for APIs (Application Programming Interfaces), image bytes for images, etc.
 
-  -  RESPONSES: HTML for web pages, JSON
-     for APIs (Application Programming
-     Interfaces), image bytes for images,
-     etc.
-
-The  Content-Type  header tells the other
-side how to read the body:
+The  Content-Type  header tells the other side how to read the body:
 
      application/json          a JSON string
      application/x-www-        classic HTML
@@ -261,25 +404,21 @@ side how to read the body:
 
 9)  Try it with curl
 
-curl  is a command-line tool for making
-HTTP requests. It comes pre-installed on
-most Linux systems.
+curl  is a command-line tool for making HTTP requests. It comes pre-installed on most Linux systems.
 
 
 Simple GET:
 
      curl https://example.com
 
-Prints the response body (an HTML page) to
-your terminal.
+Prints the response body (an HTML page) to your terminal.
 
 
 See headers AND body with  -i :
 
      curl -i https://example.com
 
-Now the status line and all response
-headers appear at the top of the output.
+Now the status line and all response headers appear at the top of the output.
 
 
 See ONLY the response headers with  -I :
@@ -293,8 +432,7 @@ Output (excerpt):
      Content-Length: 1256
      Date: ...
 
-The  HTTP/1.1 200 OK  is the status line
-from section 4.
+The  HTTP/1.1 200 OK  is the status line from section 4.
 
 
 POST with a JSON body:
@@ -312,22 +450,26 @@ POST with a JSON body:
                                    body
      https://httpbin.org/post      the URL
 
-Every  curl  option maps to one of the
-concepts from sections 3 to 8.
+
+The trailing  \  at the end of each line is a SHELL line-continuation. It tells bash "this command is not over, next line is part of the same command". Purely for readability  --  you can also write the same curl call on one long line without any backslashes:
+
+     curl -X POST -H "Content-Type: application/json" -d '{"name": "adarsh"}' https://httpbin.org/post
+
+Rules for the backslash:
+
+  -  It MUST be the very last character on the line. No space after it, or bash will not treat it as a continuation.
+  -  It is a bash thing, not a curl thing. Same trick works with any long shell command.
+  -  On Windows PowerShell the continuation character is  `  (backtick), not  \ .
+
+
+Every  curl  option maps to one of the concepts from sections 3 to 8.
 
 
 10)  Common gotchas
 
   (a)   Wrong method for the action
 
-        Using GET to CREATE data (with a
-        query string carrying the payload)
-        is a common mistake. GET is for
-        READING. Use POST / PUT / PATCH /
-        DELETE for changes so that
-        proxies, caches, and search
-        engines do not accidentally
-        trigger the action.
+        Using GET to CREATE data (with a query string carrying the payload) is a common mistake. GET is for READING. Use POST / PUT / PATCH / DELETE for changes so that proxies, caches, and search engines do not accidentally trigger the action.
 
 
   (b)   404 vs 500
@@ -344,23 +486,12 @@ concepts from sections 3 to 8.
 
   (c)   Missing Content-Type on POST
 
-        If you POST a JSON body but do
-        not send  Content-Type:
-        application/json  , many servers
-        will read the body as plain text
-        and fail to parse it. Add the
-        header explicitly.
+        If you POST a JSON body but do not send  Content-Type: application/json  , many servers will read the body as plain text and fail to parse it. Add the header explicitly.
 
 
   (d)   Case in header VALUES
 
-        Header NAMES are case-insensitive
-        ( Content-Type  =  content-type ),
-        but header VALUES are not (a
-        Bearer token or a URL inside a
-        header is exact).
+        Header NAMES are case-insensitive ( Content-Type  =  content-type ), but header VALUES are not (a Bearer token or a URL inside a header is exact).
 
 
-Next we build a tiny FastAPI server
-that answers a real HTTP request  --  a
-"hello, world" route on your machine.
+Next we build a tiny FastAPI server that answers a real HTTP request  --  a "hello, world" route on your machine.

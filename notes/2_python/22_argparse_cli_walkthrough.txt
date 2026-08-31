@@ -1,0 +1,485 @@
+22  --   __main__.py  walkthrough  (docstring, imports, argparse)
+
+A walkthrough of a typical  __main__.py  file, top to bottom. We assume the file lives inside a package  mypackage , runnable via  python -m mypackage .
+
+
+PART A  --  the file header
+
+Module docstring
+
+    """my-engine CLI  --  run the engine."""
+
+A DOCSTRING at the top of a module, same as in  __init__.py  (see section 21). One-line human description of the file: this is the command-line interface (CLI) of the engine.
+
+
+The  from __future__ import annotations  line
+
+    from __future__ import annotations
+
+Older Python 3.x did not accept the modern type-hint style like  dict | None . Adding  from __future__ import annotations  tells Python to treat every type hint as plain text  --  do NOT try to evaluate it.
+
+
+The  |  symbol used above
+
+ |  is called the PIPE or the VERTICAL BAR. On most keyboards it is typed with  Shift + \  (Shift plus the backslash key).
+
+Where you see  |  in code:
+
+  -  Python type hints (3.10 and up)  --  the UNION operator, meaning "either this type OR that type". Example:  dict | None  reads as "a dict, or None". A value of either kind is acceptable.
+
+Example. Same function, two styles:
+
+    # older-style hint
+    def foo(x: Optional[Dict[str, int]]) -> None:
+        ...
+
+    # modern hint (needs the future flag on old Python)
+    def foo(x: dict[str, int] | None) -> None:
+        ...
+
+Modern Python (3.10 and up) supports the pipe natively, so today this line is a compatibility habit more than a hard requirement.
+
+
+Standard library imports
+
+    import argparse
+    import asyncio
+    import json
+    import signal
+
+Four modules from Python's STANDARD LIBRARY (they ship with Python  --  no  pip install  needed).
+
+  -   argparse   --  builds a COMMAND-LINE PARSER. Reads the flags the user typed after the program name and turns them into a plain Python object.
+
+      Example. If the user runs
+
+          python -m mypackage --config ./data --verbose
+
+      the whole flag string  --config ./data --verbose  gets turned into a single OBJECT. That object has one attribute per flag:
+
+           args.config   == "./data"
+           args.verbose  == True
+           (present -> True, absent -> False)
+
+      Note the naming:
+
+        -  Dashes in flag names become underscores in the attribute name:  --data-dir  ->  args.data_dir .
+
+  -   asyncio   --  Python's built-in ASYNCHRONOUS programming library. Lets one program handle many tasks that WAIT (for network replies, timers, hardware events) without spawning threads.
+
+      Three terms show up there  --  THREAD, THREADING, SPAWN. Get them straight first, then the asyncio side makes sense.
+
+      A THREAD is a single line of execution inside a program. Picture a single HAND writing on paper: at any moment, the hand is in one place doing one thing. Every program starts with one thread by default, called the "main thread"  --  that is the "hand" that runs your  print , your loops, your function calls.
+
+      THREADING means using MORE THAN ONE thread at the same time. Two hands writing on the same paper in parallel; two things happen at once.
+
+      Example scenario. A program has to (a) download a big file and (b) keep a spinner animation moving on screen. With ONE thread, the download BLOCKS the spinner  --  the spinner freezes till the download ends. With TWO threads, one downloads while the other keeps the spinner going.
+
+      SPAWNING a thread means creating a new thread and starting it up. "Spawn" is developer slang for "launch a new running unit".
+
+      So "SPAWNING THREADS" = asking the program to create extra worker threads alongside the main one.
+
+      Why not always use threads? Each new thread costs memory and some operating system bookkeeping; two threads touching the same data can step on each other, and need LOCKS. Overkill for many workloads.
+
+      Asyncio's route: ONE thread only. When a task hits an  await  and starts waiting, the thread puts that task aside and picks up another task that is ready to run. When the awaited thing finishes, the paused task resumes. One thread, many tasks, no threading needed. That is what the phrase "without spawning threads" is pointing at.
+
+      Example.  await X  means "pause here until X finishes; let other tasks run while I wait".
+
+          async def fetch():
+              data = await slow_network_call()
+              return data
+
+  -   json   --  reads and writes JSON (JavaScript Object Notation) text. Useful when the program needs to load a config file or send/receive data.
+
+  -   signal   --  gives access to OS-level SIGNALS (small messages the operating system sends to a running program).
+
+      Example. When you press Ctrl+C in the terminal, the OS sends the SIGINT signal to whatever program is in the foreground. A program can register a handler for  SIGINT  (Ctrl+C asking a program to stop) so it can shut down cleanly instead of just being killed.
+
+
+Relative imports
+
+    from .clock import RealClock
+    from .core import Engine
+
+Same "leading dot = current package" rule from section 21. Current package is  mypackage , so:
+
+  -   .clock  ->  mypackage/clock.py  -> grabs the  RealClock  class
+
+  -   .core  ->  mypackage/core.py  -> grabs the  Engine  class
+
+
+Header done. At this point, nothing has actually RUN yet in the sense of doing real work  --  Python has only loaded modules and pulled some classes and functions into the file's namespace. Real execution starts when  main()  is called at the very bottom of the file.
+
+
+PART B  --  the  main()  function
+
+Function signature
+
+    def main() -> None:
+
+  -   def   --  Python's keyword for defining a function.
+
+  -   main   --  the function name. Chosen so the pattern  __main__.py -> main()  is easy to spot: when the entry guard at the bottom of the file calls  main() , execution starts here.
+
+  -   ()   --  empty parentheses. The function takes no arguments.
+
+  -   -> None   --  a TYPE HINT saying "this function returns nothing useful" ( None  is Python's built-in "no value" object). The hint is documentation only  --  Python does not enforce it at runtime.
+
+
+What  main()  actually does
+
+Two small words used below  --  SETTING and FLAG:
+
+  -  SETTING  --  a value that controls how the program behaves, without changing the code itself. Examples: which folder to save data in, which port the API listens on, which network interface to bind to.
+
+  -  FLAG  --  the way the user gives a setting on the command line. A flag usually starts with two dashes (like  --verbose ). Two shapes exist:
+
+       -  flags with a VALUE after them  --  for example  --port 8000  or  --data-dir ./data ;
+
+       -  on/off flags  --  for example  --verbose , which takes no value; its presence alone means "yes, turn this on".
+
+Just two jobs:
+
+   1  READ THE SETTINGS. Look at the flags the user typed on the command line (using argparse) and put them into an  args  object.
+
+   2  PASS EVERYTHING TO  _run() . Call  asyncio.run(_run(...))  and send those values along.  _run()  is where the real work starts.
+
+That is all.  main()  itself does no real work. It just prepares things and hands them off.
+
+
+Why  main()  is needed
+
+Reasons:
+
+   1   python -m mypackage  needs a callable at the bottom of the file. The final two lines are literally  if __name__ == "__main__": main() , so Python needs a  main  function to call. Without it, running the module would do nothing.
+
+   2  Async code cannot run on its own. Something has to wrap the async function with  asyncio.run(...) , which is a plain synchronous call.  main()  is that synchronous wrapper.
+
+
+How  main()  prepares things
+
+One word to know first  --  PARSER.
+
+A PARSER is a piece of code that reads raw TEXT and turns it into STRUCTURED DATA the rest of the program can use. The word "parse" just means "analyse and break apart".
+
+Everyday examples:
+
+  -  A JSON parser reads text like  {"a": 1, "b": 2}  and turns it into a real Python dict  {"a": 1, "b": 2} .
+
+  -  A date parser reads text like  "2026-08-31"  and turns it into a Date object with year 2026, month 8, day 31.
+
+  -  A URL parser reads text like  https://example.com/api?x=1  and splits it into scheme  https , host  example.com , path  /api , and query  x=1 .
+
+argparse is a COMMAND-LINE parser. It reads the raw text the user typed on the shell after the program name  --  for example
+
+    --data-dir ./data --verbose
+
+--  and turns it into a Python object where each flag becomes an attribute:
+
+    args.data_dir == "./data"
+    args.verbose  == True
+
+Without a parser we would have to write our own code to split that string, spot each  --  flag, pair each flag with its value, convert strings to integers where needed, and handle bad input. That is a lot of work. argparse does it all for us.
+
+
+Creating the parser
+
+    parser = argparse.ArgumentParser(prog="my-engine")
+
+This single line does ONE job: create a fresh ArgumentParser object and store it in a variable named  parser . Piece by piece:
+
+  -   parser   --  a VARIABLE NAME chosen by the developer. Could have been  p ,  cli_parser , anything. From this point on, the name  parser  refers to the object we are about to create.
+
+  -   =   --  the ASSIGNMENT operator. Whatever value sits on the RIGHT side gets stored under the name on the LEFT side.
+
+  -   argparse   --  the module that was imported at the top of the file ( import argparse ). Here the name just refers to that whole module.
+
+  -   .   --  the "dot" access. Reads as "inside". So  argparse.ArgumentParser  means "look inside the argparse module for a thing named ArgumentParser".
+
+  -   ArgumentParser   --  a CLASS defined inside the argparse module. A class is a blueprint for making objects.
+
+  -   (...)   --  calling the class. In Python, calling a class like a function CREATES a new OBJECT (an "instance" of that class). So  ArgumentParser(...)  builds a fresh parser object.
+
+  -   prog="my-engine"   --  a KEYWORD ARGUMENT passed to the class. "Keyword" means it is passed by name ( prog=... ) rather than by position. This one sets the program name that argparse will show in help messages (for example, the first line of  python -m mypackage --help  will say "usage: my-engine ...").
+
+After this one line runs,  parser  holds an empty ArgumentParser object  --  no flags added yet. Flags start getting registered on the very next line.
+
+
+Adding the first flag  (with a default value)
+
+    parser.add_argument("--data-dir", default="./data")
+
+This line registers a brand-new flag called  --data-dir  on the parser we just built. Piece by piece:
+
+  -   parser   --  the ArgumentParser object we created above.
+
+  -   .add_argument   --  a METHOD on the ArgumentParser class. A method is just a function that belongs to a class. This method's job is to register one new flag on the parser.
+
+  -   (...)   --  calling the method, passing the arguments between the parentheses.
+
+  -   "--data-dir"   --  the FIRST argument, a plain string. This is the exact text the user has to type on the shell to set this flag.
+
+  -   default="./data"   --  a KEYWORD ARGUMENT. If the user does NOT type  --data-dir  on the shell, argparse pretends the user passed  "./data" .
+
+Examples of what happens after this line runs. If the user types
+
+    python -m mypackage
+
+with no flags, then
+
+    args.data_dir == "./data"
+
+If the user types
+
+    python -m mypackage --data-dir ./mydata
+
+then
+
+    args.data_dir == "./mydata"
+
+Note the dash-to-underscore rule mentioned earlier: the flag name  --data-dir  turns into the attribute name  data_dir  on  args .
+
+
+Adding a flag without a default
+
+    parser.add_argument("--config", help="path to a config JSON to import at start")
+
+Registers another flag on the parser, this one called  --config . Piece by piece:
+
+  -   parser   --  the same ArgumentParser object.
+
+  -   .add_argument   --  same METHOD as before, registering one more flag.
+
+  -   "--config"   --  the flag name. The user types  --config  followed by a file path on the shell.
+
+  -   help="path to a config JSON to import at start"   --  a KEYWORD ARGUMENT that sets the HELP TEXT for this flag. This text shows up when the user runs
+
+          python -m mypackage --help
+
+Notice: no  default=  is passed. So if the user does NOT pass  --config  on the shell,  args.config  comes out as  None  (Python's "no value").
+
+Examples. Running
+
+    python -m mypackage
+
+with no  --config  gives
+
+    args.config == None
+
+Running
+
+    python -m mypackage --config ./home.json
+
+gives
+
+    args.config == "./home.json"
+
+Note: at this point,  args.config  is just a STRING (the file path). The actual file is NOT opened here. That happens later, when the program uses that path to read the file.
+
+
+Are these flag names built into argparse, or defined here?
+
+Good question. Two categories exist:
+
+   1  BUILT-IN, added automatically by argparse. You do NOT write  add_argument  for these  --  they just work. So far only two exist by default:
+
+        -   -h   and  --help   --  show the auto-generated help output when the user runs
+
+              python -m mypackage --help
+
+          argparse builds this help text from every flag that was registered via  add_argument  (using each flag's own  help="..."  string).
+
+   2  CUSTOM, added by the developer. Every flag you see in  main()  is one of these:
+
+        -   --data-dir
+        -   --config
+        -   --port
+        -   --bind
+        -   --verbose
+
+      None of these mean anything to argparse by default. They exist only because  main()  called  parser.add_argument  for each one.
+
+      Try it: comment out any of those  add_argument  lines and try passing that flag on the shell. argparse will reject it as "unrecognized arguments".
+
+
+Adding an integer flag  ( type=int )
+
+    parser.add_argument("--port", type=int, default=8000,
+                        help="HTTP API port (0 disables)")
+
+Registers a flag called  --port  on the parser. Split across two lines only because it does not fit on one  --  the open parenthesis lets Python wrap. Piece by piece:
+
+  -   parser   --  same ArgumentParser object.
+
+  -   .add_argument   --  same METHOD.
+
+  -   "--port"   --  the flag name.
+
+  -   type=int   --  NEW keyword argument. Tells argparse to CONVERT the user's input from string to integer.
+
+      Example. If the user types  --port 9000 , argparse hands us the int  9000 , not the string  "9000" . If the user types  --port abc , argparse rejects it because "abc" cannot be turned into an int.
+
+  -   default=8000   --  if the user omits  --port , argparse pretends they passed  8000  (an integer, matching  type=int ).
+
+  -   help="HTTP API port (0 disables)"   --  same HELP TEXT keyword as before.
+
+
+Adding a flag with multi-line help text
+
+    parser.add_argument("--bind", default="127.0.0.1",
+                        help="HTTP API bind address (dev surface, unauthenticated; "
+                             "use 0.0.0.0 only on a trusted network)")
+
+Registers the fourth flag,  --bind , on the parser. Piece by piece:
+
+  -   parser   --  same ArgumentParser object.
+
+  -   .add_argument   --  same METHOD.
+
+  -   "--bind"   --  the flag name.
+
+  -   default="127.0.0.1"   --  if the user omits  --bind , argparse pretends they passed  "127.0.0.1"  (a string).
+
+  -   help="..."   --  the HELP TEXT. Notice this one is split across TWO adjacent string literals with no  +  in between:
+
+          "HTTP API bind address (dev surface, unauthenticated; "
+          "use 0.0.0.0 only on a trusted network)"
+
+      In Python, two string literals sitting next to each other in the source get JOINED into one string automatically. A common trick for wrapping long help messages across lines.
+
+
+Adding an on/off flag  ( action="store_true" )
+
+    parser.add_argument("--verbose", action="store_true",
+                        help="print debug information to the terminal "
+                             "(useful for troubleshooting startup issues "
+                             "and debugging misbehaving components)")
+
+Registers the fifth flag,  --verbose , on the parser. This one is an ON/OFF flag  --  a different shape from the four value flags above. Piece by piece:
+
+  -   parser   --  same ArgumentParser object.
+
+  -   .add_argument   --  same METHOD.
+
+  -   "--verbose"   --  the flag name.
+
+  -   action="store_true"   --  NEW keyword argument. Tells argparse: "this is an ON/OFF flag. It takes NO value on the shell. If the flag is PRESENT, set  args.verbose  to  True . If it is ABSENT, set it to  False ."
+
+      Example. Running
+
+          python -m mypackage --verbose
+
+      gives
+
+          args.verbose == True
+
+      Running
+
+          python -m mypackage
+
+      gives
+
+          args.verbose == False
+
+      No  default=  is needed  --   store_true  already implies "default is  False ".
+
+  -   help="..."   --  the HELP TEXT, spread across THREE adjacent string literals this time (same concatenation trick as the previous line):
+
+          "print debug information to the terminal "
+          "(useful for troubleshooting startup issues "
+          "and debugging misbehaving components)"
+
+      Python joins all three into one long string.
+
+
+After this line, all FIVE flags are registered on the parser.
+
+
+Parsing the command line
+
+    args = parser.parse_args()
+
+This is the line where argparse ACTUALLY reads the command line the user typed and turns it into the  args  object. Up to this point, nothing was read from the shell  --  we only DESCRIBED the flags. Now the reading happens. Piece by piece:
+
+  -   args   --  the variable that will hold the result. Chosen by the developer  --  could have been any name.
+
+  -   =   --  the assignment operator.
+
+  -   parser   --  the same ArgumentParser object, now loaded with all five flag definitions.
+
+  -   .parse_args   --  a METHOD on the ArgumentParser class. Its job is to READ and MATCH the command line.
+
+  -   ()   --  calling the method with NO arguments. No arguments because  parse_args  already knows where to find the command line.
+
+What happens inside  parse_args() , step by step:
+
+   1  Read  sys.argv  (e.g. [ "--data-dir" , "./mydata" ,  "--verbose" ]).
+
+   2  Walk through the tokens and MATCH each  --flag  against the five registered flags. If a flag is not recognized, argparse prints an error and stops the program.
+
+   3  For value flags (like  --port ), grab the next token as the value and CONVERT it to the declared type (e.g.  int ). If the conversion fails, argparse complains and stops.
+
+   4  For on/off flags (like  --verbose ), just set the attribute to  True  (presence) or  False  (absence).
+
+   5  For any flag the user OMITTED, fill in the  default=  value (or  None  if no default was declared).
+
+   6  Wrap all those values into a single  argparse.Namespace  object and RETURN it.
+
+That returned Namespace is assigned to  args . From this point on, every setting lives on  args  as an attribute:
+
+    args.data_dir    # str,  "./mydata"
+    args.config      # str or None
+    args.port        # int,  8000 by default
+    args.bind        # str,  "127.0.0.1" by default
+    args.verbose     # bool, True or False
+
+
+What is a NAMESPACE?
+
+In general, a NAMESPACE is a container that holds NAMES and maps each name to a value. Think of it like a phone contact list: each NAME (contact name) points to a value (phone number). Or a labelled folder full of items, each item tagged with a name.
+
+Python has several kinds of namespaces:
+
+  -  A MODULE is a namespace. The  math  module maps the name  pi  to  3.14159... , the name  sin  to a function. Access with dot notation:  math.pi ,  math.sin(0.5) .
+
+  -  A CLASS is a namespace. Names inside the class body (attributes, methods) are reached with dot notation on the instance.
+
+  -  A FUNCTION has its own namespace while it runs  --  the local variables declared inside it.
+
+ argparse.Namespace  is a tiny CLASS inside the argparse module whose ONLY job is to act as an empty container. argparse fills it in with one attribute per parsed flag, and returns it.
+
+
+What is an ATTRIBUTE?
+
+An ATTRIBUTE is a NAME attached to an object that holds a value. You reach an attribute using DOT NOTATION:
+
+    object.attribute
+
+Everyday analogy. Picture a person as an object. That person has attributes:
+
+    name    = "Adarsh"
+    age     = 25
+    height  = "5.8 ft"
+
+If  person  were a Python object, you would read them as:
+
+    person.name    # "Adarsh"
+    person.age     # 25
+    person.height  # "5.8 ft"
+
+Same pattern inside argparse:  args  is an object; each parsed flag becomes an ATTRIBUTE on that object:
+
+    args.data_dir    # "./data"
+    args.port        # 8000
+    args.verbose     # False
+
+Two common kinds of attribute:
+
+  -  DATA attribute  --  holds a plain value (string, number, boolean, list, etc.), like the ones shown above.
+
+  -  METHOD  --  an attribute that is a FUNCTION. You CALL it with parentheses. Example:  parser.add_argument(...)   --   add_argument  is a method attribute of the parser object.
+
+In casual talk the words "attribute", "field", and "property" all point at the same idea: a named slot on an object, reached with a dot.
+
+
+With section 22 we finish the Python topic. Next we move to the backend framework layer  --  HTTP, FastAPI, SQLite.

@@ -2,14 +2,9 @@
 
 1)  What pip is
 
-pip is Python's PACKAGE INSTALLER. It
-downloads and installs third-party
-libraries from a central repository called
-PyPI  (Python Package Index).
+pip is Python's PACKAGE INSTALLER. It downloads and installs third-party libraries from a central repository called PyPI  (Python Package Index).
 
-Every venv (see section 18) comes with its own
-pip , so packages install into that venv
-and not the system.
+Every venv (see section 18) comes with its own  pip , so packages install into that venv and not the system.
 
 
 2)  Basic install
@@ -24,8 +19,7 @@ Output (last line):
 
      Successfully installed requests-2.32.3
 
-The package  requests  and everything it
-depends on is now installed.
+The package  requests  and everything it depends on is now installed.
 
 Install multiple packages in one command:
 
@@ -56,8 +50,7 @@ Example:
 
      pip uninstall requests
 
-pip asks for confirmation ( y  or  n ).
-To skip the prompt, add  -y :
+pip asks for confirmation ( y  or  n ). To skip the prompt, add  -y :
 
      pip uninstall -y requests
 
@@ -66,8 +59,7 @@ To skip the prompt, add  -y :
 
      pip list
 
-Example output (fresh venv with one
-package):
+Example output (fresh venv with one package):
 
      Package    Version
      ---------- -------
@@ -98,10 +90,7 @@ Output (excerpt):
 
 7)  What requirements.txt is
 
-requirements.txt  is a plain text file
-that lists the packages a project needs,
-one per line. Anyone with the file can
-install the same set with one command.
+requirements.txt  is a plain text file that lists the packages a project needs, one per line. Anyone with the file can install the same set with one command.
 
 Example  requirements.txt :
 
@@ -112,14 +101,11 @@ Example  requirements.txt :
 Rules:
 
   -  One package per line.
-  -  Blank lines and comments (starting
-     with  # ) are allowed.
-  -  Version constraints work the same as
-     on the  pip install  command line.
+  -  Blank lines and comments (starting with  # ) are allowed.
+  -  Version constraints work the same as on the  pip install  command line.
 
 
-8)  Freeze  --  create requirements.txt from
-    the current venv
+8)  Freeze  --  create requirements.txt from the current venv
 
      pip freeze > requirements.txt
 
@@ -131,27 +117,18 @@ Output file (example):
      requests==2.32.3
      urllib3==2.2.3
 
-pip freeze  writes EVERY installed package
-with its exact version. This is a full
-snapshot of the venv.
+pip freeze  writes EVERY installed package with its exact version. This is a full snapshot of the venv.
 
 Downside:
 
-     pip freeze  also lists sub-dependencies
-     that got installed automatically. Some
-     teams prefer to hand-maintain
-     requirements.txt  with only the direct
-     dependencies and let  pip  pull the
-     rest in.
+     pip freeze  also lists sub-dependencies that got installed automatically. Some teams prefer to hand-maintain  requirements.txt  with only the direct dependencies and let  pip  pull the rest in.
 
 
 9)  Install from requirements.txt
 
      pip install -r requirements.txt
 
-pip reads the file and installs every
-listed package, respecting the version
-pins.
+pip reads the file and installs every listed package, respecting the version pins.
 
 Common workflow after cloning a project:
 
@@ -164,8 +141,7 @@ You are now ready to run the project.
 
 10)  Upgrading
 
-Upgrade one package to the latest
-compatible version:
+Upgrade one package to the latest compatible version:
 
      pip install --upgrade requests
 
@@ -178,55 +154,32 @@ Upgrade  pip  itself:
 
   (a)   pip: command not found
 
-        Your venv is not active, and the
-        system has no  pip  installed.
-        Two options:
+        Your venv is not active, and the system has no  pip  installed. Two options:
 
            source .venv/bin/activate
 
-        Or use  python3 -m pip  instead
-        of plain  pip :
+        Or use  python3 -m pip  instead of plain  pip :
 
            python3 -m pip install requests
 
 
   (b)   Permission denied when installing
 
-        You are trying to install to the
-        system Python without  sudo . Do
-        NOT use  sudo pip  as a
-        workaround  --  it can break the
-        system Python. Activate a venv
-        and install there instead.
+        You are trying to install to the system Python without  sudo . Do NOT use  sudo pip  as a workaround  --  it can break the system Python. Activate a venv and install there instead.
 
 
   (c)   ModuleNotFoundError after install
 
         Two common causes:
 
-        -  You installed into a different
-           venv than the one you are
-           running the script in. Check
-           with  which python3  and
-           which pip .
+        -  You installed into a different venv than the one you are running the script in. Check with  which python3  and  which pip .
 
-        -  You installed globally but the
-           venv is active. Fix: reinstall
-           inside the active venv.
+        -  You installed globally but the venv is active. Fix: reinstall inside the active venv.
 
 
   (d)   requirements.txt is out of date
 
-        A teammate cloned your project
-        and gets  ModuleNotFoundError .
-        The reason is usually that
-        requirements.txt  was not updated
-        after the last  pip install .
-        Re-run  pip freeze >
-        requirements.txt  after every new
-        install and commit the file.
+        A teammate cloned your project and gets  ModuleNotFoundError . The reason is usually that  requirements.txt  was not updated after the last  pip install . Re-run  pip freeze > requirements.txt  after every new install and commit the file.
 
 
-With section 19 we finish the Python topic.
-Next we move to the backend framework
-layer  --  HTTP, FastAPI, SQLite.
+In section 20 we look at PROJECT STRUCTURE  --  the  src/  folder convention and how a Python project's code is typically organised.

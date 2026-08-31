@@ -1,30 +1,19 @@
-7  --  Dictionaries  (create, read, update,
-         delete key-value pairs)
+7  --  Dictionaries  (create, read, update, delete key-value pairs)
 
 1)  What a dictionary is
 
-A DICTIONARY (or "dict") is a collection of
-KEY  ->  VALUE pairs. Each key stores a
-single value. You look up a value by giving
-its key.
+A DICTIONARY (or "dict") is a collection of KEY  ->  VALUE pairs. Each key stores a single value. You look up a value by giving its key.
 
 Key properties:
 
-  -  Each key is UNIQUE inside one dict.
-     Assigning a value to an existing key
-     REPLACES the old value.
-  -  A dict is MUTABLE  --  you can add,
-     change, and remove key-value pairs
-     after creation.
-  -  Since Python 3.7, dicts preserve
-     INSERTION ORDER  --  items come out
-     in the order they were added.
+  -  Each key is UNIQUE inside one dict. Assigning a value to an existing key REPLACES the old value.
+  -  A dict is MUTABLE  --  you can add, change, and remove key-value pairs after creation.
+  -  Since Python 3.7, dicts preserve INSERTION ORDER  --  items come out in the order they were added.
 
 
 2)  Creating a dictionary
 
-Use curly braces  { }  with items in the
-form  key: value  , separated by commas.
+Use curly braces  { }  with items in the form  key: value  , separated by commas.
 
 Code:
 
@@ -40,13 +29,9 @@ Code:
 Notes:
 
   -  An empty dict is  {}  (zero items).
-  -  Keys are usually strings, but can be
-     any IMMUTABLE type (string, number,
-     tuple).
-  -  Values can be any type: strings,
-     numbers, lists, other dicts, anything.
-  -  A single dict may have keys of
-     different types.
+  -  Keys are usually strings, but can be any IMMUTABLE type (string, number, tuple).
+  -  Values can be any type: strings, numbers, lists, other dicts, anything.
+  -  A single dict may have keys of different types.
 
 
 Alternative:  dict()  constructor
@@ -58,16 +43,12 @@ Code:
 
 Output:  {'name': 'adarsh', 'age': 25}
 
-This form only works when keys are valid
-Python variable names. For any key type,
-use the  { }  form.
+This form only works when keys are valid Python variable names. For any key type, use the  { }  form.
 
 
 3)  Reading a value
 
-Use square brackets  d[key]  , like
-indexing a list, but with the KEY (not a
-number) inside.
+Use square brackets  d[key]  , like indexing a list, but with the KEY (not a number) inside.
 
 Code:
 
@@ -80,8 +61,7 @@ Output:
      25
 
 
-If the key does NOT exist, this raises a
-KeyError :
+If the key does NOT exist, this raises a  KeyError :
 
 Code:
 
@@ -122,10 +102,8 @@ Output:
 
 Assign to a key with  = .
 
-  -  Key does NOT exist  ->  ADDS a new
-                             key-value pair.
-  -  Key already exists  ->  REPLACES the
-                             old value.
+  -  Key does NOT exist  ->  ADDS a new key-value pair.
+  -  Key already exists  ->  REPLACES the old value.
 
 Code:
 
@@ -139,8 +117,7 @@ Output:  {'name': 'adarsh k', 'age': 25}
 
 Bulk update  --  d.update(other)
 
-Adds all key-value pairs from another dict.
-Overwrites existing keys.
+Adds all key-value pairs from another dict. Overwrites existing keys.
 
 Code:
 
@@ -167,8 +144,7 @@ Output:  {'x': 1, 'y': 99, 'z': 3}
         A missing key raises  KeyError .
 
 
-  (b)   d.pop(key)  --  remove and RETURN
-                       the value.
+  (b)   d.pop(key)  --  remove and RETURN the value.
 
         Code:
 
@@ -181,8 +157,7 @@ Output:  {'x': 1, 'y': 99, 'z': 3}
            25
            {'name': 'adarsh'}
 
-        A missing key raises  KeyError  ,
-        unless you pass a default:
+        A missing key raises  KeyError  , unless you pass a default:
 
            v = person.pop("email", None)
 
@@ -232,8 +207,7 @@ in  checks KEYS by default, not values.
 
   (b)   d.keys()   --  view of all keys.
         d.values() --  view of all values.
-        d.items()  --  view of (key, value)
-                       pairs.
+        d.items()  --  view of (key, value) pairs.
 
         Code:
 
@@ -263,22 +237,7 @@ in  checks KEYS by default, not values.
 
 8)  Common errors
 
-  (a)   Missing key with square brackets
-
-        Code:
-
-           person = {"name": "adarsh"}
-           print(person["age"])
-
-        Run:
-
-           KeyError: 'age'
-
-        Use  .get()  , or check with  in
-        first.
-
-
-  (b)   Duplicate keys in a literal
+  (a)   Duplicate keys in a literal
 
         Code:
 
@@ -287,11 +246,10 @@ in  checks KEYS by default, not values.
 
         Output:  {'x': 2}
 
-        No error, but only the LAST value
-        for a repeated key survives.
+        No error, but only the LAST value for a repeated key survives.
 
 
-  (c)   Unhashable key (list as a key)
+  (b)   Unhashable key (list as a key)
 
         Code:
 
@@ -301,10 +259,7 @@ in  checks KEYS by default, not values.
 
            TypeError: unhashable type: 'list'
 
-        Lists are mutable and cannot be
-        dict keys. Use a tuple instead:
-        {(1, 2): "hello"}  works.
+        Lists are mutable and cannot be dict keys. Use a tuple instead:  {(1, 2): "hello"}  works.
 
 
-In section 8 we look at TUPLES  --  ordered
-collections like lists, but IMMUTABLE.
+In section 8 we look at TUPLES  --  ordered collections like lists, but IMMUTABLE.

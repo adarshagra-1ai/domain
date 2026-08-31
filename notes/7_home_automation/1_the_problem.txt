@@ -1,0 +1,96 @@
+1  --  The problem: many "islands"
+
+A modern home has many "smart" devices  --  TV, AC (Air Conditioner), lights, curtains, door locks, speakers, doorbells, cameras, thermostats (devices that read room temperature and switch heating or cooling on / off). Each brand ships its own ecosystem, and none of them talk to each other by default.
+
+
+Quick note on six basic terms used below  --
+
+  -  BUS  --  in wiring terms, a BUS is a single shared wire (or pair of wires) that many devices tap into. Every device connected to the bus can send and receive messages on it, and every other device on the same bus hears them. The KNX bus is a twisted-pair wire that runs from the electrical panel through every switch, dimmer, and sensor in the building; when one device speaks, all others on the same wire can listen. Simple wiring, one shared "party line".
+
+  -  SWITCH  --  in this file, "switch" means a WALL SWITCH: the physical control mounted on the wall of a room that turns a light on or off. In a "dumb" switch it just breaks the wire; in a "smart" / KNX switch it also sends a message on the bus so the whole system knows the state changed.
+
+  -  DIMMER  --  a control (wall panel or small module in the ceiling) that not only turns a light on / off but also sets the brightness (say 30% or 70%). Needed for dimmable lights: warm lights, mood lighting, chandeliers.
+
+  -  ROUTER  --  the small networking box from the internet provider that sits in one corner of the home. Its job: (a) create the home network (Wi-Fi name + password + wired ports) so all devices in the house can talk to each other, and (b) forward messages between the home network and the internet. Every phone, laptop, TV, and hub in the house connects to the router (over Wi-Fi or Ethernet cable) and gets its IP address from it.
+
+  -  GATEWAY  --  in networking, GATEWAY is the general word for any device that sits between two different networks and translates between them. A HUB / BRIDGE is a gateway between the brand's protocol network (KNX, Zigbee, etc.) and the home IP network.
+
+  -  ETHERNET  --  the wired LAN (Local Area Network) inside a home or building. A physical cable (the familiar RJ-45 blue cable) that carries IP packets between the router, computers, gateways, TVs, etc. Faster and more reliable than Wi-Fi but needs a cable running to the device. A hub / gateway is usually connected to the router by an Ethernet cable.
+
+
+What is a HUB or a BRIDGE?
+
+A HUB (also called BRIDGE, GATEWAY, or COORDINATOR by different brands) is a small hardware box that acts as a TRANSLATOR between the brand's devices and the home network.
+
+Many device protocols (Zigbee, Z-Wave, KNX, Bluetooth) cannot talk to a Wi-Fi router directly. The hub sits in the middle: on one side it speaks the device's local protocol; on the other side it speaks Wi-Fi or Ethernet, so the phone app, the router, and the cloud can reach the devices.
+
+
+A quick note on IP first.
+
+IP (Internet Protocol) is the addressing and delivery language that every device on a home network speaks. When a device joins the home Wi-Fi or Ethernet, it gets an IP address (a number like 192.168.1.42). Every other device on the network uses that address to send it messages. Router, phones, laptops, smart TVs, and hubs all share IP.
+
+
+Examples of hubs / bridges:
+
+  -  KNX IP gateway  --  a small box wired into the KNX bus (a twisted-pair wire that runs behind every KNX switch and dimmer in the building) on one side, and plugged into the home Ethernet on the other side.
+
+     The KNX bus does not understand IP, and the router does not understand KNX. The gateway sits between the two and converts messages both ways:
+
+Wi-Fi-only devices (many smart TVs and smart plugs) do NOT need a hub  --  they connect straight to the home Wi-Fi.
+
+1)  Every brand has its own stack
+
+Most of the names below are COMPANIES (the maker of the device):
+
+  -  Philips  --  maker of Hue lights.
+  -  LG  --  maker of the TV.
+  -  Daikin  --  maker of the AC.
+  -  Lutron  --  maker of the curtain motors and its own hub.
+  -  Sonos  --  maker of the speakers.
+  -  Ring  --  maker of the doorbell (now owned by Amazon).
+
+KNX is different. KNX is NOT a company. It is an open PROTOCOL (a wiring + messaging standard) maintained by the KNX Association. Many different companies make KNX-compatible switches, dimmers, sensors, and thermostats. They all speak the same KNX language, so a KNX switch from one brand can talk to a KNX dimmer from another brand on the same wire.
+
+So when the list below says "KNX switches", it means switches that speak the KNX protocol  --  made by any of many manufacturers, not one single brand.
+
+Same idea applies to Zigbee, Z-Wave, Wi-Fi, Bluetooth  --  those are also protocols / standards, not companies. Any company can build a device that speaks them.
+
+
+Some real examples:
+
+  -  Philips Hue lights need the Hue Bridge and the Hue app.
+
+  -  LG TVs need the LG ThinQ app.
+
+  -  Daikin ACs need the Daikin app.
+
+  -  Lutron curtains need a Lutron hub and the Lutron app.
+
+  -  KNX switches need a KNX bus (KNX is a building-automation wiring standard).
+
+  -  Sonos speakers need the Sonos app.
+
+  -  Ring doorbells need the Ring app.
+
+Every one of these ecosystems brings four things of its own:
+
+  -  Protocol  --  the language the device speaks: Wi-Fi + HTTP (HyperText Transfer Protocol), Zigbee, Z-Wave, KNX, Bluetooth, RS-485 serial, IR (Infrared).
+
+  -  Hub / Bridge  --  the translator box between the device's protocol and the home Wi-Fi / Ethernet (explained at the top of this file).
+
+  -  App  --  a separate icon on the phone.
+
+  -  Cloud account  --  a separate login and a separate privacy policy.
+
+
+2)  End-user pain
+
+  -  10+ apps on the phone. Which one to open?
+
+  -  A simple "movie mode" needs 4 apps opened one by one: TV on, lights dim, AC set, curtains close.
+
+  -  Voice assistants (Alexa, Google) cover some devices but not all.
+
+  -  If a switch is pressed by hand, the app often still shows the old state. State sync between the device and the app breaks.
+
+  -  Internet goes down and every cloud-based device stops responding.

@@ -2,27 +2,18 @@
 
 1)  What FastAPI is
 
-FastAPI is a Python library for building
-HTTP APIs quickly. You write plain Python
-functions, decorate them with the URL and
-method they should answer, and FastAPI
-handles the rest (parsing the request,
-validating input, returning JSON).
+FastAPI is a Python library for building HTTP APIs quickly. You write plain Python functions, decorate them with the URL and method they should answer, and FastAPI handles the rest (parsing the request, validating input, returning JSON).
 
 Facts you need for now:
 
-  -  It is a THIRD-PARTY package (install
-     with  pip , see A.19).
-  -  It runs on top of an ASGI server. The
-     one we use is  uvicorn .
-  -  It auto-generates interactive
-     documentation for your API
-     (Application Programming Interface).
+  -  It is a THIRD-PARTY package (install with  pip , see section 19 of the Python topic).
+  -  It runs on top of an ASGI server. The one we use is  uvicorn .
+  -  It auto-generates interactive documentation for your API (Application Programming Interface).
 
 
 2)  Install FastAPI and uvicorn
 
-Inside your project's venv (see A.18):
+Inside your project's venv (see section 18 of the Python topic):
 
      pip install fastapi uvicorn
 
@@ -34,8 +25,7 @@ Verify:
 
 3)  The minimum hello-world file
 
-Create a file called  main.py  inside the
-programs/  folder (per instructions.txt).
+Create a file called  main.py  inside the  programs/  folder (per instructions.txt).
 
 Content of  main.py :
 
@@ -53,22 +43,13 @@ Line by line:
        Import the FastAPI class.
 
   -  app = FastAPI()
-       Create the app INSTANCE.
-       Everything we register goes onto
-       this  app  object.
+       Create the app INSTANCE. Everything we register goes onto this  app  object.
 
   -  @app.get("/")
-       This is a DECORATOR. It attaches
-       the function below to a specific
-       method + path. Here it says "when
-       a GET request comes for path  / ,
-       run the function below".
+       This is a DECORATOR. It attaches the function below to a specific method + path. Here it says "when a GET request comes for path  / , run the function below".
 
   -  def read_root(): ...
-       The handler. Returns a Python
-       dict. FastAPI converts it to JSON
-       (JavaScript Object Notation) in the
-       response body.
+       The handler. Returns a Python dict. FastAPI converts it to JSON (JavaScript Object Notation) in the response body.
 
 
 4)  Run the server
@@ -94,14 +75,12 @@ Expected output:
             http://127.0.0.1:8000
      INFO:  Application startup complete.
 
-The server is now listening on port 8000
-of  127.0.0.1  (your own machine).
+The server is now listening on port 8000 of  127.0.0.1  (your own machine).
 
 
 5)  Try the route
 
-Open a SECOND terminal (leave uvicorn
-running in the first) and run:
+Open a SECOND terminal (leave uvicorn running in the first) and run:
 
      curl http://127.0.0.1:8000/
 
@@ -109,30 +88,21 @@ Output:
 
      {"message":"hello, world"}
 
-Or open the same URL in your browser  --
-you will see the same JSON.
+Or open the same URL in your browser  --  you will see the same JSON.
 
 
 6)  What is  127.0.0.1  and port  8000
 
-  -  127.0.0.1  is a special address that
-     always means "this same machine". It
-     is often called "localhost". No other
-     computer on the network can reach it.
+  -  127.0.0.1  is a special address that always means "this same machine". It is often called "localhost". No other computer on the network can reach it.
 
-  -  Port  8000  is just a number the
-     server picks to listen on. It could
-     be any free number; uvicorn's default
-     is 8000. Pick a different one with
-     --port :
+  -  Port  8000  is just a number the server picks to listen on. It could be any free number; uvicorn's default is 8000. Pick a different one with  --port :
 
      uvicorn main:app --reload --port 9000
 
 
 7)  Interactive docs  (free bonus)
 
-FastAPI generates documentation for every
-route automatically. Visit:
+FastAPI generates documentation for every route automatically. Visit:
 
      http://127.0.0.1:8000/docs
         (Swagger UI  --  interactive
@@ -142,34 +112,23 @@ route automatically. Visit:
         (ReDoc  --  static reference
          style)
 
-Both pages let you see, and even TEST,
-your routes right from the browser. This
-becomes very useful in section 2 when we add
-parameters.
+Both pages let you see, and even TEST, your routes right from the browser. This becomes very useful in section 2 when we add parameters.
 
 
 8)  Stop the server
 
-Press  Ctrl + C  in the terminal where
-uvicorn is running. It will print
-"Shutting down"  and return you to the
-prompt.
+Press  Ctrl + C  in the terminal where uvicorn is running. It will print  "Shutting down"  and return you to the prompt.
 
 
 9)  Adding a second route
 
-Every function decorated with
-@app.<method>("<path>")  becomes an
-endpoint. Add another route to the same
-file:
+Every function decorated with  @app.<method>("<path>")  becomes an endpoint. Add another route to the same file:
 
      @app.get("/health")
      def health():
          return {"status": "ok"}
 
-With  --reload  , the change is picked up
-automatically  --  no need to stop and
-restart. Try it:
+With  --reload  , the change is picked up automatically  --  no need to stop and restart. Try it:
 
      curl http://127.0.0.1:8000/health
 
@@ -186,52 +145,32 @@ Common decorators for other methods:
      @app.patch("/things/{id}") partial update
      @app.delete("/things/{id}") delete
 
-The  {id}  syntax is a PATH PARAMETER
-(details in section 2).
+The  {id}  syntax is a PATH PARAMETER (details in section 2).
 
 
 10)  Common errors
 
-  (a)   ModuleNotFoundError: No module
-        named 'fastapi'
+  (a)   ModuleNotFoundError: No module named 'fastapi'
 
-        Your venv is not active, or you
-        forgot to run  pip install
-        fastapi . Activate the venv and
-        reinstall.
+        Your venv is not active, or you forgot to run  pip install fastapi . Activate the venv and reinstall.
 
 
   (b)   Error: could not find module 'main'
 
-        The first argument to  uvicorn  is
-        the MODULE name, not a file path.
-        Use  main:app  , not
-        main.py:app  , and make sure you
-        are in the same folder as
-        main.py .
+        The first argument to  uvicorn  is the MODULE name, not a file path. Use  main:app  , not  main.py:app  , and make sure you are in the same folder as  main.py .
 
 
   (c)   Address already in use
 
-        Something else is running on port
-        8000. Options:
+        Something else is running on port 8000. Options:
 
         -  Stop the other process.
-        -  Run uvicorn on a different
-           port:  --port 9000 .
+        -  Run uvicorn on a different port:  --port 9000 .
 
 
   (d)   Reload not picking up changes
 
-        --reload  watches the folder for
-        file changes. If you edit a file
-        in a folder uvicorn does not
-        watch, it will not restart. Make
-        sure  main.py  is inside the
-        folder from which you started
-        uvicorn.
+        --reload  watches the folder for file changes. If you edit a file in a folder uvicorn does not watch, it will not restart. Make sure  main.py  is inside the folder from which you started uvicorn.
 
 
-In section 2 we look at path params, query
-params, and JSON bodies  --  how a route
-takes input from the caller.
+In section 2 we look at path params, query params, and JSON bodies  --  how a route takes input from the caller.

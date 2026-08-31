@@ -2,9 +2,7 @@
 
 1)  Making a string
 
-Wrap text in double quotes  " ... "  or
-single quotes  ' ... '  . Both work exactly
-the same way.
+Wrap text in double quotes  " ... "  or single quotes  ' ... '  . Both work exactly the same way.
 
 Code:
 
@@ -15,9 +13,7 @@ Code:
 Output:  True
 
 
-Choose the quote style based on what the
-text itself contains, so you do not have to
-escape:
+Choose the quote style based on what the text itself contains, so you do not have to escape:
 
      "It's a nice day"        (use double,
                                apostrophe
@@ -28,9 +24,7 @@ escape:
                                stay)
 
 
-Triple-quoted strings  ( """...""" or
-'''...''' )  can span multiple lines. The
-newlines you type are preserved.
+Triple-quoted strings  ( """...""" or '''...''' )  can span multiple lines. The newlines you type are preserved.
 
 Code:
 
@@ -47,9 +41,7 @@ Output:
 
 2)  Escape sequences
 
-Inside a string, a backslash  \  starts an
-ESCAPE SEQUENCE  --  a code for a special
-character.
+Inside a string, a backslash  \  starts an ESCAPE SEQUENCE  --  a code for a special character.
 
      \n     ->  newline (line break)
      \t     ->  tab
@@ -74,8 +66,7 @@ Output:
 
 3)  len()  --  length of a string
 
-The built-in  len(s)  returns the number of
-characters in the string  s .
+The built-in  len(s)  returns the number of characters in the string  s .
 
 Code:
 
@@ -96,15 +87,12 @@ Notes:
 
 4)  Indexing  --  get one character
 
-Every character in a string has a POSITION
-called an INDEX. Indexes start at  0 , not
-at  1 .
+Every character in a string has a POSITION called an INDEX. Indexes start at  0 , not at  1 .
 
      s   =  "python"
      idx    0 1 2 3 4 5
 
-Use square brackets  s[i]  to read the
-character at position  i .
+Use square brackets  s[i]  to read the character at position  i .
 
 Code:
 
@@ -144,12 +132,9 @@ Rule:
 Syntax:  s[start:stop]
 
   -  start   INCLUDED (0-based).
-  -  stop    NOT included (one past the
-             last position you want).
+  -  stop    NOT included (one past the last position you want).
 
-If  start  is omitted, it defaults to  0 .
-If  stop  is omitted, it defaults to the
-end of the string.
+If  start  is omitted, it defaults to  0 . If  stop  is omitted, it defaults to the end of the string.
 
 
 Code:
@@ -207,8 +192,7 @@ Output:
      hahaha
 
 
-You cannot concatenate a string with a
-number directly:
+You cannot concatenate a string with a number directly:
 
 Code:
 
@@ -227,14 +211,12 @@ Code:
 
 Output:  score: 42
 
-An f-string (section 10) is a cleaner way
-for this common case.
+An f-string (section 10) is a cleaner way for this common case.
 
 
 7)  Membership  --  in  and  not in
 
-Check whether a substring appears inside a
-string.
+Check whether a substring appears inside a string.
 
 Code:
 
@@ -248,18 +230,12 @@ Output:
      False
      True
 
-The check is CASE-SENSITIVE.  "Python" in s
-would be  False  because  s  has lowercase
-p .
+The check is CASE-SENSITIVE.  "Python" in s  would be  False  because  s  has lowercase  p .
 
 
 8)  Common string methods
 
-Methods are functions attached to a value/object.
-You call them with dot syntax:
-value.method(args) . Every method below
-returns a NEW string; the original stays
-unchanged (see section 9 on immutability).
+Methods are functions attached to a value/object. You call them with dot syntax:  value.method(args) . Every method below returns a NEW string; the original stays unchanged (see section 9 on immutability).
 
 
   (a)   Change case
@@ -279,8 +255,7 @@ unchanged (see section 9 on immutability).
            s.lstrip()     ->  "hi there   "
            s.rstrip()     ->  "   hi there"
 
-        strip()   removes whitespace (spaces,
-        tabs, newlines) from BOTH ends.
+        strip()   removes whitespace (spaces, tabs, newlines) from BOTH ends.
         lstrip()  removes from the LEFT only.
         rstrip()  removes from the RIGHT only.
 
@@ -291,8 +266,7 @@ unchanged (see section 9 on immutability).
 
            s.replace("a", "o")    ->  "bonono"
 
-        Replaces every occurrence of the
-        first argument with the second.
+        Replaces every occurrence of the first argument with the second.
 
 
   (d)   Split
@@ -301,9 +275,7 @@ unchanged (see section 9 on immutability).
 
            s.split(",")    ->  ["a", "b", "c", "d"]
 
-        Cuts the string wherever the given
-        separator appears. Returns a LIST
-        of pieces (lists come in section 6).
+        Cuts the string wherever the given separator appears. Returns a LIST of pieces (lists come in section 6).
 
 
   (e)   Check the start / end
@@ -331,15 +303,12 @@ unchanged (see section 9 on immutability).
            s.find("na")     ->   2
            s.find("xy")     ->  -1
 
-        Returns the INDEX where the
-        substring starts, or  -1  if it is
-        not found.
+        Returns the INDEX where the substring starts, or  -1  if it is not found.
 
 
 Chaining methods
 
-You can call a method on the result of
-another method:
+You can call a method on the result of another method:
 
 Code:
 
@@ -352,16 +321,12 @@ Output:
      adarsh kumar
      adarsh_kumar
 
-name.strip().lower()  runs  strip  first,
-then calls  lower  on its result.
+name.strip().lower()  runs  strip  first, then calls  lower  on its result.
 
 
 9)  Strings are IMMUTABLE
 
-You cannot change a string in place. Every
-method that "modifies" a string actually
-returns a NEW string; the original stays
-untouched.
+You cannot change a string in place. Every method that "modifies" a string actually returns a NEW string; the original stays untouched.
 
 Code:
 
@@ -371,9 +336,7 @@ Code:
 
 Output:  hello
 
-The  s.upper()  call returned  "HELLO" ,
-but nothing captured that new value, so
-s  still holds  "hello" .
+The  s.upper()  call returned  "HELLO" , but nothing captured that new value, so  s  still holds  "hello" .
 
 To keep the change, ASSIGN it back:
 
@@ -386,8 +349,7 @@ Code:
 Output:  HELLO
 
 
-You also cannot assign to a single
-position:
+You also cannot assign to a single position:
 
 Code:
 
@@ -399,8 +361,7 @@ Run:
      TypeError: 'str' object does not
      support item assignment
 
-To change one character, REBUILD the
-string:
+To change one character, REBUILD the string:
 
 Code:
 
@@ -413,11 +374,7 @@ Output:  Hello
 
 10)  f-strings  --  build strings with variables
 
-An f-string is a string with an  f  in
-front of the opening quote. Inside the
-string, put variable names (or small
-expressions) in  braces or curly brackets{ }  and Python replaces
-them with their values.
+An f-string is a string with an  f  in front of the opening quote. Inside the string, put variable names (or small expressions) in braces (curly brackets)  { }  and Python replaces them with their values.
 
 Syntax:
 
@@ -434,8 +391,7 @@ Output:
      Hello, adarsh. You are 25.
 
 
-Expressions work inside the braces too,
-not just plain variable names:
+Expressions work inside the braces too, not just plain variable names:
 
 Code:
 
@@ -446,16 +402,13 @@ Code:
 Output:  7 + 3 = 10
 
 
-f-strings work with single, double, and
-triple quotes:
+f-strings work with single, double, and triple quotes:
 
      f"..."
      f'...'
      f"""..."""
 
-Use them instead of  +  concatenation with
-str()  conversions. They are shorter and
-easier to read.
+Use them instead of  +  concatenation with  str()  conversions. They are shorter and easier to read.
 
 
 11)  Common errors
@@ -471,44 +424,10 @@ easier to read.
 
            IndexError: string index out of range
 
-        s  has only 2 characters (indexes
-        0  and  1 ). Position  5  does not
-        exist.
+        s  has only 2 characters (indexes  0  and  1 ). Position  5  does not exist.
 
 
-  (b)   Trying to modify in place
-
-        Code:
-
-           s = "hello"
-           s[0] = "H"
-
-        Run:
-
-           TypeError: 'str' object does not
-           support item assignment
-
-        Rebuild the string instead:
-        s = "H" + s[1:] .
-
-
-  (c)   Forgetting to capture a method's
-        return value
-
-        Code:
-
-           s = "  hi  "
-           s.strip()
-           print(s)
-
-        Output:    hi
-
-        strip()  returned a new string but
-        no one captured it. Assign it back:
-        s = s.strip() .
-
-
-  (d)   Missing the  f  on an f-string
+  (b)   Missing the  f  on an f-string
 
         Code:
 
@@ -517,10 +436,7 @@ easier to read.
 
         Output:  Hello, {name}
 
-        Without the  f , the braces are
-        just literal text. Add the  f :
-        print(f"Hello, {name}") .
+        Without the  f , the braces are just literal text. Add the  f :  print(f"Hello, {name}") .
 
 
-In section 6 we look at LISTS  --  ordered
-collections that hold many values at once.
+In section 6 we look at LISTS  --  ordered collections that hold many values at once.
