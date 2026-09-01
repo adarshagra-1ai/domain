@@ -180,3 +180,114 @@ Output:
      price is #5
 
 The  #  sat inside the quotes, so it is part of the string, not the start of a comment.
+
+7)  input()  --  read a line typed by the user
+
+print()  sends text OUT to the screen.  input()  is its opposite: it reads a line typed IN on the keyboard.
+
+     input()               waits for a line, returns it
+     input("prompt: ")     prints the prompt first, then waits
+
+The program STOPS at the  input()  line and waits until you press Enter.
+
+Code:
+
+     name = input("What is your name? ")
+     print("Hello, " + name)
+
+Run  (the  adarsh  below is typed by you, then Enter):
+
+     adarsh@laptop:~$  python3 hello.py
+     What is your name? adarsh
+     Hello, adarsh
+
+input() ALWAYS returns a string
+
+Even when you type digits, what comes back is text, not a number.
+
+Code:
+
+     age = input("Your age: ")
+     print(type(age))
+
+Run:
+
+     adarsh@laptop:~$  python3 hello.py
+     Your age: 25
+     <class 'str'>
+
+You typed  25 , but  age  holds the STRING  "25" . Doing maths on it directly fails:
+
+Code:
+
+     age = input("Your age: ")
+     print(age + 1)
+
+Run:
+
+     TypeError: can only concatenate str (not "int") to str
+
+Wrap it in  int()  to get a number:
+
+Code:
+
+     age = int(input("Your age: "))
+     print(age + 1)
+
+Run:
+
+     adarsh@laptop:~$  python3 hello.py
+     Your age: 25
+     26
+
+The types and the  int()  conversion are covered in section 4.
+
+8)  print() with  end=  and  sep=
+
+print()  takes two optional parameters that control how the output is laid out.
+
+     end     what to add at the very END of the output. Default is  "\n"  (a newline), which is why every  print  starts on a fresh line.
+     sep     the separator placed BETWEEN multiple arguments in one  print  call. Default is  " "  (a single space).
+
+end  --  controlling the line break
+
+Code:
+
+     print("hello")
+     print("hello", end="")
+     print("hello", end=" ")
+     print("hello", end="---")
+
+What each one adds after the text:
+
+     print("hello")              adds  \n
+     print("hello", end="")      adds nothing
+     print("hello", end=" ")     adds a space
+     print("hello", end="---")   adds  ---
+
+With  end="" , the NEXT print continues on the same line instead of starting a fresh one.
+
+Code:
+
+     print("a", end="")
+     print("b", end="")
+     print("c")
+
+Output:  abc
+
+sep  --  the gap between arguments
+
+One  print  call can take several arguments separated by commas. Python joins them with  sep .
+
+Code:
+
+     print("a", "b", "c")
+     print("a", "b", "c", sep="-")
+     print("a", "b", "c", sep="")
+
+Output:
+     a b c
+     a-b-c
+     abc
+
+end=""  becomes useful in section 13, when reading a file: each line read from a file already ends with its own  \n , so a plain  print  would add a second one and make the output double-spaced.

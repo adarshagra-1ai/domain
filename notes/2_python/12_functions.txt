@@ -10,7 +10,6 @@ A function can:
   -  do some work
   -  RETURN a value back to the caller
 
-
 2)  Defining a function
 
 Syntax:
@@ -27,7 +26,6 @@ Rules:
   -  The header ends with a colon  : .
   -  The block below must be INDENTED.
 
-
 Example  --  no parameters, no return:
 
 Code:
@@ -43,7 +41,6 @@ Output:
      hello
 
 Defining a function does NOT run its body. It just remembers the definition. The body runs only when you CALL the function ( greet() ).
-
 
 3)  Parameters and arguments
 
@@ -64,7 +61,6 @@ Output:
 
 Here  name  is the parameter;  "adarsh"  and  "priya"  are the arguments.
 
-
 Multiple parameters, comma-separated:
 
 Code:
@@ -78,7 +74,6 @@ Code:
 Output:
      8
      30
-
 
 4)  return  --  send a value back
 
@@ -97,12 +92,10 @@ Output:
      8
      6
 
-
 Notes:
 
   -  A function without  return  returns  None  by default.
   -  You can  return  early to end the function before the last line.
-
 
 Code:
 
@@ -118,7 +111,6 @@ Output:
      5.0
      None
 
-
 Returning multiple values (via a tuple):
 
 Code:
@@ -132,7 +124,6 @@ Code:
 Output:  1 9
 
 A comma-separated  return  packs the values into a tuple. Unpacking (see section 8) splits them out.
-
 
 5)  Default arguments
 
@@ -154,7 +145,6 @@ Rule: parameters WITH defaults must come AFTER parameters WITHOUT defaults.
 
      def bad(x=1, y): ...       <-  invalid
 
-
 6)  Positional vs keyword arguments
 
 You can pass arguments by POSITION (the usual way) or by KEYWORD ( name=value ).
@@ -175,10 +165,9 @@ Output:
 
 Keyword arguments make the intent clear at the call site and let you skip earlier optional arguments.
 
-
 7)  *args  --  variable number of positional arguments
 
-Sometimes you do not know in advance how many positional arguments the caller will pass. Use  *args  in the parameter list.
+When you do not know in advance how many positional arguments the caller will pass, use  *args  in the parameter list.
 
 The name  args  is just a convention; you can pick any name.
 
@@ -201,7 +190,6 @@ Output:
      30
      0
 
-
 8)  **kwargs  --  variable number of keyword arguments
 
 Same idea, but for KEYWORD arguments. Inside the function,  kwargs  is a DICT of name -> value.
@@ -219,7 +207,6 @@ Output:
      age = 25
      city = delhi
 
-
 You can combine both in one function:
 
 Code:
@@ -233,7 +220,6 @@ Output:
      1 2 (3, 4) {'x': 10, 'y': 20}
 
 Order in the parameter list:  regular ,  *args , then  **kwargs .
-
 
 9)  Scope  --  where a name is visible
 
@@ -254,7 +240,6 @@ Run:
 
 x  was born inside  demo  and died when  demo  finished.
 
-
 Names created OUTSIDE any function are GLOBAL. They are visible everywhere, including inside functions (for READING).
 
 Code:
@@ -267,7 +252,6 @@ Code:
      show()
 
 Output:  100
-
 
 Assigning to a name inside a function creates a NEW LOCAL name, even if a global with the same name exists:
 
@@ -288,7 +272,6 @@ Output:
 
 The global  total  was NOT changed. The function created its own local  total .
 
-
 To modify a global from inside a function, declare it with  global :
 
 Code:
@@ -304,8 +287,7 @@ Code:
 
 Output:  200
 
-In most cases, avoid  global . Prefer to return a new value from the function and assign it in the caller.
-
+Avoid  global . Prefer to return a new value from the function and assign it in the caller.
 
 10)  Docstring  (brief)
 
@@ -323,7 +305,6 @@ Output:  Return the sum of x and y.
 
 Docstrings are optional. Add them for functions that do non-obvious work.
 
-
 11)  Common errors
 
   (a)   Wrong number of arguments
@@ -336,11 +317,9 @@ Docstrings are optional. Add them for functions that do non-obvious work.
 
         Run:
 
-           TypeError: add() missing 1
-           required positional argument: 'y'
+           TypeError: add() missing 1 required positional argument: 'y'
 
         Pass all required arguments, or give them defaults in the definition.
-
 
   (b)   Non-default parameter after default
 
@@ -351,12 +330,9 @@ Docstrings are optional. Add them for functions that do non-obvious work.
 
         Run:
 
-           SyntaxError: parameter without a
-           default follows parameter with a
-           default
+           SyntaxError: parameter without a default follows parameter with a default
 
         Parameters with defaults must come AFTER those without.
-
 
   (c)   Forgetting to return
 

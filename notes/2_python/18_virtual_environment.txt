@@ -10,17 +10,15 @@ Inside a venv you can:
   -  pin a package to a specific version for this project without affecting others.
   -  delete the whole thing at any time without harming your system.
 
-
 2)  Why you need one
 
 Two big reasons:
 
   (a) DIFFERENT PROJECTS NEED DIFFERENT VERSIONS. Project A may need  requests 2.28  , Project B may need  requests 2.32 . If you install globally, one project breaks the other.
 
-  (b) THE SYSTEM Python is often managed by the operating system itself. Installing packages globally can corrupt the system or require  sudo . A venv avoids both.
+  (b) THE SYSTEM Python is managed by the operating system itself. Installing packages globally can corrupt the system or require  sudo . A venv avoids both.
 
 Rule of thumb: every Python project gets its own virtual environment.
-
 
 3)  Creating a venv
 
@@ -32,98 +30,25 @@ Convention: name the folder  .venv  (with a leading dot). Some people use  venv 
 
      python3 -m venv .venv
 
-
 What does  -m  mean?
 
 -m  is a FLAG for the  python3  command. It means "run the following MODULE as a script". Python finds a module by that name (from the standard library or from your installed packages) and runs its built-in entry point.
 
 Two ways to run Python code:
 
-     python3 script.py
-        Run a Python FILE by its path.
+     python3 script.py     run a Python FILE by its path.
+     python3 -m <module>   run an installed MODULE by its name. Python finds it on the module search path ( sys.path , section 14) and runs it.
 
-     python3 -m <module>
-        Run an installed MODULE by its
-        name. Python locates it on the
-        module search path (see  sys.path
-        in section 14) and runs it.
-
-So  python3 -m venv .venv  means:
-
-     "Hey Python, find the module named
-      venv  (it ships with the standard
-      library) and run it, passing the
-      argument  .venv ."
-
-The  venv  module then does the actual work of creating the virtual environment in a folder called  .venv .
-
-Other common examples of  -m :
-
-     python3 -m pip install requests
-        Run the  pip  module. This is
-        safer than typing  pip  directly
-        because it uses the SAME Python
-        that  python3  points to.
-     python3 -m http.server
-        Start a tiny HTTP server in the
-        current folder.
+So  python3 -m venv .venv  means: "find the module named  venv  (it ships with the standard library) and run it, passing the argument  .venv ". The  venv  module then does the actual work of creating the virtual environment in a folder called  .venv .
 
 Why not just  python3 venv .venv ? Because  venv  is not a script file in your folder; it is a module inside Python's installation. Without  -m , Python would look for a file called  venv  in the CWD and fail.
 
+Other common examples of  -m :
 
-Script vs module  --  what is the difference?
+     python3 -m pip install requests    run the  pip  module. Safer than typing  pip  directly, because it uses the SAME Python that  python3  points to.
+     python3 -m http.server             start a tiny HTTP (HyperText Transfer Protocol) server in the current folder.
 
-Both are just  .py  files. The difference is HOW they are used, not how they are written.
-
-     SCRIPT
-        A  .py  file you run DIRECTLY to
-        DO something.
-        Example:  hello.py  that prints
-        a greeting.
-        You run it with a path:
-           python3 hello.py
-        Usually lives in YOUR project
-        folder.
-
-     MODULE
-        A  .py  file (or a folder of
-        them) meant to be IMPORTED by
-        other code and provide reusable
-        functions / classes / values.
-        Example:  math , json , random
-        (standard library), or your own
-        helpers.py .
-        You use it with  import :
-           import helpers
-        Usually lives on the Python
-        module search path
-        ( sys.path ), so any script can
-        find it.
-
-Same file, both roles:
-
-The SAME  .py  file can be BOTH. It can be imported as a module AND run as a script. To make the "run as script" part safe (so imports don't trigger it), wrap that code in:
-
-     if __name__ == "__main__":
-         ...
-
-(See section 14 for the details of  __name__ == "__main__" .)
-
-How this connects to  -m :
-
-     python3 hello.py
-        Runs the FILE  hello.py  as a
-        script (script style).
-
-     python3 -m venv .venv
-        Finds the MODULE  venv  on the
-        module search path and runs it
-        as a script (module style).
-        No file path needed  --  just
-        the module NAME.
-
-So  -m  is Python's way of saying: "treat this MODULE like a script for this one run".
-
+Section 14 covers the script-versus-module distinction that  -m  relies on.
 
 What happens:
 
@@ -134,17 +59,14 @@ Verify:
 
      ls -la .venv/
 
-
 4)  What is inside .venv/  (brief look)
 
      .venv/
-     +-- bin/            Linux/macOS: python and pip
-                         live here
+     +-- bin/            Linux/macOS: python and pip live here
      +-- lib/            installed packages go here
      +-- pyvenv.cfg      small config file
 
 You do NOT edit any of these by hand. The tools take care of them.
-
 
 5)  Activating the venv
 
@@ -171,7 +93,6 @@ Output (example):
 
 The path points INTO your project's  .venv , which confirms you are inside the venv.
 
-
 6)  Working inside the venv
 
 Once active, run Python and pip as usual. They now work only for this project.
@@ -181,7 +102,6 @@ Once active, run Python and pip as usual. They now work only for this project.
      pip list
 
 pip install requests  puts  requests  inside  .venv , not globally. Other projects are not affected.
-
 
 7)  Deactivating
 
@@ -193,7 +113,6 @@ The  (.venv)  prefix disappears from your prompt, and  python3  /  pip  point ba
 
 Every NEW terminal starts DEACTIVATED and needs a fresh  source .venv/bin/activate .
 
-
 8)  Deleting a venv
 
 A venv is just a folder. To delete it:
@@ -202,23 +121,19 @@ A venv is just a folder. To delete it:
 
 Nothing is lost outside that folder. You can recreate it any time with  python3 -m venv .venv .
 
-
 9)  Common gotchas
 
   (a)   Forgot to activate
 
         If you run  pip install requests  without activating the venv, the package goes to the SYSTEM Python. Always check the prompt for  (.venv)  before installing.
 
-
   (b)   Wrong Python inside venv
 
         A venv is tied to the Python that created it. If you built the venv with  python3.10  and later install  python3.12  , the venv keeps using 3.10. To upgrade, delete and recreate with the newer  python3 .
 
-
   (c)   Copying or moving the venv folder
 
-        A venv contains ABSOLUTE PATHS inside its config. Moving the folder to a new location or new machine usually breaks it. Just recreate it in the new place.
-
+        A venv contains ABSOLUTE PATHS inside its config. Moving the folder to a new location or new machine breaks it. Just recreate it in the new place.
 
   (d)   Activating on the wrong shell
 

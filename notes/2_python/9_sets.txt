@@ -11,7 +11,6 @@ Two key properties:
 
 Sets are MUTABLE (you can add and remove items), but their items must be IMMUTABLE (numbers, strings, tuples). You cannot put a list inside a set.
 
-
 2)  Creating a set
 
 Use curly braces  { }  with items separated by commas.
@@ -20,7 +19,6 @@ Code:
 
      colors  = {"red", "green", "blue"}
      numbers = {1, 2, 3}
-
 
 Empty set  --  a trap:
 
@@ -38,7 +36,6 @@ Output:
      <class 'dict'>
      <class 'set'>
 
-
 From a list (removes duplicates):
 
 Code:
@@ -49,9 +46,7 @@ Code:
 
 Output:  {1, 2, 3}
 
-
 The ORDER in which set items are printed is NOT guaranteed. Never depend on it.
-
 
 3)  Adding items
 
@@ -68,7 +63,6 @@ The ORDER in which set items are printed is NOT guaranteed. Never depend on it.
 
         Adding  2  again did nothing  --  the value was already there.
 
-
   (b)   update(other)  --  add all items from another collection.
 
         Code:
@@ -78,7 +72,6 @@ The ORDER in which set items are printed is NOT guaranteed. Never depend on it.
            print(s)
 
         Output:  {1, 2, 3, 4, 5}
-
 
 4)  Removing items
 
@@ -92,7 +85,6 @@ The ORDER in which set items are printed is NOT guaranteed. Never depend on it.
 
         Output:  {1, 3}
 
-
   (b)   discard(item)  --  same as remove, but does NOTHING if the item is missing (no error).
 
         Code:
@@ -104,7 +96,6 @@ The ORDER in which set items are printed is NOT guaranteed. Never depend on it.
 
         Output:  {1, 3}
 
-
   (c)   pop()  --  remove and RETURN one arbitrary item. Since sets have no order, you cannot control which item is popped.
 
         Code:
@@ -114,8 +105,11 @@ The ORDER in which set items are printed is NOT guaranteed. Never depend on it.
            print(item)
            print(s)
 
-        Output:  (some item, then the rest)
+        Output:
+           1
+           {2, 3}
 
+        The item you get back is not guaranteed to be  1 . Never write code that depends on which item comes out.
 
   (d)   clear()  --  empty the set.
 
@@ -128,7 +122,6 @@ The ORDER in which set items are printed is NOT guaranteed. Never depend on it.
         Output:  set()
 
         An empty set is printed as  set()  , not  {}  , because  {}  means an empty dict.
-
 
 5)  Membership  --  very fast
 
@@ -144,14 +137,12 @@ Output:
      True
      False
 
-
 6)  Set operations  (union, intersection, etc.)
 
 Sets support classic math operations. Assume:
 
      a = {1, 2, 3, 4}
      b = {3, 4, 5, 6}
-
 
   (a)   Union   --   a | b   OR  a.union(b)
 
@@ -163,7 +154,6 @@ Sets support classic math operations. Assume:
 
         Output:  {1, 2, 3, 4, 5, 6}
 
-
   (b)   Intersection  --   a & b   OR  a.intersection(b)
 
         Every item that is in BOTH sets.
@@ -173,7 +163,6 @@ Sets support classic math operations. Assume:
            print(a & b)
 
         Output:  {3, 4}
-
 
   (c)   Difference  --   a - b   OR  a.difference(b)
 
@@ -185,7 +174,6 @@ Sets support classic math operations. Assume:
 
         Output:  {1, 2}
 
-
   (d)   Symmetric difference  --   a ^ b   OR  a.symmetric_difference(b)
 
         Items in EITHER set but NOT both.
@@ -195,7 +183,6 @@ Sets support classic math operations. Assume:
            print(a ^ b)
 
         Output:  {1, 2, 5, 6}
-
 
 7)  When to use a set
 
@@ -211,7 +198,6 @@ Do NOT use a set when:
   -  You need indexing or slicing. Use a list.
   -  Values must repeat. Use a list.
 
-
 8)  Common errors
 
   (a)   Empty set trap  --  {} is a dict
@@ -223,11 +209,9 @@ Do NOT use a set when:
 
         Run:
 
-           AttributeError: 'dict' object
-           has no attribute 'add'
+           AttributeError: 'dict' object has no attribute 'add'
 
         For an empty set, use  s = set() .
-
 
   (b)   Cannot index a set
 
@@ -238,11 +222,9 @@ Do NOT use a set when:
 
         Run:
 
-           TypeError: 'set' object is not
-           subscriptable
+           TypeError: 'set' object is not subscriptable
 
         Sets are UNORDERED. If you need position access, convert to a list first:  list(s)[0] .
-
 
   (c)   remove() on a missing item
 
@@ -255,8 +237,7 @@ Do NOT use a set when:
 
            KeyError: 99
 
-        Use  discard()  if the item might be missing.
-
+        Use  discard()  when you are not sure the item is there.
 
   (d)   Unhashable item in a set
 

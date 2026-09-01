@@ -5,7 +5,6 @@ Two special file names give a Python package its shape:
   -   __init__.py   --  the file that turns a plain folder into a PACKAGE.
   -   __main__.py   --  the file Python looks for when you run a package with  python -m .
 
-
 1)   __init__.py   --  the package marker
 
  __init__.py  is a special file name in Python. Any folder that contains a file with EXACTLY this name (two underscores, "init", two underscores, dot py) becomes a PACKAGE  --  a folder that Python is willing to  import  as a single unit.
@@ -14,41 +13,38 @@ Without  __init__.py , the folder is just an ordinary folder on the disk. Python
 
 The name "init" is short for "initialization". The code inside  __init__.py  runs ONCE, the very first time anything imports that package.
 
-
-What can  __init__.py  contain?
+2)  What  __init__.py  can contain
 
 Two common shapes:
 
-   1  Empty (or almost empty). The file exists just to signal "this folder is a package". No real code  --  the mere presence is the message.
+  (a)  Empty (or almost empty). The file exists just to signal "this folder is a package". No real code  --  the mere presence is the message.
 
-   2  Package setup code. Things like re-exports (making handy names from sub-files importable directly at the package level), a version string, or a config value.
+  (b)  Package setup code. Things like re-exports (making handy names from sub-files importable directly at the package level), a version string, or a config value.
 
-
-Example 1  --  an almost-empty  __init__.py
+3)  Example  --  an almost-empty  __init__.py
 
 File:   src/mypackage/__init__.py
 
 Whole file:
 
-    """My package."""
+     """My package."""
 
 Just a DOCSTRING (a triple-quoted string at the top of a file that Python treats as human-readable documentation for the module). No code beneath it. The file exists purely to tell Python "yes, treat  mypackage/  as a package".
 
-
-Example 2  --  an  __init__.py  that DOES stuff
+4)  Example  --  an  __init__.py  that does work
 
 File:   src/mypackage/__init__.py
 
 Whole file:
 
-    """My package  --  main engine."""
-    from .clock import RealClock, SimulatedClock
-    from .core import Engine
-    from .runtime import State
+     """My package  --  main engine."""
+     from .clock import RealClock, SimulatedClock
+     from .core import Engine
+     from .runtime import State
 
-    ENGINE_VERSION = "0.1.0"
+     ENGINE_VERSION = "0.1.0"
 
-    __all__ = ["Engine", "State", "RealClock", "SimulatedClock", "ENGINE_VERSION"]
+     __all__ = ["Engine", "State", "RealClock", "SimulatedClock", "ENGINE_VERSION"]
 
 Piece by piece:
 
@@ -73,104 +69,80 @@ Piece by piece:
 
   -   __all__   --  an explicit whitelist of the names the package makes public. Any name not in this list is treated as internal to the package.
 
-
-Why bother with the re-exports?
+5)  Why bother with the re-exports
 
 Because outside code can now write the SHORT form:
 
-    from mypackage import (
-        Engine, RealClock
-    )
+     from mypackage import Engine, RealClock
 
 instead of the LONG form:
 
-    from mypackage.core import (
-        Engine,
-    )
-    from mypackage.clock import (
-        RealClock,
-    )
+     from mypackage.core import Engine
+     from mypackage.clock import RealClock
 
 The package hides its internal file layout and exposes only a clean set of public names. If tomorrow the developer moves  Engine  from  core.py  into a different file, outside code does NOT break  --  only  __init__.py  needs the update.
 
-
-What if  __init__.py  is missing?
+6)  What if  __init__.py  is missing
 
 In a normal Python application, the  import  would fail with something like "No module named mypackage". A folder is not a package until  __init__.py  is there. So every package folder ships one.
 
-
-2)   __main__.py   --  the entry point for  python -m
+7)   __main__.py   --  the entry point for  python -m
 
 An ENTRY POINT is the first piece of code that runs when you launch a program from the command line. Every runnable program has one. The rest of the code is reached from the entry point onwards.
 
 Python offers a few different ways to give a program an entry point. One common convention is the  __main__.py  file.
 
+The name is not a developer's preference  --  it is the name Python HARD-CODES as the entry-point file for a package. Rename it to  run.py  or  start.py  and  python -m mypackage  will fail. Any other name needs a different launch style, such as running the file directly with  python somefile.py , which brings the import problems shown in section 9.
 
-How Python starts a program from the command line
+8)  How Python starts a program from the command line
 
 Two common shapes:
 
-   1   python somefile.py
+  (a)   python somefile.py
 
-       Python runs the code inside that ONE file. The file does not need to belong to any package. Simple, but the internal import paths can get messy.
+        Python runs the code inside that ONE file. The file does not need to belong to any package. Simple, but the internal import paths can get messy.
 
-   2   python -m somepackage
+  (b)   python -m somepackage
 
-       The  -m  flag stands for "module". Python treats  somepackage  as a package and looks INSIDE it for a file named EXACTLY  __main__.py . If that file is present, Python runs it. If it is not present, Python prints an error and stops:
+        The  -m  flag runs a MODULE as a script (section 14). For a PACKAGE, Python looks INSIDE it for a file named EXACTLY  __main__.py . If that file is present, Python runs it. If it is not present, Python prints an error and stops:
 
-           No module named
-           somepackage.__main__ ;
-           'somepackage' is a
-           package and cannot be
-           directly executed.
+           No module named somepackage.__main__ ; 'somepackage' is a package and cannot be directly executed.
 
-So  __main__.py  is not a name a developer simply likes. It is the name Python HARD-CODES as the entry-point file for a package. Rename it to  run.py  or  start.py  and  python -m mypackage  will fail with the error above.
-
-
-Example
+Example:
 
 If a package lives inside  src/mypackage/ , running it from the command line looks like:
 
-    python -m mypackage
+     python -m mypackage
 
 Python finds  src/mypackage/__main__.py  and runs the  main()  function inside it. That function parses the command-line arguments, creates the main objects, and starts the program.
 
-
-Why prefer  python -m package  over  python file.py  ?
+9)  Why prefer  python -m package  over  python file.py
 
 Two reasons:
 
-   1  Imports work naturally.
+  (a)  Imports work naturally.
 
-      Look at  __main__.py . Its first real code might be:
+       Look at  __main__.py . Its first real code:
 
-          from .clock import RealClock
-          from .core import Engine
+           from .clock import RealClock
+           from .core import Engine
 
-      The leading dot in  .clock  means "the current package". Python needs to KNOW which package that is, otherwise the dot has nothing to resolve against.
+       The leading dot in  .clock  means "the current package". Python needs to KNOW which package that is, otherwise the dot has nothing to resolve against.
 
-      Case A. Run with  -m :
+       Case A. Run with  -m :
 
-          python -m mypackage
+           python -m mypackage
 
-      Python is told up front: "the package we are running is  mypackage ". So when it hits  .clock , it knows  .clock  =  mypackage.clock  and finds  clock.py  in the same folder.
+       Python is told up front: "the package we are running is  mypackage ". So when it hits  .clock , it knows  .clock  =  mypackage.clock  and finds  clock.py  in the same folder.
 
-      Case B. Run the file directly:
+       Case B. Run the file directly:
 
-          python src/mypackage/__main__.py
+           python src/mypackage/__main__.py
 
-      Python sees only ONE file and treats it as a plain script  --  no package context at all. There is no "current package" to resolve  .clock  against, so the import fails with:
+       Python sees only ONE file and treats it as a plain script  --  no package context at all. There is no "current package" to resolve  .clock  against, so the import fails with:
 
-          ImportError: attempted
-          relative import with
-          no known parent
-          package
+           ImportError: attempted relative import with no known parent package
 
-      So the  -m  form is not just a nicer command  --  it is what LETS the package's own internal dotted imports resolve at all. Without it, they break outright.
+       So the  -m  form is not just a nicer command  --  it is what LETS the package's own internal dotted imports resolve at all. Without it, they break outright.
 
-   2  Cleaner user experience. The user does not need to know the internal file layout of the package. They type  python -m mypackage  and Python figures out where the entry file lives.
-
-
-So back to the original question
-
-"Why  __main__.py  and not another file?" Because Python's  python -m  mechanism looks for exactly that file name. Any other name would need a different launch style, like running the file directly with  python somefile.py   --  which comes with the import problems seen above.  __main__.py  is the standard Python way for a package to have an entry point.
+  (b)  Cleaner user experience. The user does not need to know the internal file layout of the package. They type  python -m mypackage  and Python figures out where the entry file lives.

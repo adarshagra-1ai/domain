@@ -2,108 +2,45 @@
 
 A walkthrough of the header portion of a typical  __main__.py  file, top to bottom. We assume the file lives inside a package  mypackage , runnable via  python -m mypackage .
 
+1)  Module docstring
 
-Module docstring
+     """my-engine CLI  --  run the engine."""
 
-    """my-engine CLI  --  run the engine."""
+A DOCSTRING at the top of a module, same as in  __init__.py  (see section 21). One-line human description of the file: this is the CLI (Command-Line Interface) of the engine.
 
-A DOCSTRING at the top of a module, same as in  __init__.py  (see section 21). One-line human description of the file: this is the command-line interface (CLI) of the engine.
+2)  The  from __future__ import annotations  line
 
+     from __future__ import annotations
 
-The  from __future__ import annotations  line
+Older Python 3.x did not accept the modern type-hint style like  dict | None . This line tells Python to treat every type hint as plain text instead of trying to evaluate it, so a file using modern hints still loads on an older Python. Section 30 covers it in full.
 
-    from __future__ import annotations
+3)  Standard library imports
 
-Older Python 3.x did not accept the modern type-hint style like  dict | None . Adding  from __future__ import annotations  tells Python to treat every type hint as plain text  --  do NOT try to evaluate it.
+     import argparse
+     import asyncio
+     import json
+     import signal
 
+Four modules from Python's STANDARD LIBRARY (they ship with Python  --  no  pip install  needed). Each gets its own section later; here is what each one is doing in this file.
 
-The  |  symbol used above
+  -   argparse   --  builds a COMMAND-LINE PARSER. It reads the flags the user typed after the program name and turns them into a plain Python object, so  --config ./data  becomes  args.config == "./data" . Section 23.
 
- |  is called the PIPE or the VERTICAL BAR. On most keyboards it is typed with  Shift + \  (Shift plus the backslash key).
+  -   asyncio   --  Python's built-in ASYNCHRONOUS programming library. It lets one program handle many tasks that WAIT (for network replies, timers, hardware events) using a single thread. Sections 32 to 34.
 
-Where you see  |  in code:
+  -   json   --  reads and writes JSON (JavaScript Object Notation) text. Used here to load a config file. Section 26.
 
-  -  Python type hints (3.10 and up)  --  the UNION operator, meaning "either this type OR that type". Example:  dict | None  reads as "a dict, or None". A value of either kind is acceptable.
+  -   signal   --  gives access to operating-system SIGNALS, the small messages the OS (Operating System) sends to a running program. Pressing  Ctrl + C  sends one. Section 31.
 
-Example. Same function, two styles:
+4)  Relative imports
 
-    # older-style hint
-    def foo(x: Optional[Dict[str, int]]) -> None:
-        ...
+     from .clock import RealClock
+     from .core import Engine
 
-    # modern hint (needs the future flag on old Python)
-    def foo(x: dict[str, int] | None) -> None:
-        ...
+Same "leading dot = current package" rule from section 21. The current package is  mypackage , so:
 
-Modern Python (3.10 and up) supports the pipe natively, so today this line is a compatibility habit more than a hard requirement.
+  -   .clock   ->   mypackage/clock.py   ->  grabs the  RealClock  class
+  -   .core    ->   mypackage/core.py    ->  grabs the  Engine  class
 
+5)  What has run so far
 
-Standard library imports
-
-    import argparse
-    import asyncio
-    import json
-    import signal
-
-Four modules from Python's STANDARD LIBRARY (they ship with Python  --  no  pip install  needed).
-
-  -   argparse   --  builds a COMMAND-LINE PARSER. Reads the flags the user typed after the program name and turns them into a plain Python object.
-
-      Example. If the user runs
-
-          python -m mypackage --config ./data --verbose
-
-      the whole flag string  --config ./data --verbose  gets turned into a single OBJECT. That object has one attribute per flag:
-
-           args.config   == "./data"
-           args.verbose  == True
-           (present -> True, absent -> False)
-
-      Note the naming:
-
-        -  Dashes in flag names become underscores in the attribute name:  --data-dir  ->  args.data_dir .
-
-  -   asyncio   --  Python's built-in ASYNCHRONOUS programming library. Lets one program handle many tasks that WAIT (for network replies, timers, hardware events) without spawning threads.
-
-      Three terms show up there  --  THREAD, THREADING, SPAWN. Get them straight first, then the asyncio side makes sense.
-
-      A THREAD is a single line of execution inside a program. Picture a single HAND writing on paper: at any moment, the hand is in one place doing one thing. Every program starts with one thread by default, called the "main thread"  --  that is the "hand" that runs your  print , your loops, your function calls.
-
-      THREADING means using MORE THAN ONE thread at the same time. Two hands writing on the same paper in parallel; two things happen at once.
-
-      Example scenario. A program has to (a) download a big file and (b) keep a spinner animation moving on screen. With ONE thread, the download BLOCKS the spinner  --  the spinner freezes till the download ends. With TWO threads, one downloads while the other keeps the spinner going.
-
-      SPAWNING a thread means creating a new thread and starting it up. "Spawn" is developer slang for "launch a new running unit".
-
-      So "SPAWNING THREADS" = asking the program to create extra worker threads alongside the main one.
-
-      Why not always use threads? Each new thread costs memory and some operating system bookkeeping; two threads touching the same data can step on each other, and need LOCKS. Overkill for many workloads.
-
-      Asyncio's route: ONE thread only. When a task hits an  await  and starts waiting, the thread puts that task aside and picks up another task that is ready to run. When the awaited thing finishes, the paused task resumes. One thread, many tasks, no threading needed. That is what the phrase "without spawning threads" is pointing at.
-
-      Example.  await X  means "pause here until X finishes; let other tasks run while I wait".
-
-          async def fetch():
-              data = await slow_network_call()
-              return data
-
-  -   json   --  reads and writes JSON (JavaScript Object Notation) text. Useful when the program needs to load a config file or send/receive data.
-
-  -   signal   --  gives access to OS-level SIGNALS (small messages the operating system sends to a running program).
-
-      Example. When you press Ctrl+C in the terminal, the OS sends the SIGINT signal to whatever program is in the foreground. A program can register a handler for  SIGINT  (Ctrl+C asking a program to stop) so it can shut down cleanly instead of just being killed.
-
-
-Relative imports
-
-    from .clock import RealClock
-    from .core import Engine
-
-Same "leading dot = current package" rule from section 21. Current package is  mypackage , so:
-
-  -   .clock  ->  mypackage/clock.py  -> grabs the  RealClock  class
-
-  -   .core  ->  mypackage/core.py  -> grabs the  Engine  class
-
-
-Header done. At this point, nothing has actually RUN yet in the sense of doing real work  --  Python has only loaded modules and pulled some classes and functions into the file's namespace. Real execution starts when  main()  is called at the very bottom of the file. The  main()  function itself is covered in section 23 (argparse basics).
+Nothing has done real work yet. Python has only loaded modules and pulled some classes and functions into the file's namespace. Real execution starts when  main()  is called at the very bottom of the file. The  main()  function itself is covered in section 23.

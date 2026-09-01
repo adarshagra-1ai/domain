@@ -6,8 +6,7 @@ A MODULE is a Python file ( .py ) whose contents (variables, functions, classes)
 
 You have already been writing modules without knowing it. Every  .py  file is a module.
 
-A LIBRARY (or "package") is usually a collection of related modules bundled together.
-
+A LIBRARY (or "package") is a collection of related modules bundled together.
 
 2)  import  --  the basic form
 
@@ -32,10 +31,9 @@ Output:
 
 math  is a module in Python's STANDARD LIBRARY (built-in, no install needed).  pi  is a variable inside it;  sqrt  is a function inside it.
 
-
 3)  from ... import ...   --  bring specific names into scope
 
-Sometimes you only need one or two names from a module. Import them directly and use them without the module prefix.
+When you only need one or two names from a module, import them directly and use them without the module prefix.
 
 Code:
 
@@ -50,9 +48,7 @@ Output:
 
 Now  pi  and  sqrt  are directly available, no  math.  prefix.
 
-
 Avoid  from module import *  (star import). It brings in every name and can silently overwrite your own variables. Explicit is better.
-
 
 4)  import ... as ...   --  give the module a shorter name (alias)
 
@@ -66,7 +62,6 @@ Code:
 
 Output:  (today's date)
 
-
 Common conventions from the ecosystem:
 
      import numpy as np
@@ -76,7 +71,6 @@ Common conventions from the ecosystem:
 You can also alias a specific name:
 
      from math import sqrt as square_root
-
 
 5)  Your own module
 
@@ -91,7 +85,6 @@ Suppose you have a file  helpers.py  in the same folder as your main script:
 
      def square(x):
          return x * x
-
 
 From another file in the same folder:
 
@@ -110,114 +103,29 @@ Output:
      hello, adarsh
      16
 
-
 You can also use  from helpers import ... :
 
      from helpers import greet
      print(greet("adarsh"))
 
-
 Note: the module NAME is the file name WITHOUT  .py . So  helpers.py  is imported as  import helpers  (not  import helpers.py ).
-
 
 6)  Standard library  --  a taste
 
 Python ships with a large STANDARD LIBRARY. Some commonly used modules:
 
-     math         math functions and
-                  constants
-     os           operating-system level
-                  things: paths, env
-                  vars, folder listings
-     sys          Python interpreter info,
-                  command-line arguments
+     math         math functions and constants
+     os           operating-system level things: paths, environment variables, folder listings
+     sys          Python interpreter info, command-line arguments
      json         read and write JSON text
      datetime     dates and times
-     random       random numbers,
-                  shuffling, random choice
+     random       random numbers, shuffling, random choice
      re           regular expressions
-     pathlib      modern object-oriented
-                  path handling
+     pathlib      modern object-oriented path handling
 
 Small examples:
 
-
-Before we use the  json  module, a quick word on what JSON is.
-
-JSON (JavaScript Object Notation) is a TEXT format for representing data. The name comes from JavaScript, but it is now used by every major language for exchanging data (between programs, over the network, in config files, etc.).
-
-Key facts:
-
-  -  It is plain TEXT (a string). Not binary.
-  -  Human-readable  --  you can open a JSON file and understand it.
-  -  Structure looks a lot like a Python dict, so it maps to Python cleanly.
-  -  Web APIs almost always exchange data as JSON.
-
-
-A JSON example:
-
-     {
-         "name": "adarsh",
-         "age": 25,
-         "is_active": true,
-         "tags": ["python", "web"],
-         "address": {
-             "city": "delhi",
-             "zip": "110001"
-         }
-     }
-
-
-JSON types map to Python types like this:
-
-     JSON string    ->  Python str
-     JSON number    ->  Python int or float
-     JSON true      ->  Python True
-     JSON false     ->  Python False
-     JSON null      ->  Python None
-     JSON array     ->  Python list
-     JSON object    ->  Python dict
-
-
-Small differences from Python:
-
-  -  Keys in a JSON object MUST be DOUBLE-QUOTED strings. In Python dicts, keys can be any hashable type.
-  -  JSON booleans are LOWERCASE ( true , false ). Python uses  True , False .
-  -  JSON's "no value" is  null . Python uses  None .
-  -  JSON forbids trailing commas after the last item. Python allows them.
-  -  JSON only allows DOUBLE quotes for strings. Python allows single or double.
-
-The Python  json  module handles all of these differences for you.
-
-
-About  json.dumps  and  json.loads :
-
-     dumps    "dump string"  --  convert a
-              Python object (dict, list,
-              number, string, bool, None)
-              INTO a JSON string.
-
-     loads    "load string"  --  parse a
-              JSON string INTO a Python
-              object.
-
-The names use the  s  suffix for "string". Without the  s  ( json.dump  and  json.load ) the same functions work with FILE OBJECTS instead of strings  --  useful when you want to save or read JSON directly to or from a file.
-
-
-Common shape of both functions:
-
-     json.dumps(<python_obj>)
-        ->  str  (JSON text)
-
-     json.loads(<json_str>)
-        ->  Python object
-
-     json.dump(<python_obj>, <file>)
-        ->  writes JSON text to the file
-
-     json.load(<file>)
-        ->  reads JSON text from the file
-            and parses it
+json  --  turn a Python object into text and back. JSON (JavaScript Object Notation) is a plain-text data format that every major language can read and write. Full details, including the Python-to-JSON type mapping, are in section 26.
 
 Code:
 
@@ -234,35 +142,11 @@ Output:
      {"name": "adarsh", "age": 25}
      {'name': 'adarsh', 'age': 25}
 
+random  --  pick random values.
 
-Why the two output lines look different:
-
-     text  (from  dumps ):
-        {"name": "adarsh", "age": 25}
-        DOUBLE quotes  --  the required
-        JSON syntax.
-
-     back  (from  loads ):
-        {'name': 'adarsh', 'age': 25}
-        SINGLE quotes  --  Python's
-        default way of printing a dict.
-
-They represent the SAME data. The first line is JSON text; the second line is a Python dict.
-
-
-Two useful  random  functions:
-
-     random.choice(seq)
-        Pick ONE random element from a
-        sequence (list, tuple, string).
-        Every element has an equal chance.
-        Empty sequence  ->  IndexError .
-
-     random.randint(a, b)
-        Return a random integer between
-        a  and  b , BOTH ENDS INCLUDED.
-        a  and  b  must be integers, and
-        a <= b  (else  ValueError ).
+     random.choice(seq)      pick ONE random element from a sequence (list, tuple, string). Empty sequence  ->  IndexError .
+     random.randint(a, b)    a random integer between  a  and  b , BOTH ENDS INCLUDED. Needs  a <= b , else  ValueError .
+     random.randrange(a, b)  a random integer from  a  up to  b , with  b  EXCLUDED. Do not mix this up with  randint .
 
 Code:
 
@@ -273,14 +157,7 @@ Code:
 
 Output:  (varies each run)
 
-
-A close cousin to know:
-
-     random.randrange(1, 6)   gives 1..5
-     (6 EXCLUDED), but
-     random.randint(1, 6)     gives 1..6
-     (6 INCLUDED). Don't mix them up.
-
+datetime  --  work with dates and times.
 
 Code:
 
@@ -292,19 +169,15 @@ Code:
 
 Output:  (varies)
 
-
 You do NOT need to install any of these  --  they come with Python.
-
 
 7)  Third-party modules
 
 Anything NOT in the standard library is called a THIRD-PARTY module. You install it with  pip . Common ones:
 
      requests    HTTP requests
-     fastapi     web framework we will
-                 use in the FastAPI topic
-     litellm     LLM library we will use
-                 in the AI agent topic later
+     fastapi     web framework we will use in the FastAPI topic
+     litellm     LLM (Large Language Model) library we will use in the AI agent topic later
 
 Basic install command (details and best practice with virtual environments come in section 18 and section 19):
 
@@ -321,21 +194,14 @@ After installing, use it like any other module:
      r = requests.get("https://example.com")
      print(r.status_code)
 
-
 8)  Where does Python look for modules?
 
 When you write  import x , Python searches in this order:
 
      1.  Built-in modules.
-     2.  The folder of the running script
-         (your CWD in simple cases).
-     3.  Directories listed in the
-         environment variable
-         PYTHONPATH .
-     4.  The installation-specific
-         "site-packages" folder (where
-         pip installs third-party
-         modules).
+     2.  The folder of the running script (your CWD in simple cases).
+     3.  Directories listed in the environment variable  PYTHONPATH .
+     4.  The installation-specific "site-packages" folder (where pip installs third-party modules).
 
 You can inspect the full list at runtime. Before we run the code, a quick word on  sys  and  sys.path .
 
@@ -344,15 +210,10 @@ The  sys  module is part of the standard library. It lets your program talk to t
 A few useful names in  sys :
 
      sys.version     Python version string
-     sys.platform    "linux" , "win32" ,
-                     "darwin" (mac)
-     sys.argv        list of command-line
-                     arguments given to
-                     the script
+     sys.platform    "linux" ,  "win32" ,  "darwin"  (mac)
+     sys.argv        list of command-line arguments given to the script
      sys.exit()      stop the program now
-     sys.path        list of folders where
-                     Python looks for
-                     modules to import
+     sys.path        list of folders where Python looks for modules to import
 
 sys.path  is a plain Python LIST of folder paths (strings). When you write  import x , Python walks this list top to bottom and looks for  x.py  (or an  x/  package) in each folder. The FIRST match wins  --  the rest are ignored.
 
@@ -361,10 +222,8 @@ A typical  sys.path  looks like:
      /home/adarsh/myproject
      /usr/lib/python3.12
      /usr/lib/python3.12/lib-dynload
-     /home/adarsh/.local/lib/python3.12/
-         site-packages
+     /home/adarsh/.local/lib/python3.12/site-packages
      /usr/lib/python3/dist-packages
-
 
 Because it is a plain list, you CAN modify it at runtime with  sys.path.append("/some/folder") . Avoid doing this in normal code  --  keep your imports predictable and rely on the standard search order.
 
@@ -376,29 +235,43 @@ Code:
 
 Output:  (list of directories)
 
+9)  Script vs module  --  what is the difference?
 
-9)  __name__ == "__main__"
+Both are just  .py  files. The difference is HOW they are used, not how they are written.
+
+     SCRIPT    a  .py  file you run DIRECTLY to DO something. Example:  hello.py  that prints a greeting. You run it by path:  python3 hello.py . It lives in YOUR project folder.
+     MODULE    a  .py  file (or a folder of them) meant to be IMPORTED by other code, providing reusable functions, classes and values. Example:  math ,  json ,  random , or your own  helpers.py . You use it with  import helpers . It lives on the module search path, so any script can find it.
+
+Running a module as if it were a script  --  the  -m  flag
+
+     python3 hello.py      runs the FILE  hello.py  as a script.
+     python3 -m venv .venv  finds the MODULE  venv  on the search path and runs it. No file path needed, just the module NAME.
+
+So  -m  means "treat this MODULE like a script for this one run". Section 18 uses it to create a virtual environment.
+
+Same file, both roles:
+
+The SAME  .py  file can be BOTH  --  imported as a module AND run as a script. Section 10 below shows the line that keeps the two apart.
+
+10)  __name__ == "__main__"
 
 At the bottom of many Python files you will see:
 
      if __name__ == "__main__":
-         <code to run when the file is
-          executed directly>
+         <code to run when the file is executed directly>
 
 This block runs ONLY when you execute the file directly with  python3 file.py . If another file  import s it, the block does NOT run.
 
 Useful when a module both EXPORTS functions AND can run as a script.
 
-
-10)  Common errors
+11)  Common errors
 
   (a)   Module not found
 
         Run:
 
            python3 main.py
-           ModuleNotFoundError: No module
-           named 'helpers'
+           ModuleNotFoundError: No module named 'helpers'
 
         Reasons:
 
@@ -406,11 +279,9 @@ Useful when a module both EXPORTS functions AND can run as a script.
         -  The file  helpers.py  is not in your CWD.
         -  You are trying to import a third-party module you have not installed yet ( pip install <name>  first).
 
-
   (b)   Circular import
 
         Two files each import each other. You get partly-loaded modules and confusing  ImportError  s. Restructure so one file does not depend on the other, or move the shared code into a third file.
-
 
   (c)   Shadowing a standard-library name
 

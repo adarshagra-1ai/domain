@@ -4,12 +4,8 @@
 
 A LOOP repeats a block of code many times. Python has two loop kinds:
 
-     for       repeats over the items of a
-               sequence (list, tuple, string,
-               dict, range, ...).
-     while     repeats while a condition is
-               True.
-
+     for       repeats over the items of a sequence (list, tuple, string, dict, range, ...).
+     while     repeats while a condition is True.
 
 2)  for  loop
 
@@ -30,7 +26,6 @@ Output:
      20
      30
 
-
 for  works on any iterable  --  list, tuple, string, dict, set, range.
 
 Code:
@@ -50,7 +45,6 @@ Code:
 Output:
      name
      age
-
 
 3)  range()  --  generate numeric sequences
 
@@ -109,10 +103,9 @@ Output:
      2
      1
 
-
 4)  Loop with an index using enumerate()
 
-Sometimes you want BOTH the index and the item. Use  enumerate() .
+When you want BOTH the index and the item, use  enumerate() .
 
 Code:
 
@@ -124,7 +117,6 @@ Output:
      0 adarsh
      1 priya
      2 rahul
-
 
 5)  while  loop
 
@@ -149,7 +141,6 @@ Output:
 
 Critical: something inside the loop must CHANGE so that the condition eventually becomes False. Otherwise you have an infinite loop.
 
-
 6)  break  --  exit the loop early
 
 break  ends the loop immediately, no matter what the condition says.
@@ -167,7 +158,6 @@ Output:
 
 The loop stopped as soon as  n == 3  was true. Values  4  and  5  are never seen.
 
-
 break  works in both  for  and  while :
 
 Code:
@@ -179,7 +169,6 @@ Code:
      print("done")
 
 The  while True  loop looks like it runs forever, but the  break  gives it an exit door.
-
 
 7)  continue  --  skip to the next round
 
@@ -199,7 +188,6 @@ Output:
 
 For each even  n , the  print  line is SKIPPED and Python moves on to the next value.
 
-
 8)  Nested loops
 
 A loop can sit inside another loop. The inner loop runs completely for EACH pass of the outer loop.
@@ -218,9 +206,7 @@ Output:
      3 a
      3 b
 
-
 break  and  continue  affect only the LOOP THEY ARE IN (the innermost one).
-
 
 9)  else  clause on loops  (brief)
 
@@ -239,7 +225,6 @@ Output:
      3
      done
 
-
 If a  break  ends the loop early, the  else  block is SKIPPED.
 
 Code:
@@ -256,7 +241,6 @@ Output:
 
 The  "done"  is not printed because the  break  fired.
 
-
 10)  Common errors
 
   (a)   Infinite  while  loop
@@ -268,7 +252,6 @@ The  "done"  is not printed because the  break  fired.
                print(count)
 
         The loop runs forever because  count  is never updated. Add  count = count + 1  inside the block. If you get stuck in an infinite loop, press  Ctrl + C  in the terminal to stop the program.
-
 
   (b)   Off-by-one with  range
 
@@ -285,7 +268,6 @@ The  "done"  is not printed because the  break  fired.
 
         The  5  is NOT printed because  range(start, stop)  stops BEFORE  stop . To include 5, use  range(1, 6) .
 
-
   (c)   Modifying a list while looping over it
 
         Code:
@@ -301,7 +283,6 @@ The  "done"  is not printed because the  break  fired.
         The output looks right for this small case, but on larger lists this pattern silently SKIPS items.
 
         Do not add or remove items from a list you are looping over. Loop over a COPY  ( for n in nums[:] ) , or build a NEW list.
-
 
   (d)   Wrong indentation
 

@@ -2,7 +2,6 @@
 
 Home-automation companies install one central controller in the client's home  --  one hardware box plus its software. That box does all jobs.
 
-
 1)  Protocol translation (drivers)
 
 Inside the box, every supported brand has a small program called a DRIVER (some companies call it an "integration"). Each driver speaks that one brand's protocol:
@@ -14,7 +13,6 @@ Inside the box, every supported brand has a small program called a DRIVER (some 
   -  The TV driver sends network commands to the TV's IP (Internet Protocol) address.
 
 The CORE ENGINE is the main program inside the box  --  the central brain that takes requests from the app, decides what needs to happen, and hands the work to the right driver. It does not know any brand's own language. It sends a generic instruction ("light X on") to the right driver, and the driver translates that into the exact format the target device expects.
-
 
 2)  Unified data model
 
@@ -43,18 +41,15 @@ Notice the top five fields are identical in shape. Only the type-specific fields
 
 The user does not see the brand or the protocol  --  every device looks the same in the app's list, and the app knows how to render each  type .
 
-
 3)  One app, one UI (User Interface)
 
 The user opens a single app on the phone. All floors, rooms, and devices appear in one place, behind one login.
-
 
 4)  State management
 
 The box tracks the current state of every device. When someone flips a switch by hand, the device tells the box, and the box immediately updates the app. The state shown in the app is never stale (STALE means old / out-of-date  --  for example, the app still showing "light OFF" when the light is actually ON because someone switched it by hand).
 
 This is the core value of a home-automation company  --  reliable control plus reliable state, at all times.
-
 
 5)  Scenes, macros, automations
 
@@ -93,7 +88,6 @@ Trade-offs:
 
 The box's control logic therefore runs at the edge, not in a remote data centre. Even if the internet is down, basic day-to-day control keeps working. The cloud is used only for initial configuration push and for remote access, not for daily use.
 
-
 7)  Installer dashboard
 
 The technician uses a web tool to commission the home:
@@ -103,4 +97,4 @@ The technician uses a web tool to commission the home:
   -  define scenes and automations,
   -  set safety rules.
 
-The dashboard produces a CONFIGURATION FILE (usually signed JSON  --  JavaScript Object Notation). That file is delivered to the box; the box loads it, spawns the drivers (SPAWNS, in computing, means to start up / launch a program as a running process  --  the core engine creates a running copy of each driver it needs, so a KNX driver, a Hue driver, a TV driver, and so on all come alive inside the box), and starts controlling the home.
+The dashboard produces a CONFIGURATION FILE (a signed JSON  --  JavaScript Object Notation  --  file). That file is delivered to the box; the box loads it, spawns the drivers (SPAWNS, in computing, means to start up / launch a program as a running process  --  the core engine creates a running copy of each driver it needs, so a KNX driver, a Hue driver, a TV driver, and so on all come alive inside the box), and starts controlling the home.

@@ -1,145 +1,137 @@
-signal module
+31  --  signal module: SIGINT, SIGTERM and signal handlers
 
-
-1. WHAT A SIGNAL IS
+1)  What a signal is
 
 A signal is a small message that the operating system sends to a running program to tell it something. It is NOT a Python thing; it is an operating-system thing. Python just gives you a way to react to signals from inside your program.
 
 Typical uses:
-  - You press Ctrl-C in the terminal. The OS sends the signal SIGINT to your program.
-  - You run  kill 12345  from another terminal. The OS sends SIGTERM to the program with process id 12345.
-  - The OS itself may send signals in certain conditions (child process ended, alarm timer fired, and so on).
 
-Each signal has a name in ALL-CAPS starting with  SIG . The Python module that lets you work with them is  signal  .
+  -  You press  Ctrl + C  in the terminal. The OS (Operating System) sends the signal SIGINT to your program.
+  -  You run  kill 12345  from another terminal. The OS sends SIGTERM to the program with process id 12345.
+  -  The OS itself may send signals in certain conditions (child process ended, alarm timer fired, and so on).
 
+Each signal has a name in ALL-CAPS starting with  SIG . The Python module that lets you work with them is  signal .
 
-2. THE THREE SIGNALS TO KNOW FIRST
+2)  The three signals to know first
 
-  - SIGINT (Signal Interrupt)
-      Sent when the user presses Ctrl-C in the terminal.
-      Default behaviour: Python raises KeyboardInterrupt and the program exits.
-      You CAN catch it and run cleanup code first.
+  -  SIGINT (Signal Interrupt)
 
-  - SIGTERM (Signal Terminate)
-      Sent by  kill <pid>  or by a process manager (systemd, docker stop, kubernetes) asking your program to "please shut down cleanly".
-      Default behaviour: program exits immediately with no cleanup.
-      You SHOULD catch it in long-running server programs and do a clean shutdown.
+     Sent when the user presses  Ctrl + C  in the terminal. Default behaviour: Python raises  KeyboardInterrupt  and the program exits. You CAN catch it and run cleanup code first.
 
-  - SIGKILL (Signal Kill)
-      Sent by  kill -9 <pid>  . Immediate forced kill.
-      You CANNOT catch or ignore this. The OS terminates the process with no chance to react. Do not try to handle it.
+  -  SIGTERM (Signal Terminate)
 
-There are many more signals (SIGHUP, SIGCHLD, SIGUSR1, and so on) but 90% of the time you only care about SIGINT and SIGTERM.
+     Sent by  kill <pid>  or by a process manager (systemd, docker stop, kubernetes) asking your program to "please shut down cleanly". Default behaviour: the program exits immediately with no cleanup. You SHOULD catch it in long-running server programs and do a clean shutdown.
 
+  -  SIGKILL (Signal Kill)
 
-3. HOW TO REACT TO A SIGNAL
+     Sent by  kill -9 <pid> . Immediate forced kill. You CANNOT catch or ignore this. The OS terminates the process with no chance to react. Do not try to handle it.
 
-The main API is  signal.signal(sig, handler)  . It registers a function to be called whenever that signal arrives.
+There are many more signals (SIGHUP, SIGCHLD, SIGUSR1, and so on), but in everyday work you only care about SIGINT and SIGTERM.
 
-    import signal
+3)  How to react to a signal
 
-    def on_shutdown(signum, frame):
-        print("received signal", signum, "- cleaning up")
-        # do cleanup here
-        raise SystemExit(0)
+The main call is  signal.signal(sig, handler) . It registers a function to be called whenever that signal arrives.
 
-    signal.signal(signal.SIGINT, on_shutdown)
-    signal.signal(signal.SIGTERM, on_shutdown)
+     import signal
+
+     def on_shutdown(signum, frame):
+         print("received signal", signum, "- cleaning up")
+         raise SystemExit(0)
+
+     signal.signal(signal.SIGINT, on_shutdown)
+     signal.signal(signal.SIGTERM, on_shutdown)
 
 The handler function must take TWO parameters:
-  - signum  -> the integer number of the signal that arrived
-  - frame   -> the current stack frame (usually ignored)
 
-After registration, whenever SIGINT or SIGTERM arrives, Python interrupts whatever it was doing and calls  on_shutdown  .
+  -   signum   ->  the integer number of the signal that arrived
+  -   frame    ->  the current stack frame, which handlers ignore
 
+After registration, whenever SIGINT or SIGTERM arrives, Python interrupts whatever it was doing and calls  on_shutdown .
 
-4. THE  raise SystemExit(0)  LINE
+4)  The  raise SystemExit(0)  line
 
-The handler above ends with  raise SystemExit(0)  . This one line is doing two separate things  --  worth pulling apart.
+The handler above ends with  raise SystemExit(0) . That one line does two separate things  --  worth pulling apart.
 
   -   SystemExit   --  a built-in Python EXCEPTION class. Ordinary exceptions like  ValueError  or  RuntimeError  signal "something went wrong". SystemExit signals "the program should stop now". When Python sees this exception bubble up and no code catches it, the interpreter shuts down instead of printing a traceback.
 
-  -   0   --  the EXIT CODE (also called exit status). A small integer that the program hands back to the operating system when it ends. The Unix convention:
+  -   0   --  the EXIT CODE (also called exit status). A small integer the program hands back to the operating system when it ends. The Unix convention:
 
-        -   0   --  success, everything fine
-        -  any non-zero number ( 1 ,  2 , ...)  --  something failed
+         0                             success, everything fine
+         any non-zero number (1, 2)    something failed
 
-    The number itself is a message to the OS or to any script that started this program.
+     The number is a message to the OS, or to any script that started this program.
 
-Standalone example. Save as  exit_demo.py :
+Standalone example. Save as  programs/exit_demo.py :
 
-    print("before exit")
-    raise SystemExit(0)
-    print("after exit")
+     print("before exit")
+     raise SystemExit(0)
+     print("after exit")
 
 Run:
 
-    $ python3 exit_demo.py
-    before exit
-    $ echo $?
-    0
+     $ python3 exit_demo.py
+     before exit
+     $ echo $?
+     0
 
 Two things to notice:
 
   -   "after exit"  never prints  --   raise SystemExit(0)  stops the program right there.
-
-  -   echo $?   --  a shell built-in that prints the exit code of the last command that finished. We got  0  , meaning success.
+  -   echo $?   --  a shell built-in that prints the exit code of the last command that finished. We got  0 , meaning success.
 
 Change it to  raise SystemExit(1)  and rerun:
 
-    $ python3 exit_demo.py
-    before exit
-    $ echo $?
-    1
+     $ python3 exit_demo.py
+     before exit
+     $ echo $?
+     1
 
 Now the shell reports  1   --  "the program ended with a failure". Scripts and process managers use this number to decide whether to retry, alert, or move on.
 
- SystemExit  vs  sys.exit()  . You may also see  sys.exit(0)  in other code. It does exactly the same thing  --   sys.exit(0)  internally does  raise SystemExit(0)  . Two styles, one behaviour. Using  raise SystemExit(0)  directly saves an  import sys  .
+ SystemExit  vs  sys.exit() . You may also see  sys.exit(0)  in other code. It does exactly the same thing  --   sys.exit(0)  internally does  raise SystemExit(0) . Two styles, one behaviour. Using  raise SystemExit(0)  directly saves an  import sys .
 
-Back to the signal handler: when the user presses Ctrl-C, that is a NORMAL shutdown (the user asked for it, not a crash). So the handler exits with code  0  , telling the OS "I stopped cleanly, on purpose".
+Back to the signal handler: when the user presses  Ctrl + C , that is a NORMAL shutdown (the user asked for it, not a crash). So the handler exits with code  0 , telling the OS "I stopped cleanly, on purpose".
 
+5)  A concrete example
 
-5. A CONCRETE EXAMPLE
+Save this as  programs/signal_demo.py :
 
-Save this as  signal_demo.py :
+     import signal
+     import time
 
-    import signal
-    import time
+     def on_signal(signum, frame):
+         print("caught signal", signum, "- exiting cleanly")
+         raise SystemExit(0)
 
-    def on_signal(signum, frame):
-        print("caught signal", signum, "- exiting cleanly")
-        raise SystemExit(0)
+     signal.signal(signal.SIGINT, on_signal)
+     signal.signal(signal.SIGTERM, on_signal)
 
-    signal.signal(signal.SIGINT, on_signal)
-    signal.signal(signal.SIGTERM, on_signal)
-
-    print("running, press Ctrl-C to stop")
-    while True:
-        time.sleep(1)
+     print("running, press Ctrl-C to stop")
+     while True:
+         time.sleep(1)
 
 Run:
 
-    python3 signal_demo.py
+     python3 signal_demo.py
 
 Output:
 
-    running, press Ctrl-C to stop
+     running, press Ctrl-C to stop
 
-Now press Ctrl-C. Output continues:
+Now press  Ctrl + C . Output continues:
 
-    ^Ccaught signal 2 - exiting cleanly
+     ^Ccaught signal 2 - exiting cleanly
 
-Signal number 2 is SIGINT. If instead you ran the program in the background and then did  kill <pid>  from another terminal, you would see  caught signal 15  , because SIGTERM is number 15.
+Signal number 2 is SIGINT. If instead you ran the program in the background and then did  kill <pid>  from another terminal, you would see  caught signal 15 , because SIGTERM is number 15.
 
+6)  Common mistakes
 
-6. COMMON MISTAKES
+  -  Trying to catch SIGKILL. You cannot. The OS kills the process instantly. If your program needs to guarantee cleanup, do it on SIGTERM and hope no one uses  kill -9 .
 
-  - Trying to catch SIGKILL. You cannot. The OS kills the process instantly. If your program needs to guarantee cleanup, do it on SIGTERM and hope no one uses  kill -9  .
+  -  Doing heavy work inside a signal handler. Signal handlers should be tiny  --  flip a flag, set an event, and return. Any long work belongs in the main program flow, guided by that flag.
 
-  - Doing heavy work inside a signal handler. Signal handlers should be tiny — flip a flag, set an event, and return. Any long work belongs in the main program flow, guided by that flag.
+  -  Registering a signal handler in a background thread. Signals in Python can only be registered from the MAIN thread. Registering from a worker thread raises  ValueError .
 
-  - Registering a signal handler in a background thread. Signals in Python can only be registered from the MAIN thread. Registering from a worker thread raises ValueError.
+  -  Assuming signals work the same on Windows. Windows has a very limited set of signals. Server code that uses SIGTERM is designed for Linux and macOS, which is the normal deployment target.
 
-  - Assuming signals work the same on Windows. Windows has a very limited set of signals. Server code that uses SIGTERM is designed for Linux/macOS, which is the normal deployment target.
-
-  - Mixing plain  signal.signal(...)  with  asyncio.
+  -  Mixing plain  signal.signal(...)  with asyncio. A handler registered this way can fire in the middle of the event loop's work, and calling async code from inside it does not work. Asyncio has its own registration call,  loop.add_signal_handler(...) , which delivers the signal safely through the event loop. That is the pattern in section 34.

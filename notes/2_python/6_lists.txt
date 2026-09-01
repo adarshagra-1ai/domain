@@ -313,6 +313,26 @@ Positions  1 , 2 , 3  were replaced by  "a"  and  "b" . The list SHRANK from 5 i
      sort() , reverse()       ->  change the original list, and return  None .
      sorted() , lst[::-1]     ->  return a new list, original stays untouched.
 
+  (d)   min(lst) , max(lst) , sum(lst)  --  built-in functions, not list methods.
+
+        Like  len() , you call them AROUND the list, not with a dot. They do not change the list.
+
+        Code:
+
+           nums = [30, 10, 20]
+           print(min(nums))
+           print(max(nums))
+           print(sum(nums))
+           print(nums)
+
+        Output:
+           10
+           30
+           60
+           [30, 10, 20]
+
+        min()  and  max()  also work on a list of strings, comparing them alphabetically.  sum()  needs numbers.
+
 11)  Iterating over a list  (brief look)
 
 To do something with each item in a list, use a  for  loop.

@@ -6,7 +6,6 @@ pip is Python's PACKAGE INSTALLER. It downloads and installs third-party librari
 
 Every venv (see section 18) comes with its own  pip , so packages install into that venv and not the system.
 
-
 2)  Basic install
 
      pip install <name>
@@ -25,7 +24,6 @@ Install multiple packages in one command:
 
      pip install requests fastapi
 
-
 3)  Install a specific version
 
      pip install <name>==<version>
@@ -41,7 +39,6 @@ Version constraints:
      <3          anything below 3.0
      >=2.30,<3   a range
 
-
 4)  Uninstall a package
 
      pip uninstall <name>
@@ -53,7 +50,6 @@ Example:
 pip asks for confirmation ( y  or  n ). To skip the prompt, add  -y :
 
      pip uninstall -y requests
-
 
 5)  List installed packages
 
@@ -69,7 +65,6 @@ Example output (fresh venv with one package):
 To also see outdated packages:
 
      pip list --outdated
-
 
 6)  Show info about a package
 
@@ -87,7 +82,6 @@ Output (excerpt):
      Home-page: https://...
      Location: /home/adarsh/myproj/.venv/lib/...
 
-
 7)  What requirements.txt is
 
 requirements.txt  is a plain text file that lists the packages a project needs, one per line. Anyone with the file can install the same set with one command.
@@ -103,7 +97,6 @@ Rules:
   -  One package per line.
   -  Blank lines and comments (starting with  # ) are allowed.
   -  Version constraints work the same as on the  pip install  command line.
-
 
 8)  Freeze  --  create requirements.txt from the current venv
 
@@ -123,7 +116,6 @@ Downside:
 
      pip freeze  also lists sub-dependencies that got installed automatically. Some teams prefer to hand-maintain  requirements.txt  with only the direct dependencies and let  pip  pull the rest in.
 
-
 9)  Install from requirements.txt
 
      pip install -r requirements.txt
@@ -138,7 +130,6 @@ Common workflow after cloning a project:
 
 You are now ready to run the project.
 
-
 10)  Upgrading
 
 Upgrade one package to the latest compatible version:
@@ -148,7 +139,6 @@ Upgrade one package to the latest compatible version:
 Upgrade  pip  itself:
 
      pip install --upgrade pip
-
 
 11)  Common errors
 
@@ -162,11 +152,9 @@ Upgrade  pip  itself:
 
            python3 -m pip install requests
 
-
   (b)   Permission denied when installing
 
         You are trying to install to the system Python without  sudo . Do NOT use  sudo pip  as a workaround  --  it can break the system Python. Activate a venv and install there instead.
-
 
   (c)   ModuleNotFoundError after install
 
@@ -176,7 +164,6 @@ Upgrade  pip  itself:
 
         -  You installed globally but the venv is active. Fix: reinstall inside the active venv.
 
-
   (d)   requirements.txt is out of date
 
-        A teammate cloned your project and gets  ModuleNotFoundError . The reason is usually that  requirements.txt  was not updated after the last  pip install . Re-run  pip freeze > requirements.txt  after every new install and commit the file.
+        A teammate cloned your project and gets  ModuleNotFoundError . The reason:  requirements.txt  was not updated after the last  pip install . Re-run  pip freeze > requirements.txt  after every new install and commit the file.

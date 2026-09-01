@@ -73,7 +73,7 @@ Verify after install:
 
 Some systems also have a shorter command called  python . Behavior varies:
 
-  -  On modern Ubuntu / Debian / Raspberry Pi OS,  python  often does not exist by default; only  python3  is installed. Typing  python  gives  "command not found" .
+  -  On modern Ubuntu / Debian / Raspberry Pi OS,  python  does not exist by default; only  python3  is installed. Typing  python  gives  "command not found" .
   -  On some setups  python  is an alias pointing to Python 3. Then  python  and  python3  behave the same.
   -  On very old systems,  python  used to mean Python 2. That is gone now, but you may still see old tutorials that assume it.
 

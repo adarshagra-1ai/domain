@@ -1,390 +1,369 @@
-asyncio basics: sync vs async, coroutines, async / await
+32  --  asyncio basics: sync vs async, coroutines, async / await
 
-1. WHAT CONCURRENCY IS
+1)  What concurrency is
 
-CONCURRENCY means "several tasks are IN PROGRESS during overlapping time windows". Only one task is actually executing at any given instant, but multiple tasks are "alive" — started, paused, waiting, resumed — during the same overall stretch of wall-clock time.
+CONCURRENCY means "several tasks are IN PROGRESS during overlapping time windows". Only one task is actually executing at any given instant, but multiple tasks are alive  --  started, paused, waiting, resumed  --  during the same overall stretch of wall-clock time.
 
 The word to watch is OVERLAPPING. Concurrency is NOT "at the same instant" (that is parallelism). It is "start-to-finish spans intersect on a timeline".
 
 Concrete comparison. Three network fetches, each waiting 1 second for a reply:
 
-  Sequential (no concurrency):
-    fetch A: XXXXXXXXXX
-    fetch B:           XXXXXXXXXX
-    fetch C:                     XXXXXXXXXX
-    total: 3 seconds
+     Sequential (no concurrency):
+       fetch A: XXXXXXXXXX
+       fetch B:           XXXXXXXXXX
+       fetch C:                     XXXXXXXXXX
+       total: 3 seconds
 
-  Concurrent (with concurrency):
-    fetch A: XXXXXXXXXX
-    fetch B: XXXXXXXXXX
-    fetch C: XXXXXXXXXX
-    total: ~1 second
+     Concurrent (with concurrency):
+       fetch A: XXXXXXXXXX
+       fetch B: XXXXXXXXXX
+       fetch C: XXXXXXXXXX
+       total: ~1 second
 
 In the concurrent version, all three fetches are in progress during the same one-second window. Only one task is actively executing at any instant, but the three WAITS happen during that same window.
 
 Where concurrency helps: when tasks spend most of their time WAITING (network reply, disk read, database query, timer). The idle time of one task becomes the working time of another.
 
-Where concurrency does NOT help: pure CPU (Central Processing Unit) work with no waits. Overlapping three heavy math computations on one CPU gives no speedup — there are no idle windows to fill.
+Where concurrency does NOT help: pure CPU (Central Processing Unit) work with no waits. Overlapping three heavy math computations on one CPU gives no speedup  --  there are no idle windows to fill.
 
 CONCURRENCY vs PARALLELISM:
-  - Concurrency  --  one worker, multiple tasks in progress by interleaving during their waits. asyncio gives you this.
-  - Parallelism  --  multiple workers running truly at the same instant. Threads and multiprocessing give you this. asyncio does NOT.
 
-2. THE PROBLEM ASYNC SOLVES
+  -  Concurrency  --  one worker, multiple tasks in progress by interleaving during their waits. asyncio gives you this.
+  -  Parallelism  --  multiple workers running truly at the same instant. Threads and multiprocessing give you this. asyncio does NOT.
 
-Async is Python's built-in tool for writing concurrent code (Section 1) when the bottleneck is waiting on I/O (Input/Output) — network replies, database queries, file reads, timers. In synchronous code, the whole program freezes during those waits, so 10 sequential fetches of 1 second each take 10 seconds. With async, the same 10 fetches can run concurrently and finish in about 1 second, because the wait for one fetch overlaps with the waits for the others.
+2)  Threads, threading and spawning
+
+These three words come up constantly next to asyncio, so get them straight first.
+
+A THREAD is a single line of execution inside a program. Picture a single HAND writing on paper: at any moment, the hand is in one place doing one thing. Every program starts with one thread by default, called the "main thread"  --  that is the hand that runs your  print , your loops, your function calls.
+
+THREADING means using MORE THAN ONE thread at the same time. Two hands writing on the same paper in parallel; two things happen at once.
+
+Example scenario. A program has to (a) download a big file and (b) keep a spinner animation moving on screen. With ONE thread, the download BLOCKS the spinner  --  the spinner freezes till the download ends. With TWO threads, one downloads while the other keeps the spinner going.
+
+SPAWNING a thread means creating a new thread and starting it up. "Spawn" is developer slang for "launch a new running unit". So "spawning threads" means asking the program to create extra worker threads alongside the main one.
+
+Why not always use threads? Each new thread costs memory and some operating-system bookkeeping, and two threads touching the same data can step on each other, so they need LOCKS. That is overkill for many workloads.
+
+Asyncio's route is different: ONE thread only. When a task hits an  await  and starts waiting, the thread puts that task aside and picks up another task that is ready to run. When the awaited thing finishes, the paused task resumes. One thread, many tasks, no threading needed. That is what the phrase "without spawning threads" points at.
+
+3)  The problem async solves
+
+Async is Python's built-in tool for writing concurrent code when the bottleneck is waiting on I/O (Input/Output)  --  network replies, database queries, file reads, timers. In synchronous code, the whole program freezes during those waits, so 10 sequential fetches of 1 second each take 10 seconds. With async, the same 10 fetches run concurrently and finish in about 1 second, because the wait for one fetch overlaps with the waits for the others.
 
 Async does NOT make individual operations faster. It just prevents the program from sitting idle while one operation waits. This is why async has no benefit for CPU-bound work: there is no waiting time to overlap.
 
-3. SYNCHRONOUS CODE (THE BASELINE)
+4)  Synchronous code  --  the baseline
 
 Regular Python code runs top-to-bottom, one statement at a time. When it hits something slow, it blocks.
 
-    import time
+     import time
 
-    def fetch(name):
-        print("start", name)
-        time.sleep(1)               # blocks for 1 second — nothing else runs
-        print("done", name)
+     def fetch(name):
+         print("start", name)
+         time.sleep(1)
+         print("done", name)
 
-    start = time.time()
-    fetch("a")
-    fetch("b")
-    fetch("c")
-    print("total:", round(time.time() - start, 2), "sec")
-
-Output:
-
-    start a
-    done a
-    start b
-    done b
-    start c
-    done c
-    total: 3.0 sec
-
-Three calls, each 1-second wait, total 3 seconds. Even though the waits are independent, the program handled them one at a time.
-
-The  round(time.time() - start, 2)  expression
-
-This is the standard "how long did that take?" pattern. Read it right-to-left in three pieces.
-
-  -   time.time()   --  a function in the  time  module. Returns the current time as a FLOAT: the number of seconds that have passed since Jan 1, 1970 (the "Unix epoch"). Example value:  1735689600.234567  . Two calls a moment apart return two different floats.
-
-  -   time.time() - start   --  subtract an earlier snapshot from the current one. The result is the ELAPSED time in seconds. If  start  was  100.0  and the current call returns  103.145678  , the difference is  3.145678  seconds.
-
-  -   round(value, 2)   --  a built-in function that rounds a number to the given number of decimal places. The second argument is HOW MANY decimals to keep. So  round(3.145678, 2)  becomes  3.15  .
-
-Standalone example. Save as  timer_demo.py :
-
-    import time
-
-    start = time.time()
-    time.sleep(1.5)
-    elapsed = round(time.time() - start, 2)
-    print("took", elapsed, "sec")
+     start = time.time()
+     fetch("a")
+     fetch("b")
+     fetch("c")
+     print("total:", round(time.time() - start, 2), "sec")
 
 Output:
 
-    took 1.5 sec
+     start a
+     done a
+     start b
+     done b
+     start c
+     done c
+     total: 3.0 sec
 
-Why  1.5  and not  1.50  ?
+Three calls, each a 1-second wait, total 3 seconds. Even though the waits are independent, the program handled them one at a time.
 
- round(...)  returns a FLOAT, not a formatted string. In Python, the float  1.50  and the float  1.5  are literally the same number, and Python's default print drops trailing zeros. So even though we asked for 2 decimals,  print  shows  1.5  because the second decimal is zero.
+The timing line uses two things covered earlier:  time.time()  returns the current time as a float (seconds since 1 January 1970, the "Unix epoch"), so subtracting an earlier snapshot gives the elapsed seconds; and  round(value, 2)  trims that float to two decimals for readable output (section 4).
 
-    x = round(1.5023, 2)
-    print(x)          # 1.5   (float, trailing zero dropped)
-    print(x == 1.50)  # True
-
-To force exactly two decimals in the OUTPUT, use string formatting instead of  round  . The  :.2f  format spec says "as a float, with 2 decimal places, keeping trailing zeros":
-
-    elapsed = time.time() - start
-    print(f"took {elapsed:.2f} sec")   # took 1.50 sec
-
-Two different tools for two different jobs:
-
-  -   round(x, 2)   --  changes the NUMBER itself (still a float, drops trailing zeros on print).
-  -   f"{x:.2f}"   --  changes the DISPLAY (produces a string with exactly 2 decimals, zeros kept).
-
-Without the  round  , the print might show something like  1.5023419857025146   --  ugly. The rounding just trims it for readable output; the underlying float still exists.
-
-Other rounding lengths:
-
-  -   round(3.145678, 0)   ->  3.0    (0 decimals, still a float)
-  -   round(3.145678, 1)   ->  3.1
-  -   round(3.145678, 3)   ->  3.146
-
-4. THE async def KEYWORD AND COROUTINE OBJECTS
+5)  The  async def  keyword and coroutine objects
 
 Adding  async  in front of  def  changes the function into a COROUTINE FUNCTION. It looks almost the same as a normal function, with two differences:
 
-  - Inside its body you can use the  await  keyword.
-  - Calling it does NOT run the code. It returns a special object called a COROUTINE.
+  -  Inside its body you can use the  await  keyword.
+  -  Calling it does NOT run the code. It returns a special object called a COROUTINE.
 
-    async def hello():
-        return "hi"
+     async def hello():
+         return "hi"
 
-    c = hello()
-    print(c)
+     c = hello()
+     print(c)
 
 Output:
 
-    <coroutine object hello at 0x...>
+     <coroutine object hello at 0x...>
 
 That object is "code that has not been run yet, ready to be run when someone awaits it or hands it to a runner". Two ways to actually run it:
 
-  - From inside another  async def  function:  result = await hello()
-  - From plain sync code (usually top-level):  result = asyncio.run(hello())
+  -  From inside another  async def  function:   result = await hello()
+  -  From plain sync code:   result = asyncio.run(hello())
 
-Never call an  async def  function and throw away the returned coroutine without running it. Python will warn you:  RuntimeWarning: coroutine '...' was never awaited  .
+Never call an  async def  function and throw away the returned coroutine without running it. Python will warn you:  RuntimeWarning: coroutine '...' was never awaited .
 
-5. THE THREE HELPERS
+6)  The three helpers
 
-Meet the three helpers in isolation. Each is a plain function inside the  asyncio  module. They will be used in the async example in section 6, and walked through step-by-step in section 7.
+Three plain functions inside the  asyncio  module. They are used in the async example in section 7.
 
-5a.  asyncio.sleep(seconds)
+6a)   asyncio.sleep(seconds)
 
-It pauses the CURRENT coroutine for the given number of seconds, WITHOUT freezing the whole program. While it waits, the runtime is free to run other coroutines that are ready.
+Pauses the CURRENT coroutine for the given number of seconds, WITHOUT freezing the whole program. While it waits, the runtime is free to run other coroutines that are ready.
 
-    async def demo():
-        print("A")
-        await asyncio.sleep(2)
-        print("B")
+     async def demo():
+         print("A")
+         await asyncio.sleep(2)
+         print("B")
 
-Two seconds pass between  A  and  B  , but during those two seconds any other coroutine on the same runtime keeps running normally.
+Two seconds pass between  A  and  B , and during those two seconds any other coroutine on the same runtime keeps running.
 
 Contrast with the plain version:
 
-  -   time.sleep(2)   --  blocks the ENTIRE program. Even other coroutines cannot run.
-  -   await asyncio.sleep(2)   --  pauses only this one coroutine. Others still run.
+     time.sleep(2)              blocks the ENTIRE program. Even other coroutines cannot run.
+     await asyncio.sleep(2)     pauses only this one coroutine. Others still run.
 
-Note the  await   --   asyncio.sleep  returns a coroutine object, so it has to be awaited to actually take effect.
+Note the  await   --   asyncio.sleep  returns a coroutine object, so it has to be awaited to take effect.
 
-5b.  asyncio.gather(*coroutines)
+6b)   asyncio.gather(*coroutines)
 
 Takes several coroutines, runs them CONCURRENTLY, and waits until all of them finish. Returns a list of their results in the same order they were passed in.
 
-    async def slow_square(x):
-        await asyncio.sleep(1)
-        return x * x
+     async def slow_square(x):
+         await asyncio.sleep(1)
+         return x * x
 
-    async def main():
-        results = await asyncio.gather(
-            slow_square(2),
-            slow_square(3),
-            slow_square(4),
-        )
-        print(results)    # [4, 9, 16]
+     async def main():
+         results = await asyncio.gather(
+             slow_square(2),
+             slow_square(3),
+             slow_square(4),
+         )
+         print(results)
 
-How the result list is built.  gather  waits until EVERY coroutine has finished. Once they are all done, it takes each coroutine's RETURN VALUE and packs them into a list. The order of that list matches the order the coroutines were PASSED IN to  gather  , not the order in which they finished.
+Output:
 
-So in the code above:
+     [4, 9, 16]
 
-  -   slow_square(2)  was passed first, returned  4    -> results[0] = 4
-  -   slow_square(3)  was passed second, returned  9   -> results[1] = 9
-  -   slow_square(4)  was passed third, returned  16   -> results[2] = 16
+How the result list is built.  gather  waits until EVERY coroutine has finished. Once they are all done, it takes each coroutine's RETURN VALUE and packs them into a list. The order of that list matches the order the coroutines were PASSED IN, not the order in which they finished.
 
-That is why  results  is exactly  [4, 9, 16]  .
+  -   slow_square(2)  was passed first, returned  4    ->  results[0] = 4
+  -   slow_square(3)  was passed second, returned  9   ->  results[1] = 9
+  -   slow_square(4)  was passed third, returned  16   ->  results[2] = 16
 
-Finish order does not matter. Even if the third coroutine happened to finish before the first,  gather  still lines them up by INPUT position:
+Finish order does not matter. Even if the third coroutine finishes before the first,  gather  still lines them up by INPUT position:
 
-    async def wait_and_return(name, delay):
-        await asyncio.sleep(delay)
-        return name
+     async def wait_and_return(name, delay):
+         await asyncio.sleep(delay)
+         return name
 
-    async def main():
-        results = await asyncio.gather(
-            wait_and_return("a", 3),    # finishes last  (3 sec)
-            wait_and_return("b", 1),    # finishes first (1 sec)
-            wait_and_return("c", 2),    # finishes middle (2 sec)
-        )
-        print(results)    # ["a", "b", "c"]
+     async def main():
+         results = await asyncio.gather(
+             wait_and_return("a", 3),
+             wait_and_return("b", 1),
+             wait_and_return("c", 2),
+         )
+         print(results)
 
-Total time for this  gather : ~3 seconds.  gather  waits for the SLOWEST coroutine to finish. Since all three run concurrently, the whole call finishes when the longest sleep ( 3 sec, for  "a"  ) ends.
+Output:
+
+     ['a', 'b', 'c']
 
 Timeline:
 
-  -  t=0.0 sec  --  all three coroutines start, all three go to sleep
-  -  t=1.0 sec  --   "b"  wakes up, returns  "b"
-  -  t=2.0 sec  --   "c"  wakes up, returns  "c"
-  -  t=3.0 sec  --   "a"  wakes up, returns  "a"   --   gather  now has all results, builds the list, returns
+     t=0.0 sec    all three coroutines start, all three go to sleep
+     t=1.0 sec    "b" wakes up, returns  "b"
+     t=2.0 sec    "c" wakes up, returns  "c"
+     t=3.0 sec    "a" wakes up, returns  "a"  --  gather now has all results, builds the list, returns
 
-Compare with running them sequentially (one  await  after another): 3 + 1 + 2 = 6 seconds.  gather  halves the wall-clock time by overlapping the waits.
+Total time for this  gather : about 3 seconds.  gather  waits for the SLOWEST coroutine. Running them sequentially instead would take 3 + 1 + 2 = 6 seconds.
 
-Even though  "b"  finished first and  "a"  finished last, the list is still  ["a", "b", "c"]   --  the order they were handed to  gather  .
+Even though  "b"  finished first and  "a"  finished last, the list is still  ['a', 'b', 'c']   --  the order they were handed to  gather .
 
-To unpack the list into separate variables, tuple-unpack it:
+To unpack the list into separate variables, tuple-unpack it (section 8):
 
-    a_result, b_result, c_result = await asyncio.gather(
-        slow_square(2),
-        slow_square(3),
-        slow_square(4),
-    )
-    # a_result == 4, b_result == 9, c_result == 16
+     a_result, b_result, c_result = await asyncio.gather(
+         slow_square(2),
+         slow_square(3),
+         slow_square(4),
+     )
 
-If a coroutine has no explicit  return, its return value is  None  , and that  None  still takes its slot in the list.  results  from three such coroutines would be  [None, None, None]  .
+That gives  a_result == 4 ,  b_result == 9 ,  c_result == 16 .
 
-Without  gather  you would  await  them one by one and lose the concurrency:
+If a coroutine has no explicit  return , its return value is  None , and that  None  still takes its slot in the list. Three such coroutines give  [None, None, None] .
 
-    a = await slow_square(2)     # 1 sec
-    b = await slow_square(3)     # 1 sec
-    c = await slow_square(4)     # 1 sec
-    # total: ~3 sec
+Without  gather  you would  await  them one by one and lose the concurrency  --  three 1-second waits, one after another, for a total of about 3 seconds:
 
-With  gather  , the waits overlap  --  that is the whole point.
+     a = await slow_square(2)
+     b = await slow_square(3)
+     c = await slow_square(4)
 
-5c.  asyncio.run(coroutine)
+With  gather , the waits overlap. That is the whole point.
+
+6c)   asyncio.run(coroutine)
 
 The bridge from PLAIN sync code into the async world. It does three things in order:
 
-   1  Create a new EVENT LOOP (the runtime that schedules coroutines).
-   2  Run the given coroutine on that loop until it finishes.
-   3  Close the loop and return the coroutine's result.
+  (a)  Create a new EVENT LOOP (the runtime that schedules coroutines).
+  (b)  Run the given coroutine on that loop until it finishes.
+  (c)  Close the loop and return the coroutine's result.
 
-    async def hello():
-        return "hi"
+     async def hello():
+         return "hi"
 
-    result = asyncio.run(hello())
-    print(result)    # "hi"
+     result = asyncio.run(hello())
+     print(result)
+
+Output:
+
+     hi
 
 Rules of thumb:
 
-  -  Call  asyncio.run(...)  EXACTLY ONCE at the very top of an async program (usually the last line of the file, or inside  main()  ).
-  -  Never call  asyncio.run(...)  from inside another  async def  function. From within async code you already have a loop  --  just use  await  .
+  -  Call  asyncio.run(...)  EXACTLY ONCE at the very top of an async program  --  the last line of the file, or inside  main() .
+  -  Never call  asyncio.run(...)  from inside another  async def  function. From within async code you already have a loop; just use  await .
 
-6. ASYNCHRONOUS CODE (THE ALTERNATIVE)
+The event loop itself is covered in section 33.
 
-Await rewrites the same idea so the waits can overlap.
+7)  Asynchronous code  --  the alternative
 
-    import asyncio
-    import time
+The same idea rewritten so the waits can overlap.
 
-    async def fetch(name):
-        print("start", name)
-        await asyncio.sleep(1)      # pauses THIS coroutine, but the program keeps running
-        print("done", name)
+     import asyncio
+     import time
 
-    async def main():
-        start = time.time()
-        await asyncio.gather(fetch("a"), fetch("b"), fetch("c"))
-        print("total:", round(time.time() - start, 2), "sec")
+     async def fetch(name):
+         print("start", name)
+         await asyncio.sleep(1)
+         print("done", name)
 
-    asyncio.run(main())
+     async def main():
+         start = time.time()
+         await asyncio.gather(fetch("a"), fetch("b"), fetch("c"))
+         print("total:", round(time.time() - start, 2), "sec")
+
+     asyncio.run(main())
 
 Output:
 
-    start a
-    start b
-    start c
-    done a
-    done b
-    done c
-    total: 1.0 sec
+     start a
+     start b
+     start c
+     done a
+     done b
+     done c
+     total: 1.0 sec
 
-Same three 1-second waits, but total 1 second — because while  fetch("a")  is asleep, the runtime uses that idle time to start  fetch("b")  and  fetch("c")  , and all three wake up together.
+Same three 1-second waits, but total 1 second  --  because while  fetch("a")  is asleep, the runtime uses that idle time to start  fetch("b")  and  fetch("c") , and all three wake up together.
 
-7. THE await KEYWORD
+8)  The  await  keyword
 
 Inside an  async def  function, you use  await  in front of another coroutine (or anything "awaitable") to run it and wait for its result.
 
-    async def slow_double(x):
-        await asyncio.sleep(0.1)
-        return x * 2
+     async def slow_double(x):
+         await asyncio.sleep(0.1)
+         return x * 2
 
-    async def main():
-        result = await slow_double(21)
-        print(result)
+     async def main():
+         result = await slow_double(21)
+         print(result)
 
 Output:
 
-    42
+     42
 
 Two rules:
-  - You can ONLY use  await  inside an  async def  function. Using it in a normal function is a SyntaxError.
-  - When your code awaits, the runtime is allowed to run OTHER coroutines during the wait. That is where the concurrency comes from.
 
-8. A FULL CONCRETE COMPARISON
+  -  You can ONLY use  await  inside an  async def  function. Using it in a normal function is a  SyntaxError .
+  -  When your code awaits, the runtime is allowed to run OTHER coroutines during the wait. That is where the concurrency comes from.
 
-Save as  compare_sync_async.py :
+9)  A full concrete comparison
 
-    import asyncio
-    import time
+Save as  programs/compare_sync_async.py :
 
-    # --- sync version ---
-    def sync_task(name):
-        print("sync start", name)
-        time.sleep(1)
-        print("sync done", name)
+     import asyncio
+     import time
 
-    def run_sync():
-        start = time.time()
-        sync_task("a")
-        sync_task("b")
-        sync_task("c")
-        print("sync total:", round(time.time() - start, 2), "sec\n")
+     def sync_task(name):
+         print("sync start", name)
+         time.sleep(1)
+         print("sync done", name)
 
-    # --- async version ---
-    async def async_task(name):
-        print("async start", name)
-        await asyncio.sleep(1)
-        print("async done", name)
+     def run_sync():
+         start = time.time()
+         sync_task("a")
+         sync_task("b")
+         sync_task("c")
+         print("sync total:", round(time.time() - start, 2), "sec\n")
 
-    async def run_async():
-        start = time.time()
-        await asyncio.gather(async_task("a"), async_task("b"), async_task("c"))
-        print("async total:", round(time.time() - start, 2), "sec")
+     async def async_task(name):
+         print("async start", name)
+         await asyncio.sleep(1)
+         print("async done", name)
 
-    run_sync()
-    asyncio.run(run_async())
+     async def run_async():
+         start = time.time()
+         await asyncio.gather(async_task("a"), async_task("b"), async_task("c"))
+         print("async total:", round(time.time() - start, 2), "sec")
+
+     run_sync()
+     asyncio.run(run_async())
 
 Run:
 
-    python3 compare_sync_async.py
+     python3 compare_sync_async.py
 
 Output:
 
-    sync start a
-    sync done a
-    sync start b
-    sync done b
-    sync start c
-    sync done c
-    sync total: 3.0 sec
+     sync start a
+     sync done a
+     sync start b
+     sync done b
+     sync start c
+     sync done c
+     sync total: 3.0 sec
 
-    async start a
-    async start b
-    async start c
-    async done a
-    async done b
-    async done c
-    async total: 1.0 sec
+     async start a
+     async start b
+     async start c
+     async done a
+     async done b
+     async done c
+     async total: 1.0 sec
 
-Same total work, one third of the time — because the three waits happen concurrently in the async version.
+Same total work, one third of the time  --  because the three waits happen concurrently in the async version.
 
-9. WHEN TO USE ASYNC AND WHEN NOT TO
+10)  When to use async and when not to
 
-Use async when the program spends most of its time WAITING on I/O (Input/Output):
-  - Many network requests
-  - Many database queries
-  - Reading many files at once (less common)
-  - Handling many client connections in a server
+Use async when the program spends most of its time WAITING on I/O:
+
+  -  Many network requests
+  -  Many database queries
+  -  Reading many files at once
+  -  Handling many client connections in a server
 
 Do NOT use async when the program is CPU-bound:
-  - Heavy math, image processing, machine learning inference
-  - Big JSON (JavaScript Object Notation) parsing loops on already-in-memory data
 
-For CPU-bound work, async gives no speedup because there is no "waiting time" to overlap. In fact it can make things worse by adding overhead. Use threads or subprocesses for CPU-bound parallelism instead.
+  -  Heavy math, image processing, machine learning inference
+  -  Big JSON parsing loops on already-in-memory data
 
-10. COMMON MISTAKES
+For CPU-bound work, async gives no speedup because there is no waiting time to overlap. It can even make things worse by adding overhead. Use threads or subprocesses for CPU-bound parallelism instead.
 
-  - Calling an  async def  function without awaiting it.  greet()  by itself does nothing except return a coroutine. Fix:  await greet()  inside another async function, or  asyncio.run(greet())  from sync code.
+11)  Common mistakes
 
-  - Using  await  in a plain  def  function. SyntaxError. Fix: change the outer function to  async def  .
+  -  Calling an  async def  function without awaiting it.  greet()  by itself does nothing except return a coroutine. Fix:  await greet()  inside another async function, or  asyncio.run(greet())  from sync code.
 
-  - Using blocking calls inside a coroutine. Writing  time.sleep(1)  inside an  async def  freezes the ENTIRE program — other coroutines cannot run while it sleeps. Always use the async equivalent, like  await asyncio.sleep(1)  .
+  -  Using  await  in a plain  def  function. That is a  SyntaxError . Fix: change the outer function to  async def .
 
-  - Expecting async to speed up CPU-heavy code. It will not. Async only helps when you were previously WAITING on something outside the program.
+  -  Using blocking calls inside a coroutine. Writing  time.sleep(1)  inside an  async def  freezes the ENTIRE program  --  other coroutines cannot run while it sleeps. Always use the async equivalent,  await asyncio.sleep(1) .
 
-  - Awaiting the same coroutine object twice. Each coroutine object can be awaited only once. To run the same work twice, call the function twice to get two separate coroutine objects.
+  -  Expecting async to speed up CPU-heavy code. It will not. Async only helps when you were previously WAITING on something outside the program.
 
-  - Forgetting that  async def  changes the function's return type. If  f  is defined with  async def  , then  f()  returns a coroutine, not the actual result. You always need to  await  it (or hand it to a runner) to get the real value.
+  -  Awaiting the same coroutine object twice. Each coroutine object can be awaited only once. To run the same work twice, call the function twice to get two separate coroutine objects.
+
+  -  Forgetting that  async def  changes the function's return type. If  f  is defined with  async def , then  f()  returns a coroutine, not the actual result. You always need to  await  it (or hand it to a runner) to get the real value.

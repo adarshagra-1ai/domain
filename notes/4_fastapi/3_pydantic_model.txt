@@ -13,7 +13,6 @@ FastAPI uses Pydantic under the hood. When you declare a request body as a Pydan
 
 Pydantic comes bundled with FastAPI. You already have it if you installed FastAPI in section 1.
 
-
 2)  Defining a model
 
 Import  BaseModel  from  pydantic  and inherit from it.
@@ -33,7 +32,6 @@ Rules:
   -  A default value ( is_active = True ) makes that field OPTIONAL.
   -  Without a default, the field is REQUIRED.
 
-
 Using the model directly (not through FastAPI):
 
 Code:
@@ -48,7 +46,6 @@ Output:
      25
      True
 
-
 Missing required field:
 
 Code:
@@ -60,7 +57,6 @@ Run:
      age
        Field required
 
-
 Wrong type:
 
 Code:
@@ -71,7 +67,6 @@ Run:
      ValidationError: 1 validation error for User
      age
        Input should be a valid integer
-
 
 3)  Using a model as a request body
 
@@ -106,7 +101,6 @@ Output:
 
      {"created":"adarsh","age":25,"active":true}
 
-
 Test with a missing field:
 
      curl -X POST \
@@ -121,7 +115,6 @@ Response (status 422):
                  "msg":"Field required"}]}
 
 FastAPI returned  422 Unprocessable Entity  without your handler even running.
-
 
 4)  Optional fields
 
@@ -140,7 +133,6 @@ Or the modern union syntax (Python 3.10+):
          nickname: str | None = None
 
 Both mean:  nickname  is either a string or  None , and defaults to  None  if missing.
-
 
 5)  Nested models
 
@@ -164,7 +156,6 @@ Body:
 
 Pydantic validates the nested object too. A missing  address.city  gives a  422 .
 
-
 6)  Field constraints  --  Field(...)
 
 For more control (min length, max value, regex, etc.), import  Field .
@@ -186,10 +177,9 @@ Common options:
      default                      override default
      description                  docs text
 
-
 7)  Reading data back  --  model_dump()
 
-Convert a model instance to a plain dict (for JSON responses or DB inserts).
+Convert a model instance to a plain dict (for JSON responses or database inserts).
 
 Code:
 
@@ -201,7 +191,6 @@ Output:
      {'name': 'adarsh', 'age': 25}
 
 In Pydantic v1 the method was called  .dict() . Modern FastAPI uses Pydantic v2, where the method is  .model_dump() .
-
 
 8)  Common errors
 
@@ -219,7 +208,6 @@ In Pydantic v1 the method was called  .dict() . Modern FastAPI uses Pydantic v2,
 
         FastAPI does not treat plain classes as request bodies. The route will not work as expected. Inherit from  BaseModel .
 
-
   (b)   Type hint but no value or default
 
         Code:
@@ -230,15 +218,12 @@ In Pydantic v1 the method was called  .dict() . Modern FastAPI uses Pydantic v2,
 
         SyntaxError. Every field needs a type hint:  age: int .
 
-
   (c)   Mixing Pydantic v1 and v2 syntax
 
         The old style used  class Config:  inner classes and  .dict() . Pydantic v2 uses  model_config = ConfigDict(...)  and  .model_dump() . If a tutorial looks different, check which version it targets.
 
-
   (d)   Validation runs ONCE at parse time
 
         After the model instance is built, it is a normal Python object. Assigning invalid values later is NOT rechecked unless you opt in with strict validation settings.
-
 
 Next we switch to the database side  --  SQLite basics: create table, insert, select, update, delete.

@@ -1,11 +1,212 @@
 24  --  argparse subcommands: subparsers and command routing
 
-(Stub. Content will be filled when we reach this section.)
+Section 23 built a parser with flags only:  python -m mypackage --port 8000 --verbose . That shape works when a program does ONE job with different settings. This section covers the other shape: one program that does SEVERAL different jobs.
 
-Planned coverage:
-  -  What a SUBCOMMAND is, using real-world CLIs as examples ( git commit ,  git push ;  docker run ,  docker build ).
-  -  add_subparsers()  --  attaching a sub-parser tree to the main parser.
-  -   dest="command"  and how the chosen subcommand ends up on  args .
-  -  Adding per-subcommand flags with their own  add_argument  calls.
-  -  Routing:  if args.command == "..."  dispatch pattern.
-  -  Small worked example (e.g. a mini  todo  CLI with  add ,  list ,  done  subcommands).
+1)  What a SUBCOMMAND is
+
+A SUBCOMMAND is a plain word (no dashes) typed right after the program name, choosing WHICH job to run. Everything after it belongs to that job.
+
+     <program>  <subcommand>  [flags for that subcommand]
+
+You already use tools built this way:
+
+     git commit -m "fix"        commit is the subcommand;  -m  belongs to commit
+     git push origin main       push is the subcommand
+     git clone <url>            clone is the subcommand
+
+Notice that each subcommand has its OWN flags.  -m  makes sense for  git commit  but means nothing to  git push . That separation is the whole point.
+
+Compare the two shapes:
+
+     FLAGS ONLY        my-engine --port 8000 --verbose
+     SUBCOMMANDS       my-engine start --port 8000
+                       my-engine status
+                       my-engine stop --force
+
+2)   add_subparsers()   --  attaching the subcommand tree
+
+The main parser is built exactly as in section 23. One extra call turns it into a parser that expects a subcommand:
+
+     import argparse
+
+     parser = argparse.ArgumentParser(prog="todo")
+     subparsers = parser.add_subparsers(dest="command", required=True)
+
+Piece by piece:
+
+  -   parser.add_subparsers()   --  a method on the ArgumentParser. It returns an OBJECT whose job is to create sub-parsers. Store it in a variable ( subparsers  here).
+  -   dest="command"   --  the attribute name where argparse will store the subcommand the user chose. With  dest="command" , typing  todo add  gives  args.command == "add" . Without  dest , the chosen name is not saved anywhere and you cannot route on it.
+  -   required=True   --  the user MUST type a subcommand. Leave it out and running bare  todo  succeeds with  args.command == None , which then has to be handled by hand.
+
+Nothing has been registered yet.  subparsers  is an empty tree, the same way  parser  was empty after  ArgumentParser(...)  in section 23.
+
+3)  Adding one subcommand
+
+Each subcommand gets its own parser, created with  add_parser :
+
+     add_cmd = subparsers.add_parser("add", help="add a new task")
+     add_cmd.add_argument("text", help="the task description")
+
+Piece by piece:
+
+  -   subparsers.add_parser("add", ...)   --  registers the word  add  as a valid subcommand and RETURNS a brand-new parser for it.
+  -   help="add a new task"   --  shows next to  add  in the main help output ( todo --help ).
+  -   add_cmd.add_argument("text", ...)   --  the returned object is an ordinary ArgumentParser. Everything from section 23 works on it:  add_argument ,  type= ,  default= ,  action="store_true" , positional and optional arguments.
+
+The flag  text  is registered on  add_cmd , NOT on  parser . So  text  exists only when the user typed  add .
+
+4)  A full worked example  --  a mini  todo  CLI
+
+Save this as  programs/todo.py :
+
+     import argparse
+
+     parser = argparse.ArgumentParser(prog="todo")
+     subparsers = parser.add_subparsers(dest="command", required=True)
+
+     add_cmd = subparsers.add_parser("add", help="add a new task")
+     add_cmd.add_argument("text", help="the task description")
+
+     list_cmd = subparsers.add_parser("list", help="show all tasks")
+     list_cmd.add_argument("--all", action="store_true",
+                           help="include finished tasks")
+
+     done_cmd = subparsers.add_parser("done", help="mark a task finished")
+     done_cmd.add_argument("number", type=int, help="task number")
+
+     args = parser.parse_args()
+     print(args)
+
+Three subcommands are registered, each with different arguments:
+
+     add     one positional argument  text
+     list    one on/off flag  --all
+     done    one positional integer  number
+
+Run it and look at what  args  holds each time:
+
+     $ python3 todo.py add "buy milk"
+     Namespace(command='add', text='buy milk')
+
+     $ python3 todo.py list
+     Namespace(command='list', all=False)
+
+     $ python3 todo.py list --all
+     Namespace(command='list', all=True)
+
+     $ python3 todo.py done 3
+     Namespace(command='done', number=3)
+
+Two things to notice:
+
+  -   args.command  always holds the chosen subcommand name, because of  dest="command" .
+  -  The OTHER attributes change with the subcommand.  args.text  exists only for  add ;  args.number  only for  done . Asking for  args.text  after a  list  run raises an  AttributeError .
+
+5)  Routing  --  acting on the chosen subcommand
+
+Parsing only tells you WHAT the user asked for. Routing is the code that then does it. The plain pattern is an  if / elif  chain on  args.command :
+
+     args = parser.parse_args()
+
+     if args.command == "add":
+         print("adding:", args.text)
+     elif args.command == "list":
+         print("listing, all =", args.all)
+     elif args.command == "done":
+         print("finishing task", args.number)
+
+Run:
+
+     $ python3 todo.py add "buy milk"
+     adding: buy milk
+
+     $ python3 todo.py done 3
+     finishing task 3
+
+Because  required=True  was set, no  else  branch is needed for "no subcommand given"  --  argparse rejects that before your code runs.
+
+In a real program each branch calls a FUNCTION instead of printing:
+
+     if args.command == "add":
+         add_task(args.text)
+     elif args.command == "list":
+         list_tasks(show_all=args.all)
+     elif args.command == "done":
+         finish_task(args.number)
+
+That keeps  main()  as a thin router and puts the real work in named functions.
+
+6)  Help output with subcommands
+
+argparse builds two levels of help.
+
+Main help lists the subcommands:
+
+     $ python3 todo.py --help
+     usage: todo [-h] {add,list,done} ...
+
+     positional arguments:
+       {add,list,done}
+         add          add a new task
+         list         show all tasks
+         done         mark a task finished
+
+     options:
+       -h, --help     show this help message and exit
+
+Per-subcommand help lists that subcommand's own arguments:
+
+     $ python3 todo.py add --help
+     usage: todo add [-h] text
+
+     positional arguments:
+       text        the task description
+
+     options:
+       -h, --help  show this help message and exit
+
+Each sub-parser gets its own  -h / --help  automatically, exactly like the main parser.
+
+7)  Common errors
+
+  (a)   Forgetting  dest=
+
+        Code:
+
+           subparsers = parser.add_subparsers(required=True)
+
+        The subcommand is parsed correctly, but the name is not stored anywhere, so  args.command  does not exist and the routing  if  chain fails with an  AttributeError . Always pass  dest= .
+
+  (b)   Reading an attribute that belongs to a different subcommand
+
+        Code:
+
+           args = parser.parse_args()
+           print(args.text)
+
+        Run:
+
+           $ python3 todo.py list
+           AttributeError: 'Namespace' object has no attribute 'text'
+
+        Only touch  args.text  inside the  add  branch of the routing chain.
+
+  (c)   Unknown subcommand
+
+        Run:
+
+           $ python3 todo.py remove 3
+           usage: todo [-h] {add,list,done} ...
+           todo: error: argument command: invalid choice: 'remove' (choose from 'add', 'list', 'done')
+
+        argparse validates the subcommand name against the registered list and stops before your code runs.
+
+  (d)   No subcommand given
+
+        Run:
+
+           $ python3 todo.py
+           usage: todo [-h] {add,list,done} ...
+           todo: error: the following arguments are required: command
+
+        This is the  required=True  behaviour. Without it, the program would run with  args.command == None  instead.

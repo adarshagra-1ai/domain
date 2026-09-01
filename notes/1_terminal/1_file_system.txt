@@ -75,7 +75,7 @@ Common folders that sit directly inside  / :
      /home    ->  user home folders live here
      /usr     ->  installed programs and libraries
      /var     ->  logs, caches, mail
-     /tmp     ->  temporary files (often cleared on reboot)
+     /tmp     ->  temporary files (many systems clear this folder on reboot)
 
 Note: the word "root" is also used for the ROOT USER, a special admin account. That is a login, not a folder. In these notes, "root" means the folder  /  unless we clearly say "root user".
 
@@ -91,9 +91,9 @@ Each user of the machine gets a personal folder under  /home . If your username 
 
 Facts:
 
-  -  Your own files (notes, code, downloads, pictures) usually live somewhere under your home folder.
+  -  Your own files (notes, code, downloads, pictures) live under your home folder.
   -  Other users cannot normally read or change what is inside your home folder.
-  -  When you open a fresh terminal, it usually starts you inside your home folder.
+  -  When you open a fresh terminal, it starts you inside your home folder.
   -  Your home folder has a shortcut symbol:  ~  (tilde). Covered in Chunk D.
 
 If a machine has multiple users:
@@ -254,7 +254,7 @@ Examples  (CWD = /home/adarsh/Documents ):
 
      ./School/math.pdf     ->  /home/adarsh/Documents/School/math.pdf
 
-" ./notes.txt "  and just  " notes.txt "  point to the same file when you are in the same CWD. The  ./  in front is usually OPTIONAL.
+" ./notes.txt "  and just  " notes.txt "  point to the same file when you are in the same CWD. The  ./  in front is OPTIONAL here.
 
 One case where it is NOT optional: RUNNING a program that lives in the current folder. For example:
 

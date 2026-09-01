@@ -2,7 +2,6 @@
 
 Four broad groups build home-automation controllers, aimed at different customers.
 
-
 1)  DIY (Do It Yourself) open-source
 
   -  Home Assistant (Python, community-driven, 3000+ brand integrations).
@@ -15,7 +14,6 @@ Good side: it is free, easy to change the way you want, and has a very large use
 
 Bad side: no company gives official paid support if something breaks. Also, the small driver programs that connect to each brand's devices can suddenly stop working with no warning  --  for example, when the brand pushes an update on its side and the community driver has not caught up yet.
 
-
 2)  Big-tech consumer
 
   -  Google Home
@@ -23,7 +21,6 @@ Bad side: no company gives official paid support if something breaks. Also, the 
   -  Amazon Alexa
 
 Aimed at the average consumer. Very simple to set up, cloud-heavy, limited brand support, no professional installation required.
-
 
 3)  Premium commercial integrators
 
@@ -33,7 +30,6 @@ Aimed at the average consumer. Very simple to set up, cloud-heavy, limited brand
   -  RTI
 
 Aimed at high-end residential and commercial buildings, sold only through authorised dealers. Closed ecosystems, premium price, deep customisation, strong professional support.
-
 
 4)  Professional integrator segment
 

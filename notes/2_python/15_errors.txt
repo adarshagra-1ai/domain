@@ -16,7 +16,6 @@ You have already seen exceptions in earlier sections:
 
 Each of these is a kind of exception.
 
-
 2)  Basic try / except
 
 Wrap the risky code in a  try  block. Put the handler in an  except  block. If the  try  block raises, control jumps to the  except  block.
@@ -42,9 +41,7 @@ Output:
 
 Without the  try  , the  int("hello")  line would crash the program with a  ValueError . With  try/except  , the error is caught and the program keeps running.
 
-
 BUT: bare  except  (no exception type) catches EVERYTHING, including bugs you did not expect. Prefer catching a SPECIFIC exception (next section).
-
 
 3)  Catching a specific exception
 
@@ -59,7 +56,6 @@ Code:
 
 Output:  bad number
 
-
 If a different exception happens, this handler does NOT catch it:
 
 Code:
@@ -72,11 +68,9 @@ Code:
 Run:
      ZeroDivisionError: division by zero
 
-
 4)  Catching multiple exception types
 
 Put multiple types in a TUPLE, or use multiple  except  blocks.
-
 
 One handler for multiple types:
 
@@ -87,7 +81,6 @@ Code:
          y = 10 / x
      except (ValueError, ZeroDivisionError):
          print("input problem")
-
 
 Different handlers for different types:
 
@@ -103,7 +96,6 @@ Code:
 
 Python checks each  except  in order and runs the FIRST one that matches.
 
-
 How this actually runs (important):
 
   -  Code inside  try  runs line by line.
@@ -113,28 +105,22 @@ How this actually runs (important):
   -  After that, execution continues on the line AFTER the whole  try / except  (the program does not crash).
   -  If NO exception was raised, none of the  except  blocks run.
 
-
 Walk through the example above:
 
   Case 1  --  user types  "hello" :
      int("hello")  raises  ValueError .
      y = 10 / x  never runs.
-     except ValueError  matches  ->
-     prints  "not a number" .
-     except ZeroDivisionError  is not
-     even checked.
+     except ValueError  matches  ->  prints  "not a number" .
+     except ZeroDivisionError  is not even checked.
 
   Case 2  --  user types  "0" :
      int("0")  gives  0  (no error).
      10 / 0  raises  ZeroDivisionError .
      except ValueError  does not match.
-     except ZeroDivisionError  matches
-     ->  prints  "cannot divide by zero" .
+     except ZeroDivisionError  matches  ->  prints  "cannot divide by zero" .
 
   Case 3  --  user types  "5" :
-     No exception at all. Neither
-     except  block runs.
-
+     No exception at all. Neither  except  block runs.
 
 Order matters  --  a common trap:
 
@@ -149,7 +135,6 @@ Exception  is the PARENT of  ValueError , so the first  except  catches EVERYTHI
 
 Rule: put SPECIFIC exceptions first, GENERAL ones (like  Exception ) last.
 
-
 5)  Getting the error object  --  except X as e
 
 If you need details about what went wrong, capture the exception with  as .
@@ -162,11 +147,9 @@ Code:
          print("error:", e)
 
 Output:
-     error: invalid literal for int() with
-     base 10: 'hello'
+     error: invalid literal for int() with base 10: 'hello'
 
 e  is the exception object; printing it shows the message. You can also inspect its type and attributes.
-
 
 6)  else  block  --  runs when no exception happened
 
@@ -194,7 +177,6 @@ Output:
      success 42
 
 Use  else  for code that should ONLY run if the risky call succeeded. It keeps the  try  block short (only the risky line inside).
-
 
 7)  finally  block  --  ALWAYS runs
 
@@ -228,8 +210,7 @@ Output:
 
 finally  is the place for CLEANUP: closing files, releasing locks, disconnecting from a database. It runs no matter what.
 
-Note: for FILE handling, the  with  block (section 13) does the same cleanup automatically, so you usually do not need  try/finally  for that.
-
+Note: for FILE handling, the  with  block (section 13) does the same cleanup automatically, so you do not need  try/finally  for that.
 
 8)  Raising your own errors  --  raise
 
@@ -249,23 +230,15 @@ Run:
      5.0
      ValueError: b cannot be zero
 
-
 Common built-in exceptions to raise:
 
-     ValueError            value has the
-                           wrong content
-     TypeError             value has the
-                           wrong type
-     KeyError              key not in a
-                           dict
-     IndexError            index out of
-                           range
+     ValueError            value has the wrong content
+     TypeError             value has the wrong type
+     KeyError              key not in a dict
+     IndexError            index out of range
      FileNotFoundError     path missing
-     NotImplementedError   code path not
-                           implemented yet
-     RuntimeError          generic runtime
-                           problem
-
+     NotImplementedError   code path not implemented yet
+     RuntimeError          generic runtime problem
 
 Re-raising  --  no argument after raise
 
@@ -278,7 +251,6 @@ Code:
      except ValueError:
          print("logging: bad conversion")
          raise
-
 
 9)  Custom exception classes  (brief)
 
@@ -303,7 +275,6 @@ Output:  caught: negative age
 
 Full details on defining classes come in section 16.
 
-
 10)  Common errors and anti-patterns
 
   (a)   Bare except
@@ -316,7 +287,6 @@ Full details on defining classes come in section 16.
                pass
 
         Catches EVERYTHING, including  KeyboardInterrupt  and  SystemExit . Also hides real bugs. Catch specific types instead.
-
 
   (b)   Swallowing errors silently
 
@@ -332,7 +302,6 @@ Full details on defining classes come in section 16.
            except Exception as e:
                print("error:", e)
 
-
   (c)   Catching too broad
 
         Code:
@@ -346,7 +315,6 @@ Full details on defining classes come in section 16.
 
            except (ValueError, TypeError):
                config = {}
-
 
   (d)   Try block too large
 

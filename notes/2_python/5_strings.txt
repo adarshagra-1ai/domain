@@ -365,6 +365,27 @@ f-strings work with single, double, and triple quotes:
 
 Use them instead of  +  concatenation with  str()  conversions. They are shorter and easier to read.
 
+Controlling how a number is displayed  --  the  :  format spec
+
+Inside the braces you can add a colon and a FORMAT SPEC that says how to render the value.  .2f  means "as a float, with exactly 2 decimal places, keeping trailing zeros".
+
+Code:
+
+     value = 1.5
+     print(f"{value:.2f}")
+     print(f"{value:.4f}")
+     print(f"{3.14159:.3f}")
+
+Output:
+     1.50
+     1.5000
+     3.142
+
+This is different from  round()  (section 4):
+
+     round(x, 2)    changes the NUMBER itself. Trailing zeros disappear on print.
+     f"{x:.2f}"     changes the DISPLAY. You get a string with exactly 2 decimals, zeros kept.
+
 11)  Common errors
 
   (a)   Index out of range

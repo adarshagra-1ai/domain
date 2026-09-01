@@ -8,7 +8,6 @@ A TUPLE is an ORDERED collection of values, like a list. The one big difference:
 
 Everything else feels like a list  --  ordered items, 0-based indexing, slicing.
 
-
 2)  Creating a tuple
 
 Use parentheses  ( )  with items separated by commas.
@@ -20,7 +19,6 @@ Code:
      colors = ("red", "green", "blue")
      mixed  = (1, "hi", 3.14, True)
      nested = ((1, 2), (3, 4))
-
 
 One-item tuple  --  need a TRAILING COMMA:
 
@@ -37,7 +35,6 @@ Output:
 
 Without the comma,  (5)  is just the number  5  wrapped in parentheses, not a tuple.
 
-
 Parentheses are optional if the meaning is clear:
 
 Code:
@@ -51,7 +48,6 @@ Output:
      <class 'tuple'>
 
 Even so, always writing the  ( )  makes code easier to read.
-
 
 3)  Indexing and slicing
 
@@ -69,7 +65,6 @@ Output:
      blue
      ('green', 'blue')
 
-
 4)  Immutability  --  cannot change items
 
 Code:
@@ -79,9 +74,7 @@ Code:
 
 Run:
 
-     TypeError: 'tuple' object does not
-     support item assignment
-
+     TypeError: 'tuple' object does not support item assignment
 
 You also cannot use  append , insert ,  remove , pop , or  del  on a tuple's items.
 
@@ -94,7 +87,6 @@ Code:
      print(colors)
 
 Output:  ('yellow', 'green', 'blue')
-
 
 5)  Common operations still work
 
@@ -124,7 +116,6 @@ Output:
      1
      True
 
-
 6)  Unpacking
 
 You can assign a tuple to multiple variables at once  --  called UNPACKING.
@@ -140,13 +131,11 @@ Output:
      10
      20
 
-
 Also works without an intermediate variable:
 
 Code:
 
      x, y = 10, 20
-
 
 Star unpacking gathers extra items into a list:
 
@@ -162,7 +151,6 @@ Output:
      2
      [3, 4, 5]
 
-
 7)  When to use a tuple  (vs a list)
 
 Use a TUPLE when:
@@ -172,7 +160,6 @@ Use a TUPLE when:
   -  You need a value to use as a DICTIONARY KEY. Lists are unhashable and cannot be dict keys; tuples can.
 
 Use a LIST when the collection is expected to grow, shrink, or change.
-
 
 8)  Common errors
 
@@ -184,7 +171,6 @@ Use a LIST when the collection is expected to grow, shrink, or change.
 
         Run:
 
-           ValueError: too many values to
-           unpack (expected 2)
+           ValueError: too many values to unpack (expected 2)
 
         Either add another name, or use star unpacking:  x, y, *rest = (1, 2, 3) .

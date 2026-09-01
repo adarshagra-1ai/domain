@@ -1,29 +1,23 @@
 20  --  Project structure  (the  src/  folder convention)
 
+1)  What  src/  is
+
 src = "source" (as in "source code"). A folder that holds only the runnable code of a project. Everything else  --  tests, docs, specs, project plans, the Dockerfile, the Makefile  --  sits in sibling folders alongside  src/ , not inside it.
 
 src is NOT a Python built-in name. Python attaches no special meaning to the word "src". The developer can pick any name  --   app/  ,  code/  ,  lib/  , or no folder at all (files sitting at the repo root). "src" is a widely used naming CONVENTION (an agreed-upon habit, not a language rule) in modern Python and JavaScript projects.
 
+2)  Why the  src/  layout is popular
 
-Why the  src/  layout is popular
+Clarity of purpose. One glance at the repo, and the split is obvious: "production code" (inside  src/ ) vs "everything else" (docs, tests, tools, project files). No confusion about which files ship to production and which do not.
 
-     Clarity of purpose. One glance at the repo, and the split is obvious: "production code" (inside  src/ ) vs "everything else" (docs, tests, tools, project files). No confusion about which files ship to production and which do not.
+Not every Python project uses this layout  --  small projects keep code at the repo root. Production-grade repos prefer  src/ .
 
-Not every Python project uses this layout  --  smaller projects often keep code at the root. But production-grade repos usually prefer  src/ .
+3)  What sits inside  src/
 
-
-Example  --  what typically sits inside  src/
-
-A Python project might place one or more PACKAGES inside  src/  (a PACKAGE is a folder that Python can import as a single unit  --  covered in section 21). A common shape:
+A Python project places one or more PACKAGES inside  src/  (a PACKAGE is a folder that Python can import as a single unit  --  covered in section 21). A common shape:
 
   -   src/myapp_core/   --  the main engine, with files like  __main__.py ,  core.py ,  events.py ,  state.py ,  services.py . This is the "brain" of the app.
 
-  -   src/myapp_drivers/   --  device drivers.
-
-     A DRIVER is a small program whose only job is to talk to one specific device or brand, translating a generic instruction (like "turn light on") into the exact format that device understands.
-
-     Everyday examples: a printer driver (lets the computer print to one specific printer model), a graphics driver (lets the computer talk to one specific graphics card), a Wi-Fi driver (lets it use one specific Wi-Fi chip). Without these, the operating system would need to know every printer, GPU (Graphics Processing Unit), and Wi-Fi chip in the world  --  impossible. Drivers hide that mess behind one common interface.
-
-     "Device driver" is the same idea; the word "device" only emphasises that the target is a physical hardware device, not a cloud service or a file on disk. In casual talk the two terms are used interchangeably.
+  -   src/myapp_drivers/   --  device drivers. A DRIVER is a small program whose only job is to talk to one specific device or brand, translating a generic instruction (like "turn light on") into the exact format that device understands. Drivers are covered properly in the home automation topic, section 2.
 
 Nothing else lives inside  src/ . Tests go in  tests/ , specs in  specs/ , docs in  docs/ , project management files in  PM/ , and the Dockerfile / Makefile sit at the repo root.

@@ -171,7 +171,7 @@ The KERNEL we met earlier in this chunk (see section 1) is the innermost core of
 
 OS vs application:
 
-  -  OS is the base layer. Usually ONE OS runs on a computer at a time.
+  -  OS is the base layer. ONE OS runs on a computer at a time.
   -  An APPLICATION (or "app") is a normal program running ON TOP OF the OS: a browser, a game, a terminal window.
 
 5)  UNIX and Linux
@@ -215,7 +215,7 @@ UNIX-like family today
 
   -  Non-UNIX   :  Windows. Different tradition with its own command prompt (cmd.exe) and PowerShell.
 
-This is why a Mac user feels at home on a Linux server. It is also why Windows users often install a Linux-like layer called WSL (Windows Subsystem for Linux) to run bash and standard UNIX commands.
+This is why a Mac user feels at home on a Linux server. It is also why Windows users install a Linux-like layer called WSL (Windows Subsystem for Linux) to run bash and standard UNIX commands.
 
 6)  What is a script?
 
@@ -258,18 +258,18 @@ All shells do the same basic job (read a line, run it), with different extra fea
      The original UNIX shell. Very old, very small. Still used as the "safe common language" for scripts that must run on any system.
 
   -  bash    (Bourne Again SHell)
-     Most popular Linux shell for the last 30 years. Default on most Linux distros. Tutorials online usually assume bash.
+     Most popular Linux shell for the last 30 years. Default on most Linux distros. Tutorials online assume bash.
 
   -  zsh     (Z shell)
      Newer, fancier. Same commands as bash, plus better auto-complete, coloring, and plugins. Default shell on macOS since 2019.
 
   -  dash
-     Very small and fast. Used on some systems to run boot scripts quickly. A "boot script" is a script that runs automatically when the computer starts up. You usually do not type into dash yourself.
+     Very small and fast. Used on some systems to run boot scripts quickly. A "boot script" is a script that runs automatically when the computer starts up. You do not type into dash yourself.
 
   -  fish    (friendly interactive shell)
      Beginner-friendly with colored hints as you type. Not fully compatible with bash scripts.
 
-Whatever your Linux install came with is fine to start (usually bash or zsh).
+Whatever your Linux install came with is fine to start (bash or zsh).
 
 2  --  Chunk C  :  The prompt
 
@@ -419,7 +419,7 @@ GUI needs a human clicking. Terminal does not.
 
 SSH (Secure Shell) is a protocol and program that lets you log in to a different computer over the network and open a shell on it, as if you were sitting in front of that machine.
 
-A "server" is a computer whose job is to serve other computers (host a website, database, API — Application Programming Interface — etc.).
+A "server" is a computer whose job is to serve other computers (host a website, database, API  --  Application Programming Interface  --  and so on).
 
 Everyday pattern:
 
@@ -432,9 +432,9 @@ Everyday pattern:
 
 Fast even on slow internet because text is tiny compared to a full graphical remote desktop.
 
-6)  Servers usually have NO graphical desktop
+6)  Servers have NO graphical desktop
 
-Servers are usually set up WITHOUT a graphical desktop:
+Servers are set up WITHOUT a graphical desktop:
 
   (a) No screen or keyboard sits in front of the server, so a desktop would waste memory.
   (b) A graphical desktop uses hundreds of MB (megabytes) of RAM (Random Access Memory) even idle.
@@ -451,7 +451,7 @@ Terminal commands are very stable:
   -  They work the same on any Linux distro (Ubuntu, Debian, Fedora, Arch, ...).
   -  They work the same when you SSH into any server, on any cloud provider.
 
-GUI apps change often. Buttons move, menus get renamed, entire redesigns happen every few years.
+GUI apps keep changing. Buttons move, menus get renamed, entire redesigns happen every few years.
 
 A guide about  ls  written in 1990 is still 95% correct in 2026.
 
@@ -462,8 +462,8 @@ A terminal uses a few megabytes of memory. A full graphical desktop needs hundre
 Because of this:
 
   -  On very old machines with little RAM, the terminal still works fine.
-  -  Inside containers (small isolated Linux boxes used to run one service at a time), a terminal is often the only interface.
-  -  On embedded devices, the terminal is again the only way in. (An "embedded device" is a small computer that lives INSIDE another product and does only one dedicated job. It has very little CPU and RAM, usually no screen or keyboard, and often runs a stripped-down Linux. Examples: WiFi routers, smart TVs, washing-machine controllers, digital cameras, smart watches, car engine control units, smart thermostats, traffic-light controllers, Raspberry Pi boards used in "headless mode" without a monitor. To configure or debug any of these you SSH in and use the terminal. There is no GUI on the device itself.)
+  -  Inside containers (small isolated Linux boxes used to run one service at a time), a terminal is the only interface.
+  -  On embedded devices, the terminal is again the only way in. (An "embedded device" is a small computer that lives INSIDE another product and does only one dedicated job. It has very little CPU and RAM, no screen or keyboard, and runs a stripped-down Linux. Examples: WiFi routers, smart TVs, washing-machine controllers, digital cameras, smart watches, car engine control units, smart thermostats, traffic-light controllers, Raspberry Pi boards used in "headless mode" without a monitor. To configure or debug any of these you SSH in and use the terminal. There is no GUI on the device itself.)
 
 9)  When GUI is still the better tool
 

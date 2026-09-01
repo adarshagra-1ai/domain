@@ -71,7 +71,7 @@ Rule of thumb:
 
 4)  Standard output  --  where a command's result goes
 
-Every command that produces text sends it to a stream called STANDARD OUTPUT (often written  stdout ).
+Every command that produces text sends it to a stream called STANDARD OUTPUT (written  stdout ).
 
 By default standard output is connected to your terminal window, which is why the text lands on screen.
 
@@ -81,7 +81,7 @@ The idea to hold on to: a command does not "print to the screen". It writes to s
 
 5)  Standard error  --  the second stream
 
-Commands have a SECOND output stream, used only for problems. It is called STANDARD ERROR (often written  stderr ). Error messages go there, never to standard output.
+Commands have a SECOND output stream, used only for problems. It is called STANDARD ERROR (written  stderr ). Error messages go there, never to standard output.
 
 Both streams point at your terminal window by default, so on screen they look mixed together:
 

@@ -4,16 +4,9 @@
 
 A FastAPI route can receive data from three places in the request:
 
-     PATH PARAMS   ->  part of the URL
-                       itself
-                       /users/{user_id}
-     QUERY PARAMS  ->  after  ?  in the
-                       URL
-                       /search?q=python
-     BODY (JSON)   ->  the request body,
-                       for POST / PUT /
-                       PATCH
-
+     PATH PARAMS   ->  part of the URL itself     /users/{user_id}
+     QUERY PARAMS  ->  after  ?  in the URL       /search?q=python
+     BODY (JSON)   ->  the request body, for POST / PUT / PATCH
 
 2)  Path parameters
 
@@ -47,14 +40,11 @@ Notes:
   -  The type hint  user_id: int  tells FastAPI to CONVERT the value to int.
   -  If the value cannot convert (for example  curl .../users/hello ), FastAPI returns  422 Unprocessable Entity  automatically.
 
-
 Type conversion in path params:
 
      user_id: int    ->  integer required
      price:  float   ->  float required
-     name:   str     ->  any string
-                         (the default)
-
+     name:   str     ->  any string (the default)
 
 Multiple path params:
 
@@ -72,7 +62,6 @@ Try:
 Output:
 
      {"user":42,"order":7}
-
 
 3)  Query parameters
 
@@ -94,7 +83,6 @@ Output:
 
 The  ?q=python  in the URL is the query string.
 
-
 4)  Optional query params (with defaults)
 
 Give the parameter a default value. It becomes optional in the URL.
@@ -114,7 +102,6 @@ Outputs:
 
      {"query":"python","limit":10}
      {"query":"python","limit":25}
-
 
 5)  Multiple query params
 
@@ -138,10 +125,9 @@ Output:
 
      {"category":"books","min_price":100.0,"max_price":1000.0}
 
-
 6)  JSON body
 
-For POST / PUT / PATCH requests, the data usually comes in the request body as JSON.
+For POST / PUT / PATCH requests, the data comes in the request body as JSON.
 
 You accept it by declaring a Pydantic model as a parameter (deep dive in section 3). For now, the shape is:
 
@@ -174,15 +160,13 @@ Output:
 
 Full Pydantic details in section 3.
 
-
 7)  Path + query + body together
 
 You can mix all three in one route. FastAPI figures out which parameter comes from where:
 
-  -  In the path         ->  path param
-  -  Has a Pydantic       ->  body
-     model type
-  -  Anything else       ->  query param
+  -  Named in the path            ->  path param
+  -  Typed as a Pydantic model    ->  body
+  -  Anything else                ->  query param
 
 Code:
 
@@ -194,7 +178,6 @@ Code:
                  "notify": notify,
                  "data": data}
 
-
 8)  Automatic validation error output
 
 Try:
@@ -205,14 +188,10 @@ Response (status 422):
 
      {"detail":[{"type":"int_parsing",
                  "loc":["path","user_id"],
-                 "msg":"Input should be a
-                       valid integer, unable
-                       to parse string as an
-                       integer",
+                 "msg":"Input should be a valid integer, unable to parse string as an integer",
                  "input":"abc"}]}
 
 FastAPI validated the input against the  int  type hint, saw the failure, and returned  422 Unprocessable Entity  automatically  --  without your handler even running.
-
 
 9)  Common errors
 
@@ -226,15 +205,12 @@ FastAPI validated the input against the  int  type hint, saw the failure, and re
 
         The path uses  user_id  but the function uses  id . FastAPI does not know how to fill  id , and the route breaks. Make the names match.
 
-
   (b)   Forgetting -H Content-Type on POST
 
         Same as HTTP gotcha in the HTTP topic: with no  Content-Type: application/json , the body is not parsed as JSON.
 
-
   (c)   Body vs query confusion
 
         Convention: use QUERY for FILTERING and OPTIONS. Use BODY for the CONTENT being created or updated. Do not send a big JSON payload as a query string.
-
 
 In section 3 we look at PYDANTIC models  --  how the body of a request gets validated and turned into a typed Python object.

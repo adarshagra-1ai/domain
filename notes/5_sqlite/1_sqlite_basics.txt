@@ -2,7 +2,7 @@
 
 1)  What SQLite is
 
-SQLite is a small, file-based SQL database. Instead of running as a separate server program, SQLite is a library that Python (and most other languages) can embed directly. The whole database lives in ONE FILE.
+SQLite is a small, file-based SQL (Structured Query Language) database. Instead of running as a separate server program, SQLite is a library that Python (and most other languages) can embed directly. The whole database lives in ONE FILE.
 
 Facts you need for now:
 
@@ -10,8 +10,7 @@ Facts you need for now:
   -  Full SQL syntax: create table, insert, select, update, delete, joins, transactions.
   -  Great for small projects, tests, and desktop apps. Not meant for very high-traffic websites (Postgres or MySQL are the usual choice there).
 
-The file usually has a  .sqlite ,  .db , or  .sqlite3  extension by convention.
-
+By convention the file carries a  .sqlite ,  .db , or  .sqlite3  extension.
 
 2)  Open a SQLite shell
 
@@ -35,12 +34,10 @@ Exit:
 
      sqlite> .quit
 
-
 3)  SQL statement basics
 
-  -  A SQL statement usually ends with a semicolon  ;  .
+  -  A SQL statement ends with a semicolon  ;  .
   -  SQL keywords are case-INSENSITIVE ( SELECT  =  select ), but the convention is to write keywords in UPPERCASE and names in lowercase.
-
 
 4)  CREATE TABLE
 
@@ -73,7 +70,6 @@ Explanation of the constraints:
   -  DEFAULT 1
        if the caller does not provide a value, use this.
 
-
 5)  INSERT
 
 Syntax:
@@ -98,7 +94,6 @@ Multiple rows in one statement:
        ('rahul', 22),
        ('meera', 28);
 
-
 6)  SELECT  --  read data
 
 Basic form:
@@ -110,13 +105,11 @@ Examples:
      SELECT * FROM users;
      SELECT id, name FROM users;
 
-
 Filter with WHERE:
 
      SELECT * FROM users WHERE age > 24;
      SELECT name FROM users WHERE name = 'adarsh';
      SELECT * FROM users WHERE is_active = 1;
-
 
 Combine conditions:
 
@@ -126,19 +119,16 @@ Combine conditions:
      SELECT * FROM users
        WHERE name = 'adarsh' OR name = 'priya';
 
-
 Sort with ORDER BY:
 
      SELECT * FROM users ORDER BY age;
      SELECT * FROM users ORDER BY age DESC;
-
 
 Limit rows with LIMIT:
 
      SELECT * FROM users LIMIT 5;
      SELECT * FROM users
        ORDER BY id DESC LIMIT 3;
-
 
 7)  UPDATE  --  change existing rows
 
@@ -160,7 +150,6 @@ If you FORGET the WHERE clause, EVERY row is updated:
 
 Almost never what you want. Always double-check the WHERE clause before running an UPDATE.
 
-
 8)  DELETE  --  remove rows
 
 Syntax:
@@ -178,7 +167,6 @@ Same warning as UPDATE:
 
 deletes EVERY row. Always double-check the WHERE.
 
-
 9)  Column types in SQLite
 
 SQLite has a small type system:
@@ -191,23 +179,19 @@ SQLite has a small type system:
 
 SQLite is FLEXIBLE about types (older versions do not strictly enforce them). Modern usage still declares types for clarity and portability.
 
-
 10)  Common gotchas
 
   (a)   Missing semicolon
 
         Inside the sqlite3 shell, the prompt changes to  ...>  when it expects the rest of the statement. Add a  ;  to run.
 
-
   (b)   Case in string comparisons
 
         WHERE name = 'Adarsh'  will NOT match  'adarsh'  . SQL string equality is case-sensitive.
 
-
   (c)   Single vs double quotes
 
         Use SINGLE quotes for text values:  'adarsh'  . Double quotes are for identifiers in some SQL dialects and can lead to confusing errors in SQLite.
-
 
   (d)   Forgot the WHERE
 
@@ -217,6 +201,5 @@ SQLite is FLEXIBLE about types (older versions do not strictly enforce them). Mo
              WHERE name = 'adarsh';
 
         Then run the UPDATE / DELETE with the same WHERE.
-
 
 In section 2 we use these same statements from Python  --  the  sqlite3  standard library module.

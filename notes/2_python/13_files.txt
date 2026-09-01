@@ -10,7 +10,6 @@ File I/O means Input / Output on files. Your Python program can:
 
 The main tool is the built-in  open()  function.
 
-
 2)  open()  --  the basic form
 
 Syntax:
@@ -22,103 +21,19 @@ Syntax:
 
 open()  returns a FILE OBJECT. You use its methods to read or write, and you must CLOSE it when done.
 
-
 3)  Modes
 
-     "r"    READ     (default). File must
-                     already exist. Errors
-                     if not.
-
-     "w"    WRITE    Truncates the file to
-                     empty and starts
-                     fresh. Creates the
-                     file if it does not
-                     exist.
-
-     "a"    APPEND   Opens for writing at
-                     the END of the file.
-                     Existing content
-                     stays. Creates if
-                     missing.
-
-     "x"    CREATE   Opens for writing
-                     ONLY if the file does
-                     not yet exist. Errors
-                     if it does. Prevents
-                     accidental overwrite.
-
-     "r+"   READ + WRITE  Both, file must
-                          exist.
-
-     "b"    BINARY MODE. Combine with a
-                     mode letter, e.g.
-                     "rb" , "wb" . Used
-                     for images, PDFs,
-                     etc.
-
-     "t"    TEXT MODE. The default. Data
-                     is treated as
-                     strings.
+     "r"    READ           Default. The file must already exist. Errors if not.
+     "w"    WRITE          Truncates the file to empty and starts fresh. Creates the file if it does not exist.
+     "a"    APPEND         Opens for writing at the END of the file. Existing content stays. Creates the file if missing.
+     "x"    CREATE         Opens for writing ONLY if the file does not yet exist. Errors if it does. Prevents accidental overwrite.
+     "r+"   READ + WRITE   Both. The file must already exist.
+     "b"    BINARY MODE    Combine with a mode letter, e.g.  "rb" ,  "wb" . Used for images, PDF files, and other non-text data.
+     "t"    TEXT MODE      The default. Data is treated as strings.
 
 Most everyday work uses  "r" , "w" , "a"  in text mode.
 
-
-4)  A note about print()'s  end=  and  sep=
-
-Before we look at file examples, here is a small detail about  print()  that shows up in the code below.
-
-print()  has two optional parameters that control formatting:
-
-     end     what to add at the very end
-             of the output. Default is
-             "\n"  (a newline), which is
-             why every  print  usually
-             starts on a fresh line.
-
-     sep     the separator between
-             multiple arguments in one
-             print  call. Default is
-             " "  (a single space).
-
-
-Examples with  end :
-
-Code:
-
-     print("hello")
-     print("hello", end="")
-     print("hello", end=" ")
-     print("hello", end="---")
-
-Behavior:
-
-     print("hello")            adds  \n
-                               at the end
-     print("hello", end="")    adds nothing
-     print("hello", end=" ")   adds a space
-     print("hello", end="---") adds "---"
-
-If you pass  end=""  , the next print continues on the SAME line instead of a fresh line.
-
-
-Examples with  sep :
-
-Code:
-
-     print("a", "b", "c")
-     print("a", "b", "c", sep="-")
-     print("a", "b", "c", sep="")
-
-Output:
-     a b c
-     a-b-c
-     abc
-
-
-This matters for reading files below, because each line returned by  readline()  already ends with its own newline character  \n . Passing  end=""  to  print  keeps the output from becoming double-spaced.
-
-
-5)  Reading a file  --  the recommended pattern
+4)  Reading a file  --  the recommended pattern
 
 Use a  with  block. It automatically CLOSES the file at the end, even if an error happens inside.
 
@@ -129,7 +44,6 @@ Syntax:
 
 Once the block ends,  f  is closed. You do not have to call  f.close()  yourself.
 
-
 Whole file at once  --  f.read()
 
 Code:
@@ -139,7 +53,6 @@ Code:
          print(data)
 
 Output:  (all text in notes.txt)
-
 
 One line at a time  --  for loop
 
@@ -158,7 +71,6 @@ Code:
      with open("notes.txt", "r") as f:
          for line in f:
              print(line.rstrip())
-
 
 One line on demand  --  f.readline()
 
@@ -179,8 +91,7 @@ Output:
      second
      third
 
-Each string returned by  readline()  already includes its trailing newline  \n . Using  end=""  in the print prevents the double-newline that would happen with plain  print(first) . See section 4 for the full  end=  and  sep=  details.
-
+Each string returned by  readline()  already includes its trailing newline  \n . Using  end=""  in the print prevents the double-newline that would happen with plain  print(first) . The  end=  and  sep=  parameters of  print()  are covered in section 2.
 
 Alternative style  --  strip the newline, let  print  add its own:
 
@@ -188,7 +99,6 @@ Alternative style  --  strip the newline, let  print  add its own:
      print(first)
 
 Both styles work. Pick one.
-
 
 Read until end with a while loop:
 
@@ -208,7 +118,6 @@ Output:
 
 The empty-string check is how you detect end of file with  readline() .
 
-
 All lines into a list  --  f.readlines()
 
 Code:
@@ -219,36 +128,22 @@ Code:
 
 Output:  ['first\n', 'second\n', 'third\n']
 
-
 readline()  vs  readlines()  --  the difference
 
-     f.readline()     returns ONE string
-                      (one line). Advances
-                      the cursor by one
-                      line. Returns  ""
-                      at end of file.
-
-     f.readlines()    returns a LIST of
-                      strings (all
-                      remaining lines).
-                      Reads the WHOLE file
-                      (or whatever is left)
-                      into memory at once.
-
+     f.readline()     returns ONE string (one line). Advances the cursor by one line. Returns  ""  at end of file.
+     f.readlines()    returns a LIST of strings (all remaining lines). Reads the whole rest of the file into memory at once.
 
 When to use which:
 
   -  readline()      for line-by-line processing where you want fine control (skip a header, stop early, read while a condition holds).
   -  readlines()     for small files when you want all lines available as a list to index or slice.
-  -  for line in f:  the SIMPLEST pattern for reading a file line by line. Prefer this over  readline()  in most cases. It handles the "stop at end of file" logic for you.
-
+  -  for line in f:  the SIMPLEST pattern for reading a file line by line. Prefer this over  readline() . It handles the "stop at end of file" logic for you.
 
 Memory note:
 
-     f.readlines()  loads the WHOLE remaining file into memory as a list. For big files (hundreds of MB, or more), this can crash the program. Prefer  for line in f:  , which reads one line at a time.
+     f.readlines()  loads the WHOLE remaining file into memory as a list. For big files (hundreds of MB (megabytes), or more), this can crash the program. Prefer  for line in f:  , which reads one line at a time.
 
-
-6)  Writing to a file  --  f.write()
+5)  Writing to a file  --  f.write()
 
 "w"  mode empties the file first. Use it when you want to REPLACE the file with new content.
 
@@ -263,15 +158,13 @@ After this,  hello.txt  contains:
      hello
      world
 
-
 Notes:
 
   -  f.write()  does NOT add newlines for you. Include  \n  yourself if you want line breaks.
   -  You can call  f.write()  many times inside the same  with  block.
   -  Existing content in the file is WIPED as soon as  open  runs with  "w"  --  even before you write anything.
 
-
-7)  Appending  --  "a"  mode
+6)  Appending  --  "a"  mode
 
 "a"  mode keeps the existing content and adds new content at the END of the file.
 
@@ -287,8 +180,7 @@ Common uses:
   -  Log files.
   -  Any file that grows over time.
 
-
-8)  Explicit close  (only if not using with)
+7)  Explicit close  (only if not using with)
 
 If you skip the  with  block, you must call  f.close()  yourself.
 
@@ -305,8 +197,7 @@ Downsides:
 
 Rule of thumb: always use  with .
 
-
-9)  Common errors
+8)  Common errors
 
   (a)   File does not exist (read mode)
 
@@ -317,12 +208,9 @@ Rule of thumb: always use  with .
 
         Run:
 
-           FileNotFoundError: [Errno 2] No
-           such file or directory:
-           'missing.txt'
+           FileNotFoundError: [Errno 2] No such file or directory: 'missing.txt'
 
         Check the path with  ls  in the terminal, or use  "a"  /  "w"  when creating a new file is intended.
-
 
   (b)   Writing to a directory
 
@@ -333,11 +221,9 @@ Rule of thumb: always use  with .
 
         Run:
 
-           IsADirectoryError: [Errno 21]
-           Is a directory: 'Documents'
+           IsADirectoryError: [Errno 21] Is a directory: 'Documents'
 
         The path must be a file, not a folder.
-
 
   (c)   Mixing text and binary
 
@@ -346,12 +232,11 @@ Rule of thumb: always use  with .
            with open("photo.jpg", "r") as f:
                data = f.read()
 
-        Run (sometimes):
+        Run (on most image files):
 
-           UnicodeDecodeError: ...
+           UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
 
         Binary files (images, PDFs, mp3) must be read in  "rb"  mode (read binary), not  "r"  mode.
-
 
   (d)   Forgetting the newline
 

@@ -116,7 +116,7 @@ Examples of hidden names:
      .ssh
      .vscode
 
-These are usually settings used by programs. Hiding them keeps  ls  output clean.
+These are settings used by programs. Hiding them keeps  ls  output clean.
 
 To see hidden files, add  -a  ("all"):
 
@@ -171,9 +171,9 @@ Each other line has 7 columns:
                   Next 9 characters describe who can Read, Write, Execute.
                   Permissions in detail later.
 
-     Column 2  :  Link count (hard links to this item; usually 1 for a file).
+     Column 2  :  Link count (hard links to this item; 1 for an ordinary file).
 
-     Column 3  :  Owner (the user, usually you).
+     Column 3  :  Owner (the user who owns the file).
 
      Column 4  :  Group (the owning group).
 
@@ -319,7 +319,7 @@ The prompt shows CWD in most setups but can cut a long path.  pwd  always shows 
         adarsh@laptop:~$  cd Docments
         bash: cd: Docments: No such file or directory
 
-        Name does not exist in the current folder. Usually a TYPO. Check with  ls  first.
+        Name does not exist in the current folder. Check the spelling with  ls  first.
 
   (b)   "Not a directory"
 
@@ -656,7 +656,7 @@ Everything inside  Projects  is gone permanently. This is the single most danger
   -f   ("force")
        Do not ask. Do not complain about missing files. Just delete. The opposite of  -i .
 
-You will often see  rm -rf <path>  :
+You will see  rm -rf <path>  a lot:
 
      r  ->  recursive
      f  ->  force
