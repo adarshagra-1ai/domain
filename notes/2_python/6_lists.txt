@@ -9,7 +9,6 @@ Two key properties:
   -  ORDERED   --  items keep the order in which you put them.
   -  MUTABLE   --  you can add, remove, and change items after the list has been created.
 
-
 2)  Creating a list
 
 Use square brackets  [ ]  , items separated by commas.
@@ -28,7 +27,6 @@ Notes:
   -  Items can be different types in the same list.
   -  Lists can contain other lists ("nested" list).
 
-
 3)  Length  --  len()
 
 The same  len()  function used for strings.
@@ -42,7 +40,6 @@ Code:
 Output:
      4
      0
-
 
 4)  Indexing
 
@@ -66,7 +63,6 @@ Output:
      40
      30
 
-
 For nested lists, use two sets of brackets:
 
 Code:
@@ -81,7 +77,6 @@ Output:
      2
      5
 
-
 5)  Slicing
 
 Same syntax as strings:  lst[start:stop]  and  lst[start:stop:step] .
@@ -89,7 +84,6 @@ Same syntax as strings:  lst[start:stop]  and  lst[start:stop:step] .
   -  start   INCLUDED (0-based).
   -  stop    NOT included.
   -  If omitted, start defaults to 0 and stop defaults to  len(lst) .
-
 
 Code:
 
@@ -111,7 +105,6 @@ Output:
 
 A slice returns a NEW list. It does not change the original.
 
-
 6)  Lists are MUTABLE  --  change items in place
 
 Unlike strings, you CAN change items in a list.
@@ -124,7 +117,6 @@ Code:
 
 Output:  [99, 20, 30]
 
-
 You can also assign to a slice to replace a range:
 
 Code:
@@ -136,7 +128,6 @@ Code:
 Output:  [10, 'a', 'b', 50]
 
 Positions  1 , 2 , 3  were replaced by  "a"  and  "b" . The list SHRANK from 5 items to 4.
-
 
 7)  Adding items
 
@@ -151,7 +142,6 @@ Positions  1 , 2 , 3  were replaced by  "a"  and  "b" . The list SHRANK from 5 i
 
         Output:  [10, 20, 30, 40]
 
-
   (b)   insert(i, item)  --  insert  item  at position  i .
 
         Code:
@@ -161,7 +151,6 @@ Positions  1 , 2 , 3  were replaced by  "a"  and  "b" . The list SHRANK from 5 i
            print(nums)
 
         Output:  [10, 99, 20, 30]
-
 
   (c)   extend(other)  --  add all items from another list to the END.
 
@@ -175,7 +164,6 @@ Positions  1 , 2 , 3  were replaced by  "a"  and  "b" . The list SHRANK from 5 i
         Output:  [1, 2, 3, 4, 5]
 
         Different from  a.append(b)  , which would give  [1, 2, [3, 4, 5]]  (a nested list instead of a flat one).
-
 
   (d)   +   --  concatenate two lists into a NEW list. The originals are unchanged.
 
@@ -193,7 +181,6 @@ Positions  1 , 2 , 3  were replaced by  "a"  and  "b" . The list SHRANK from 5 i
            [3, 4]
            [1, 2, 3, 4]
 
-
 8)  Removing items
 
   (a)   remove(value)  --  remove the FIRST item equal to  value .
@@ -207,7 +194,6 @@ Positions  1 , 2 , 3  were replaced by  "a"  and  "b" . The list SHRANK from 5 i
         Output:  [10, 30, 20]
 
         Only the FIRST 20 was removed. If  value  is not in the list,  remove()  raises a  ValueError .
-
 
   (b)   pop(i)   --  remove the item at index  i  and RETURN it. Without an index, pops the LAST item.
 
@@ -225,7 +211,6 @@ Positions  1 , 2 , 3  were replaced by  "a"  and  "b" . The list SHRANK from 5 i
            10
            [20, 30]
 
-
   (c)   del   --  a statement that deletes an item by index, or a slice of items.
 
         Code:
@@ -240,7 +225,6 @@ Positions  1 , 2 , 3  were replaced by  "a"  and  "b" . The list SHRANK from 5 i
            [20, 30, 40, 50]
            [20, 50]
 
-
   (d)   clear()  --  empty the list completely.
 
         Code:
@@ -250,7 +234,6 @@ Positions  1 , 2 , 3  were replaced by  "a"  and  "b" . The list SHRANK from 5 i
            print(nums)
 
         Output:  []
-
 
 9)  Membership and finding
 
@@ -268,7 +251,6 @@ Positions  1 , 2 , 3  were replaced by  "a"  and  "b" . The list SHRANK from 5 i
            False
            True
 
-
   (b)   index(value)  --  return the index of the FIRST item equal to  value . Raises  ValueError  if not present.
 
         Code:
@@ -278,7 +260,6 @@ Positions  1 , 2 , 3  were replaced by  "a"  and  "b" . The list SHRANK from 5 i
 
         Output:  1
 
-
   (c)   count(value)  --  return how many times  value  appears.
 
         Code:
@@ -287,7 +268,6 @@ Positions  1 , 2 , 3  were replaced by  "a"  and  "b" . The list SHRANK from 5 i
            print(nums.count(20))
 
         Output:  3
-
 
 10)  Sorting and reversing
 
@@ -305,7 +285,6 @@ Positions  1 , 2 , 3  were replaced by  "a"  and  "b" . The list SHRANK from 5 i
 
            nums.sort(reverse=True)
 
-
   (b)   sorted(lst)  --  return a NEW sorted list without changing the original.
 
         Code:
@@ -319,7 +298,6 @@ Positions  1 , 2 , 3  were replaced by  "a"  and  "b" . The list SHRANK from 5 i
            [30, 10, 20]
            [10, 20, 30]
 
-
   (c)   reverse()  --  reverse the list IN PLACE.
 
         Code:
@@ -330,25 +308,14 @@ Positions  1 , 2 , 3  were replaced by  "a"  and  "b" . The list SHRANK from 5 i
 
         Output:  [30, 20, 10]
 
-
   IN-PLACE vs NEW:
 
-     sort() , reverse()       -> change the
-                                 original
-                                 list.
-                                 Return
-                                 None .
-
-     sorted() , reversed()    -> return a
-                                 new value.
-                                 Original
-                                 stays
-                                 untouched.
-
+     sort() , reverse()       ->  change the original list, and return  None .
+     sorted() , lst[::-1]     ->  return a new list, original stays untouched.
 
 11)  Iterating over a list  (brief look)
 
-You will often want to do something with each item in a list. The tool for that is a  for  loop.
+To do something with each item in a list, use a  for  loop.
 
 Code:
 
@@ -365,7 +332,6 @@ Read  for n in nums:  as "take each item from  nums , one at a time, call it  n 
 
 Full details on loops ( for , while ,  range , break , continue ) are in section 11.
 
-
 12)  Common errors
 
   (a)   Index out of range
@@ -379,7 +345,6 @@ Full details on loops ( for , while ,  range , break , continue ) are in section
 
            IndexError: list index out of range
 
-
   (b)   Removing a value that is not in the list
 
         Code:
@@ -389,13 +354,9 @@ Full details on loops ( for , while ,  range , break , continue ) are in section
 
         Run:
 
-           ValueError: list.remove(x): x
-           not in list
+           ValueError: list.remove(x): x not in list
 
-        Check first with  in  :
+        Check first with  in  (the  if  statement itself comes in section 10):
 
            if 99 in nums:
                nums.remove(99)
-
-
-In section 7 we look at DICTIONARIES  --  collections of KEY-VALUE pairs.

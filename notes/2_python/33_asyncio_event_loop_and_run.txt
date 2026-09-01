@@ -1,6 +1,5 @@
 asyncio event loop, asyncio.run, gather and tasks
 
-
 1. WHAT THE EVENT LOOP IS
 
 The EVENT LOOP is the engine that actually runs your coroutines. A coroutine object by itself is inert — it holds "code that could run". The event loop is what picks a coroutine, runs it until it hits an  await  , parks it while it waits, and switches to another coroutine that is ready to make progress.
@@ -12,65 +11,9 @@ Key facts about the event loop:
 
 The illusion of "many things happening at once" comes from the loop rapidly switching between coroutines whenever they hit an  await  and pause.
 
+Note:  asyncio.run  and  asyncio.gather  are already covered in the previous file (30_asyncio_basics.txt). This file focuses on the loop itself and two new tools:  asyncio.create_task  and  asyncio.get_running_loop  .
 
-2. THE MENTAL MODEL
-
-Picture a single worker at a desk with a stack of paused jobs. The worker picks a job, does the parts that do not need to wait, and the moment the job says "I need to wait for the postman" ( await ), the worker puts that job on a shelf and picks the next ready job. When the postman arrives with the reply for job #1, the loop marks job #1 as ready again and eventually resumes it.
-
-  - Worker             = the event loop (single-threaded)
-  - Jobs on the shelf  = paused coroutines waiting on I/O or a timer
-  - Ready jobs         = coroutines whose await has completed
-  - Rule of the desk   = the worker never does two jobs at the same instant, but never sits idle if any job is ready
-
-If any job refuses to hand back the desk (long CPU work, or  time.sleep  instead of  await asyncio.sleep  ), the whole shop freezes.
-
-
-3. asyncio.run  —  THE TOP-LEVEL ENTRY
-
-From regular synchronous code you cannot use  await  . To get into async land, you call  asyncio.run(coro)  once at the top of your program.
-
-    import asyncio
-
-    async def main():
-        print("in async land")
-
-    asyncio.run(main())         # creates a new event loop, runs main() to completion, closes the loop
-
-What  asyncio.run  does under the hood:
-  - Creates a fresh event loop.
-  - Runs the coroutine you gave it until it finishes.
-  - Cleans up any leftover tasks.
-  - Closes the loop.
-
-Two rules:
-  - Call it ONCE at the outermost level of your program. Do not call it inside another coroutine (there is already a loop running).
-  - Give it a coroutine object, not a function. Write  asyncio.run(main())  , not  asyncio.run(main)  .
-
-
-4. RUNNING MANY COROUTINES CONCURRENTLY WITH asyncio.gather
-
-To run several coroutines concurrently and get their results back, use  asyncio.gather  .
-
-    import asyncio
-
-    async def double(x):
-        await asyncio.sleep(0.1)
-        return x * 2
-
-    async def main():
-        results = await asyncio.gather(double(1), double(2), double(3))
-        print(results)          # [2, 4, 6]
-
-    asyncio.run(main())
-
-Points to remember:
-  - You pass the coroutines as separate positional arguments (not as a list).
-  - It returns a list of results in the SAME ORDER as the coroutines you passed.
-  - All the coroutines run concurrently. The total time is roughly the time of the slowest one.
-  - If any of them raises an exception,  gather  by default re-raises it and cancels the rest.
-
-
-5. TASKS  —  asyncio.create_task
+2. TASKS  —  asyncio.create_task
 
 Sometimes you want to KICK OFF a coroutine and let it run in the background while you do other things. That is what  asyncio.create_task(coro)  is for. It schedules the coroutine on the loop immediately and returns a TASK object you can await later.
 
@@ -82,15 +25,16 @@ Sometimes you want to KICK OFF a coroutine and let it run in the background whil
         return name
 
     async def main():
-        t1 = asyncio.create_task(worker("A", 0.3))   # starts running now
-        t2 = asyncio.create_task(worker("B", 0.1))   # starts running now
+        t1 = asyncio.create_task(worker("A", 0.3))
+        t2 = asyncio.create_task(worker("B", 0.1))
         print("both scheduled")
-
-        result_b = await t2                          # wait for B specifically
-        result_a = await t1                          # wait for A specifically
+        result_b = await t2
+        result_a = await t1
         print("got", result_a, result_b)
 
     asyncio.run(main())
+
+Both  create_task  calls SCHEDULE the workers on the loop and return immediately — they do not block. The print "both scheduled" runs while  worker("A")  and  worker("B")  are already sleeping in the background. Then  await t2  waits specifically for the B task, and  await t1  for the A task. The order of the  await  calls does not change concurrency — both workers are already running.
 
 Output:
 
@@ -105,8 +49,52 @@ Difference between  gather  and  create_task  :
 
 Both give concurrency; the choice is about how you want to await the results.
 
+WHEN THE SCHEDULED TASK ACTUALLY STARTS RUNNING
 
-6. asyncio.get_running_loop
+This is the subtle part.  create_task(coro)  SCHEDULES the coroutine on the loop, but scheduling is not the same as executing. The coroutine's body runs only when the loop gets control, and the loop gets control only when the CURRENTLY RUNNING code hits an  await  .
+
+Two-step rule:
+  1.   create_task(coro)   --  puts  coro  on the loop's ready queue and returns a Task handle. The line after  create_task  keeps running in the SAME coroutine (in this case  main  ), and  coro  does not get any CPU time yet.
+  2. The moment the current coroutine hits an  await  , it yields to the loop. The loop then picks up each scheduled coroutine one by one and runs it UNTIL that coroutine hits its OWN  await  . Then the loop switches to the next ready one.
+
+Consequence: what a scheduled coroutine prints before you see the loop come back depends on WHAT COMES BEFORE ITS FIRST  await  in its own body.
+
+Compare the two examples in this file.
+
+Example A — the  worker  example above:
+
+    async def worker(name, seconds):
+        await asyncio.sleep(seconds)
+        print(name, "done")
+
+The first line of  worker  is an await. Timeline of  main()  :
+  -   t1 = create_task(worker "A")   --  A goes on the ready queue. Nothing prints.
+  -   t2 = create_task(worker "B")   --  B goes on the ready queue. Nothing prints.
+  -   print("both scheduled")   --  this is a SYNC statement in main. main has not yielded yet, so it runs immediately. Prints  both scheduled  .
+  -   result_b = await t2   --  NOW main yields. The loop runs A: A's first line is  await asyncio.sleep(0.3)  , so A parks immediately without printing anything. The loop runs B: same thing, parks after  await asyncio.sleep(0.1)  , no print.
+  - After 0.1 sec B wakes, prints  B done  , returns  "B"  .  await t2  in main returns.
+  -   result_a = await t1   --  main yields again. After 0.3 sec A wakes, prints  A done  , returns  "A"  .
+  - main prints  got A B  .
+
+That is why  both scheduled  appears BEFORE  B done  and  A done  , even though the tasks were scheduled first — their first line was an await, so they had nothing to print before parking.
+
+Example B — the  slow  example in Section 4:
+
+    async def slow(name, seconds):
+        print("start", name)
+        await asyncio.sleep(seconds)
+        print("done", name)
+
+The first line of  slow  is a sync print (not an await). Timeline of  main()  in that example:
+  -   t1 = create_task(slow "a")   --  a scheduled. Nothing prints yet.
+  -   t2 = create_task(slow "b")   --  b scheduled. Nothing prints yet.
+  -   await asyncio.gather(slow "c", slow "d", slow "e")   --  three more coroutines are created and scheduled, and main YIELDS here. The loop now runs each ready coroutine (a, b, c, d, e) up to its first  await  . Each one runs  print("start X")  first — a sync line — then hits  await asyncio.sleep(...)  and parks.
+
+That is why  start a  ,  start b  ,  start c  ,  start d  ,  start e  all appear BEFORE  gather returned  , even though the gather line was where main first yielded. The prints happened because  slow 's body prints BEFORE its first await.
+
+The difference between the two outputs is not about  create_task  behaving differently. It is about the FIRST LINE OF THE COROUTINE BODY.  worker  parks immediately (await first);  slow  prints one line first, then parks.
+
+3.  asyncio.get_running_loop
 
 From inside an async function you can grab a reference to the currently running loop:
 
@@ -114,10 +102,7 @@ From inside an async function you can grab a reference to the currently running 
         loop = asyncio.get_running_loop()
         print(loop)
 
-You need this whenever you want to call a lower-level loop method — for example, to schedule a callback, or (as you will see in the next section) to hook OS signals into the loop. In everyday application code you mostly do not need to touch the loop directly;  asyncio.run  ,  gather  , and  create_task  cover 90% of use cases.
-
-
-7. A CONCRETE EXAMPLE PUTTING IT TOGETHER
+4. A CONCRETE EXAMPLE PUTTING IT TOGETHER
 
 Save as  loop_demo.py :
 
@@ -132,22 +117,13 @@ Save as  loop_demo.py :
 
     async def main():
         start = time.time()
-
-        # get a handle to the current event loop (usually not needed)
         loop = asyncio.get_running_loop()
         print("running on loop:", type(loop).__name__)
-
-        # kick off two background tasks
         t1 = asyncio.create_task(slow("a", 0.5))
         t2 = asyncio.create_task(slow("b", 0.3))
-
-        # meanwhile, gather three more coroutines
         results = await asyncio.gather(slow("c", 0.2), slow("d", 0.1), slow("e", 0.4))
         print("gather returned:", results)
-
-        # now wait for the two background tasks we kicked off earlier
         print("background:", await t1, await t2)
-
         print("total:", round(time.time() - start, 2), "sec")
 
     asyncio.run(main())
@@ -173,10 +149,10 @@ Output (order of the "done" lines depends on the sleep durations):
     background: A B
     total: 0.5 sec
 
+_UnixSelectorEventLoop is the default Python asyncio event loop implementation used on Unix and Linux operating systems.
 All five coroutines ran concurrently. Total wall time is about the length of the slowest one (0.5 seconds), not the sum (1.5 seconds).
 
-
-8. COMMON MISTAKES
+5. COMMON MISTAKES
 
   - Calling  asyncio.run  twice in the same program, or calling it from INSIDE another coroutine. Raises RuntimeError. Rule: exactly one  asyncio.run  at the top level.
 

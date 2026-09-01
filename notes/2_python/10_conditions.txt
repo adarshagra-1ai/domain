@@ -296,6 +296,3 @@ Use it when the whole thing fits on one line and stays readable. Otherwise write
            tabs and spaces in indentation
 
         Pick one (spaces are recommended) and use it throughout.
-
-
-In section 11 we look at LOOPS  --  the tools for repeating work with  for , while ,  break , and  continue .

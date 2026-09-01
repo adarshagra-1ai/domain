@@ -340,6 +340,3 @@ Output:
            defined
 
         Inside a method, use  self.name , not  name .
-
-
-In section 17 we look at TYPE HINTS  --  a way to write down what types your variables and function arguments are supposed to be.

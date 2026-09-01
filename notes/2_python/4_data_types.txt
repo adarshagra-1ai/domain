@@ -9,8 +9,7 @@ Every value in Python has a TYPE. The type tells Python what kind of value it is
      "hello"  -- a string (text)
      True     -- a boolean (a yes/no value)
 
-The type controls what you can do with the value. You can multiply two integers, but you cannot multiply two strings the same way. Knowing the type is often the first thing you need to know about a variable.
-
+The type controls what you can do with the value. You can multiply two integers, but you cannot multiply two strings the same way. Knowing the type is the first thing you need to check about a variable before using it in an operation.
 
 2)  The four basic types in this section
 
@@ -20,7 +19,6 @@ The type controls what you can do with the value. You can multiply two integers,
      bool     ->  True or False
 
 Python has more built-in types (list, dict, tuple, set, and others). Those come in sections 6 through 9. Here we focus on these four scalar types  --  values that hold a single piece of data at a time.
-
 
 3)  int  --  integer  (whole numbers)
 
@@ -39,25 +37,15 @@ Notes:
   -  Can be negative (leading  -  ).
   -  Underscores  _  can be used as digit separators for readability ( 1_000_000  reads as one million; Python treats it exactly as  1000000 ).
 
-
 Basic arithmetic:
 
      +     addition           7 + 3    ->  10
      -     subtraction        7 - 3    ->   4
      *     multiplication     7 * 3    ->  21
-     /     division           7 / 3    ->   2.333...
-                              (always returns a
-                               float)
-     //    floor division     7 // 3   ->   2
-                              (divide, drop the
-                               fractional part)
-     %     modulo             7 % 3    ->   1
-                              (the remainder after
-                               dividing)
-     **    exponent           2 ** 3   ->   8
-                              (2 raised to the
-                               power of 3)
-
+     /     division           7 / 3    ->   2.333...  (always returns a float)
+     //    floor division     7 // 3   ->   2         (divide, drop the fractional part)
+     %     modulo             7 % 3    ->   1         (the remainder after dividing)
+     **    exponent           2 ** 3   ->   8         (2 raised to the power of 3)
 
 Example:
 
@@ -74,7 +62,6 @@ Output:
      2
      1
 
-
 4)  float  --  floating-point  (decimal numbers)
 
 Write them with a decimal point.
@@ -90,8 +77,6 @@ Notes:
 
   -  A decimal point makes the number a float, even if the fractional part is 0 (so  2.0  is a float, not an int).
   -  All the arithmetic operators from  int  work on floats too.
-  -  The  /  operator ALWAYS returns a float, even when the answer is a whole number.
-
 
 Code:
 
@@ -103,7 +88,6 @@ Output:
      5.0
 
 6 / 2  gave  3.0  (not  3 ) because  /  always returns a float. Mixing an int with a float ( 2.0 + 3 ) also gives a float.
-
 
 5)  str  --  string  (text)
 
@@ -122,7 +106,6 @@ Notes:
   -  An empty string  ""  is a valid value (a string with zero characters).
   -  Full deep dive on string operations (indexing, slicing, methods) comes in section 5.
 
-
 6)  bool  --  boolean  (True or False)
 
 Only two possible values, both CAPITALIZED:
@@ -130,7 +113,7 @@ Only two possible values, both CAPITALIZED:
      True
      False
 
-They are usually produced by COMPARISONS.
+They come from two places: COMPARISONS (like  5 > 3 ) and direct assignment ( is_active = True ).
 
 Code:
 
@@ -149,7 +132,6 @@ You can also assign booleans directly:
 
      is_active = True
      is_admin  = False
-
 
 7)  Check the type  --  type()
 
@@ -170,7 +152,6 @@ Output:
 
 Read  <class 'int'>  as "the type is int ". The  class  wording will make full sense in section 16 (classes). For now,  type()  is your quick way to answer "what type is this value?".
 
-
 8)  Convert between types
 
 Python has built-in "conversion" functions:
@@ -181,7 +162,6 @@ Python has built-in "conversion" functions:
      bool(x)    ->  convert  x  to a boolean
 
 They take a value of one type and produce a NEW value of the target type. The original value is not changed.
-
 
 Common conversions:
 
@@ -202,13 +182,11 @@ Output:
      True
      False
 
-
 Notes:
 
   -  int(3.7)  gives  3  (drops the fractional part; does NOT round).
   -  int("42")  works because the string looks like a valid whole number.  int("hello")  would fail with a  ValueError .
   -  bool(0)  is  False .  bool(1)  (or any non-zero number) is  True . Full "truthy vs falsy" rules come in section 10.
-
 
 9)  Common errors
 
@@ -222,14 +200,12 @@ Notes:
 
         Run:
 
-           TypeError: can only concatenate
-           str (not "int") to str
+           TypeError: can only concatenate str (not "int") to str
 
         "5"  is a string, not a number. Python does not know whether to add them as numbers or join them as text. Convert first:
 
            print(int(x) + y)     ->  8
            print(x + str(y))     ->  "53"
-
 
   (b)   Converting an invalid string
 
@@ -239,23 +215,6 @@ Notes:
 
         Run:
 
-           ValueError: invalid literal for int()
-           with base 10: 'hello'
+           ValueError: invalid literal for int() with base 10: 'hello'
 
         "hello"  cannot be turned into an integer. Only strings that look like valid numbers convert cleanly.
-
-
-  (c)   Assignment vs comparison
-
-        Code:
-
-           if x = 5:
-
-        Run:
-
-           SyntaxError: invalid syntax
-
-        A single  =  is assignment, not comparison. Use  ==  in comparisons.
-
-
-In section 5 we go deep into strings  --  indexing, slicing, and common methods.

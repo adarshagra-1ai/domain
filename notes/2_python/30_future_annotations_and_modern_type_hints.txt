@@ -43,17 +43,10 @@ Container types (list of ints, dict of str -> int, etc.):
 
 Two clear wins: no extra import, and the syntax is closer to how you already read the code.
 
-
-2. VERSION REQUIREMENTS
-
-  - Builtin generics like  list[int] ,  dict[str, int] ,  tuple[int, str]  ->  Python 3.9 or newer.
-  - Union with  | , like  int | None  ,  int | str   ->  Python 3.10 or newer.
-  - Older Python versions (3.7, 3.8) DO NOT understand these directly and will crash at file-load time.
-
 This is where the next tool comes in.
 
 
-3. WHAT   from __future__ import annotations   DOES
+2. WHAT   from __future__ import annotations   DOES
 
 Python has a special module called  __future__  . Importing "features" from it turns on newer behaviour in an older Python version. The specific feature  annotations  changes ONE rule about how type hints are handled:
 

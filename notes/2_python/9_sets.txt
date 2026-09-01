@@ -269,6 +269,3 @@ Do NOT use a set when:
            TypeError: unhashable type: 'list'
 
         Lists are mutable and cannot be set items. Use tuples:  s = {(1, 2), (3, 4)}  works.
-
-
-In section 10 we look at CONDITIONS  --  the  if / elif / else  statement, and how Python decides what is  "truthy"  or  "falsy" .

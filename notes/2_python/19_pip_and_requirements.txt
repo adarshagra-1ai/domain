@@ -180,6 +180,3 @@ Upgrade  pip  itself:
   (d)   requirements.txt is out of date
 
         A teammate cloned your project and gets  ModuleNotFoundError . The reason is usually that  requirements.txt  was not updated after the last  pip install . Re-run  pip freeze > requirements.txt  after every new install and commit the file.
-
-
-In section 20 we look at PROJECT STRUCTURE  --  the  src/  folder convention and how a Python project's code is typically organised.

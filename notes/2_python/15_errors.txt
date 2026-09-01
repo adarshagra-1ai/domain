@@ -351,6 +351,3 @@ Full details on defining classes come in section 16.
   (d)   Try block too large
 
         A  try  block should wrap the SMALLEST piece of code that might raise. Wrapping a whole function makes it hard to know which line raised.
-
-
-In section 16 we look at CLASSES  --  how to define your own types with attributes and methods.

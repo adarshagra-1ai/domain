@@ -365,6 +365,3 @@ Rule of thumb: always use  with .
         File contains:  abc  (one line).
 
         Add  "\n"  where you want line breaks.
-
-
-In section 14 we look at MODULES and IMPORT  --  splitting code across files and using libraries.

@@ -10,7 +10,6 @@ Key properties:
   -  A dict is MUTABLE  --  you can add, change, and remove key-value pairs after creation.
   -  Since Python 3.7, dicts preserve INSERTION ORDER  --  items come out in the order they were added.
 
-
 2)  Creating a dictionary
 
 Use curly braces  { }  with items in the form  key: value  , separated by commas.
@@ -29,10 +28,9 @@ Code:
 Notes:
 
   -  An empty dict is  {}  (zero items).
-  -  Keys are usually strings, but can be any IMMUTABLE type (string, number, tuple).
+  -  A key can be any IMMUTABLE type: string, number, or tuple (tuples come in section 8). Strings are the common choice.
   -  Values can be any type: strings, numbers, lists, other dicts, anything.
   -  A single dict may have keys of different types.
-
 
 Alternative:  dict()  constructor
 
@@ -44,7 +42,6 @@ Code:
 Output:  {'name': 'adarsh', 'age': 25}
 
 This form only works when keys are valid Python variable names. For any key type, use the  { }  form.
-
 
 3)  Reading a value
 
@@ -60,7 +57,6 @@ Output:
      adarsh
      25
 
-
 If the key does NOT exist, this raises a  KeyError :
 
 Code:
@@ -71,19 +67,10 @@ Run:
 
      KeyError: 'email'
 
-
 Safer:  d.get(key, default)
 
-     d.get(key)              returns the
-                             value at key,
-                             or  None  if
-                             the key is
-                             missing.
-
-     d.get(key, default)     returns the
-                             value at key,
-                             or  default
-                             if missing.
+     d.get(key)              returns the value at key, or  None  if the key is missing.
+     d.get(key, default)     returns the value at key, or  default  if the key is missing.
 
 Code:
 
@@ -96,7 +83,6 @@ Output:
      adarsh
      None
      not set
-
 
 4)  Adding or updating a value
 
@@ -114,7 +100,6 @@ Code:
 
 Output:  {'name': 'adarsh k', 'age': 25}
 
-
 Bulk update  --  d.update(other)
 
 Adds all key-value pairs from another dict. Overwrites existing keys.
@@ -127,7 +112,6 @@ Code:
      print(a)
 
 Output:  {'x': 1, 'y': 99, 'z': 3}
-
 
 5)  Removing a key-value pair
 
@@ -142,7 +126,6 @@ Output:  {'x': 1, 'y': 99, 'z': 3}
         Output:  {'name': 'adarsh'}
 
         A missing key raises  KeyError .
-
 
   (b)   d.pop(key)  --  remove and RETURN the value.
 
@@ -161,7 +144,6 @@ Output:  {'x': 1, 'y': 99, 'z': 3}
 
            v = person.pop("email", None)
 
-
   (c)   d.clear()  --  empty the dict.
 
         Code:
@@ -171,7 +153,6 @@ Output:  {'x': 1, 'y': 99, 'z': 3}
            print(person)
 
         Output:  {}
-
 
 6)  Checking for a key  --  in
 
@@ -189,7 +170,6 @@ Output:
 
 in  checks KEYS by default, not values.
 
-
 7)  Iterating
 
   (a)   for key in d:
@@ -203,7 +183,6 @@ in  checks KEYS by default, not values.
         Output:
            name
            age
-
 
   (b)   d.keys()   --  view of all keys.
         d.values() --  view of all values.
@@ -221,7 +200,6 @@ in  checks KEYS by default, not values.
            ['adarsh', 25]
            [('name', 'adarsh'), ('age', 25)]
 
-
   (c)   Iterate as key and value together:
 
         Code:
@@ -233,7 +211,6 @@ in  checks KEYS by default, not values.
         Output:
            name -> adarsh
            age -> 25
-
 
 8)  Common errors
 
@@ -248,7 +225,6 @@ in  checks KEYS by default, not values.
 
         No error, but only the LAST value for a repeated key survives.
 
-
   (b)   Unhashable key (list as a key)
 
         Code:
@@ -260,6 +236,3 @@ in  checks KEYS by default, not values.
            TypeError: unhashable type: 'list'
 
         Lists are mutable and cannot be dict keys. Use a tuple instead:  {(1, 2): "hello"}  works.
-
-
-In section 8 we look at TUPLES  --  ordered collections like lists, but IMMUTABLE.

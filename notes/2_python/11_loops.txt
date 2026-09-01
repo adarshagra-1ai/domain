@@ -306,6 +306,3 @@ The  "done"  is not printed because the  break  fired.
   (d)   Wrong indentation
 
         Same as with  if  : the block under  for  or  while  must be indented. A missing indent gives an  IndentationError .
-
-
-In section 12 we look at FUNCTIONS  --  how to package a block of code with a name so you can reuse it.

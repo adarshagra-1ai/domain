@@ -1,14 +1,18 @@
 2  --  First Python program
 
-1)  What we will do
+1)  What each piece of  print("hello")  means
 
-Write a one-line Python program that prints the word  hello  to the terminal, save it as a  .py  file, and run it with  python3 .
+     print      ->  the NAME of a built-in Python function that prints text to the screen.
 
+     ( ... )    ->  parentheses  --  they say "CALL this function with the values inside".
+
+     "hello"    ->  a STRING (a piece of text). Strings in Python are wrapped in double quotes  "..."  or single quotes  '...' . Both work.
+
+The whole line reads as:  "call the  print  function with the string  hello ".
 
 2)  Create the file
 
 Two easy ways to create  hello.py .
-
 
 Way A  --  from the terminal (no editor needed):
 
@@ -27,55 +31,33 @@ Two new pieces here:
 
 So the full line  echo 'print("hello")' > hello.py  takes the text  print("hello")  and writes it into a new file called  hello.py .
 
-Both  echo  and  >  will be studied in more detail in a later phase. For now use this one-liner as a quick "write one line to a file" trick.
+Both  echo  and  >  are covered properly in the terminal topic, section 4. For now use this one-liner as a quick "write one line to a file" trick.
 
 Verify what got written:
 
      adarsh@laptop:~$  cat hello.py
      print("hello")
 
-
 Way B  --  in a text editor:
 
-Open any text editor (VS Code, gedit, your IDE, etc.), create a new file named  hello.py  in your current folder, put this one line inside:
+Open any text editor (VS Code (Visual Studio Code), gedit, your IDE (Integrated Development Environment), etc.), create a new file named  hello.py  in your current folder, put this one line inside:
 
      print("hello")
 
 Save the file.
 
+3)  Run the file
 
-3)  What each piece of  print("hello")  means
-
-     print      ->  the NAME of a built-in Python function that prints text to the screen.
-
-     ( ... )    ->  parentheses  --  they say "CALL this function with the values inside".
-
-     "hello"    ->  a STRING (a piece of text). Strings in Python are wrapped in double quotes  "..."  or single quotes  '...' . Both work.
-
-The whole line reads as:  "call the  print  function with the string  hello ".
-
-
-4)  Run the file
-
-Make sure your CWD is the folder that contains  hello.py  (use  pwd  to check,  cd  if needed).
+Make sure your CWD (Current Working Directory) is the folder that contains  hello.py  (use  pwd  to check,  cd  if needed).
 
      adarsh@laptop:~$  python3 hello.py
      hello
 
-That is your first program. Python read the file, ran the one line, printed  hello , and returned you to the prompt.
-
-Two things happened, in order:
-
-  1)  You typed  python3 hello.py .
-  2)  The  python3  program opened  hello.py , executed each line top to bottom, then exited.
-
 python3  is the INTERPRETER. Its job is to read  .py  files and run them.
 
-
-5)  Try small variations
+4)  Try small variations
 
 Same file, different content, same run command. Edit  hello.py , save, re-run.
-
 
 Change the text:
 
@@ -85,7 +67,6 @@ Run:
 
      adarsh@laptop:~$  python3 hello.py
      hello, world
-
 
 Print a number:
 
@@ -97,7 +78,6 @@ Run:
      2025
 
 Numbers do NOT need quotes.  2025  is a number, not a string.
-
 
 Two lines of output:
 
@@ -112,8 +92,7 @@ Run:
 
 Each  print  call ends with a newline, so the next  print  starts on a fresh line.
 
-
-6)  Common errors
+5)  Common errors
 
   (a)   File not found
 
@@ -121,7 +100,6 @@ Each  print  call ends with a newline, so the next  print  starts on a fresh lin
         python3: can't open file '/home/adarsh/hello.py': [Errno 2] No such file or directory
 
         Wrong CWD, or the file is not exactly  hello.py . Fix with  pwd  and  ls .
-
 
   (b)   Missing quotes
 
@@ -137,7 +115,6 @@ Each  print  call ends with a newline, so the next  print  starts on a fresh lin
 
         Without quotes, Python thinks  hello  is a variable name (not text). Since no such variable was defined, it errors. Add the quotes:  print("hello") .
 
-
   (c)   Mismatched quotes
 
         Content:  print("hello')
@@ -152,13 +129,54 @@ Each  print  call ends with a newline, so the next  print  starts on a fresh lin
 
         Opening quote and closing quote must MATCH: both double  " ... "  or both single  ' ... '  .
 
-
   (d)   python3 not found
 
         adarsh@laptop:~$  python3 hello.py
         bash: python3: command not found
 
-        Python is not installed. Go back to section 1 sub-section 5.
+        Python is not installed. Go back to section 1 sub-section 4.
 
+6)  Comments  --  notes for humans that Python ignores
 
-Once you can create  hello.py , edit it, and run it with  python3 , you have the basic Python workflow. In section 3 we start storing data with variables.
+A COMMENT is text inside a  .py  file that Python does not run. It is there for the person reading the code.
+
+The  #  character starts a comment. Everything from  #  to the end of that line is ignored.
+
+Whole-line comment:
+
+     # this line does nothing
+     print("hello")
+
+Run:
+
+     adarsh@laptop:~$  python3 hello.py
+     hello
+
+Only  hello  printed. The first line was skipped completely.
+
+Inline comment  --  a  #  after real code on the same line:
+
+     print("hello")     # this part is ignored
+
+Run:
+
+     adarsh@laptop:~$  python3 hello.py
+     hello
+
+The code before the  #  still runs; only the tail is ignored.
+
+Facts:
+
+  -  A comment can hold anything  --  words, punctuation, even code. Python never looks at it.
+  -  There is no "start" and "end" comment marker in Python. Each comment line needs its own  # .
+  -  A  #  INSIDE a string is not a comment. It is just a character in the text.
+
+Code:
+
+     print("price is #5")
+
+Output:
+
+     price is #5
+
+The  #  sat inside the quotes, so it is part of the string, not the start of a comment.

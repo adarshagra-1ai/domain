@@ -415,6 +415,3 @@ Useful when a module both EXPORTS functions AND can run as a script.
   (c)   Shadowing a standard-library name
 
         If you save a file called  math.py  in the same folder as your script, then  import math  will import YOUR file, not the real  math  library. Avoid standard-library names for your own module files.
-
-
-In section 15 we look at ERRORS  --  try / except / else / finally , and raising your own errors.

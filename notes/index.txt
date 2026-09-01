@@ -1,29 +1,32 @@
 INDEX  --  Bird's-eye view of every topic and its parts.
 
+RULE  --  Each item's one-line description is that file's CONTRACT. List the concrete sub-topics the file covers (concepts, keywords, syntax pieces) as specifically as possible, so no other file in this index accidentally repeats the same ground. If a sub-topic is already listed against one item, do NOT list it against another  --  the earlier owner keeps it.
 
-===================================================================
+Example (good  --  specific, claims its ground):
+   6   Lists: create, add ( append , insert ), remove ( pop , remove , del ), indexing, slicing, len(), sorting
+
+Example (bad  --  too vague, invites duplicates in later files):
+   6   Lists and how to use them
+
 1_terminal  --  Computer & terminal basics
-===================================================================
 
-Terminal has 3 small parts:
+Terminal has 4 small parts:
 
-   1   What a file system is (file, folder, path, absolute vs relative)
-   2   What a terminal is and why we use it
-   3   Core commands (one-line meaning of each): pwd, ls, cd, mkdir, touch, cat, rm, mv, cp
+   1   File system: file vs folder, file name and extension (optional on Linux), tree structure, root ( / ), common top-level folders ( /bin , /etc , /home , /usr , /var , /tmp ), home folder, path (absolute vs relative), name vs path, current working directory, special symbols ( . , .. , ~ , / )
+   2   Terminal: GUI vs CLI, terminal window (cursor, prompt, command, output), terminal vs shell, shell mechanics (line-to-program flow, kernel, OS basics, UNIX/Linux history, scripts, common shells — sh/bash/zsh/dash/fish), prompt anatomy ( $ vs # , ~ , variations), why use terminal (speed, precision, automation, SSH, servers, universal commands, small footprint), when a GUI is still the better tool
+   3   Core commands: command anatomy (command / options / arguments, short vs long flags, combining short options), pwd, ls (hidden files  -a , long format  -l , human sizes  -h , reading  ls -l  output), cd (absolute/relative paths, shortcuts  ~ , .. , - , common errors), mkdir ( -p  for nested), touch (create empty file / update timestamp), cat (view file, multi-file concat, common errors including binary files), cp ( -r  for folders, -i  interactive), mv (also renames, -i ), rm ( -r  recursive, -i  interactive, -f  force, safety habits)
+   4   Output redirection and pipes: echo (print text, spaces and word-splitting, single vs double quotes), standard output and standard error, > (send output into a file, overwrites), >> (append to a file), 2> (capture errors), redirect gotchas (empty file on failure, same file in and out, stray > ), commands that read input ( head , tail with  -f , wc with  -l / -w / -c , sort with  -r / -n , less and its keys), | (pipe one command's output into the next), chaining pipes, pipe vs redirect
 
-
-===================================================================
 2_python  --  Python from zero
-===================================================================
 
-Python has 32 small parts:
+Python has 34 small parts:
 
-   1   What Python is; check install ( python3 --version )
-   2   First program: print("hello") in a .py file and run it
-   3   Variables and naming rules
-   4   Data types: int, float, str, bool
-   5   Strings and common string operations
-   6   Lists: create, add, remove, index, slice
+   1   What Python is; the  .py  file extension; Python 2 vs 3; check install ( python3 --version , -V ); install via package manager ( apt / dnf / pacman / zypper ) and sudo; python vs python3 gotcha
+   2   First program: print( ... ) as function name + parens (call) + string arg; two ways to create hello.py ( echo + > redirect , text editor ); run with python3 hello.py ; python3 as interpreter; small variations (numbers, multi-line print); four common errors (file not found, missing quotes → NameError, mismatched quotes → SyntaxError, python3 not found); comments ( # whole-line and inline, no block-comment marker, # inside a string is not a comment)
+   3   Variables and naming rules: named slots; assignment operator ( = ); create vs update; reading/using; compound reassign ( count = count + 1 ); hard naming rules (allowed chars, no digit start, case-sensitive, reserved-word list); style conventions ( snake_case , descriptive names, i/j/k counters); multiple assignment ( x, y = 10, 20 ); common errors (NameError undefined/wrong-case, SyntaxError digit-start/reserved-word/space)
+   4   Data types: type concept and scalar vs collection; four scalars ( int , float , str , bool ); int arithmetic ( + , - , * , / , // , % , ** ) and digit-separator underscores ( 1_000_000 ); float rules ( / always returns float, mixing int+float ); bool values ( True , False ) and quick == vs = distinction; type() built-in and its <class ...> output; conversions ( int() , float() , str() , bool() ) and their behaviors (drop fractional, invalid literal); common errors (TypeError from str+int, ValueError from bad int() input)
+   5   Strings: creation (single, double, triple quotes), escape sequences ( \n , \t , \\ , \" , \' ), len(), indexing (0-based, negative), slicing ( s[start:stop:step] , [::-1] reverse), concatenation ( + ) and repetition ( * ), membership ( in , not in , case-sensitive), methods ( upper / lower / title , strip / lstrip / rstrip , replace , split , startswith / endswith , count , find , chaining), immutability (methods return new string, item-assignment TypeError, rebuild pattern), f-strings ( f"{var}" , expressions in braces), common errors (IndexError, missing  f  prefix)
+   6   Lists: creation ( [ ] , nested), len(), indexing (single-level and nested), slicing (list-specific: slice-assignment on mutable list), mutability (assign to index, slice assignment shrinks/grows list), adding ( append , insert , extend , + concat-to-new), removing ( remove , pop , del , clear ), membership ( in , not in ), finding ( index , count ), sorting ( sort in-place, sorted new, reverse , sorted vs sort in-place-vs-new pattern), for-loop iteration (brief intro, full in section 11), common errors (IndexError out of range, ValueError from remove of missing value)
    7   Dictionaries: create, read, update, delete key-value pairs
    8   Tuples: immutable ordered collections; when to use them
    9   Sets: unique unordered collections; when to use them
@@ -39,31 +42,27 @@ Python has 32 small parts:
    19  pip and requirements.txt workflow
    20  Project structure: the  src/  folder convention
    21  Packages and the program entry point: __init__.py and __main__.py
-   22   __main__.py  walkthrough: docstring, imports, and argparse deep dive
-   23  __pycache__ folder and .pyc bytecode files
-   24  json module: dump, dumps, load, loads and Python <-> JSON type mapping
-   25  relative imports: dot syntax for same-package and parent-package imports
-   26  lazy / local imports: import inside a function and when to use it
-   27  keyword-only arguments: the bare  *  separator in function signatures
-   28  from __future__ import annotations and modern type hints ( int | None , list[str] , dict[str, int] )
-   29  signal module: SIGINT, SIGTERM and signal handlers
-   30  asyncio basics: sync vs async, coroutines,  async def  and  await
-   31  asyncio event loop,  asyncio.run  ,  asyncio.gather  , tasks and  get_running_loop
-   32  asyncio.Event and  loop.add_signal_handler  (graceful shutdown pattern)
+   22  __main__.py walkthrough: docstring and imports
+   23  argparse basics: ArgumentParser, add_argument, parse_args
+   24  argparse subcommands: subparsers and command routing
+   25  __pycache__ folder and .pyc bytecode files
+   26  json module: dump, dumps, load, loads and Python <-> JSON type mapping
+   27  relative imports: dot syntax for same-package and parent-package imports
+   28  lazy / local imports: import inside a function and when to use it
+   29  keyword-only arguments: the bare  *  separator in function signatures
+   30  from __future__ import annotations and modern type hints ( int | None , list[str] , dict[str, int] )
+   31  signal module: SIGINT, SIGTERM and signal handlers
+   32  asyncio basics: sync vs async, coroutines,  async def  and  await
+   33  asyncio event loop,  asyncio.run  ,  asyncio.gather  , tasks and  get_running_loop
+   34  asyncio.Event and  loop.add_signal_handler  (graceful shutdown pattern)
 
-
-===================================================================
-3_http  --  Backend framework basics
-===================================================================
+3_http  --  HTTP basics
 
 HTTP has 1 small part:
 
    1   HTTP idea: request, response, method, status
 
-
-===================================================================
-4_fastapi  --  Backend framework basics
-===================================================================
+4_fastapi  --  Web framework basics
 
 FastAPI has 3 small parts:
 
@@ -71,20 +70,14 @@ FastAPI has 3 small parts:
    2   Path params, query params, JSON body
    3   Pydantic model to validate input
 
-
-===================================================================
-5_sqlite  --  Backend framework basics
-===================================================================
+5_sqlite  --  Database basics
 
 SQLite has 2 small parts:
 
    1   SQLite basics: create table, insert, select, update, delete
    2   Talking to SQLite from Python ( sqlite3  module)
 
-
-===================================================================
 6_auth  --  Auth and multi-user
-===================================================================
 
 Auth has 4 small parts:
 
@@ -93,13 +86,35 @@ Auth has 4 small parts:
    3   Login route and session cookie
    4   "Active project" concept for multi-tenant apps
 
-
-===================================================================
 7_home_automation  --  the industry and how it solves the smart-device problem
-===================================================================
 
 Home automation has 3 small parts:
 
    1  The problem: many device "islands", and the pain that causes for end users and installers
    2  The solution: one central controller with drivers, unified data model, one app, state management, scenes, local-first control and an installer dashboard
    3  Who builds this in the market: DIY open-source, big-tech consumer, premium commercial integrators, and the professional-integrator segment where Vyom sits
+
+Future topics  --  rough plan; folder numbers assigned when we start them
+
+Note: the prose format below is intentional. Each topic will be converted to a numbered list, with a proper per-part contract, when its folder is created.
+
+  html
+     What HTML is; how a browser reads it. Tags, attributes, elements. Common tags (div, span, h1-h6, p, a, img, button, input, form, ul/ol/li, table). id / class attributes. Semantic tags (header, nav, section, footer). Nesting rules and document structure.
+
+  css
+     What CSS is; how to attach it (inline, internal, external). Selectors (element, class, id, combinators). Common properties (color, background, font, border). Box model. Units (px, em, rem, %). Display (block, inline, inline-block, none). Flexbox in depth. Grid basics. Positioning (static, relative, absolute, fixed).
+
+  javascript
+     What JS is; where it runs. Variables (let, const). Data types. Operators and template literals. Conditions. Loops. Functions (regular and arrow). Array methods (map, filter, reduce, find, forEach, some, every). Objects and destructuring. Spread / rest. Promises. async / await. Modules (import / export). fetch API. JSON.parse and JSON.stringify.
+
+  node
+     What Node.js is (JS outside the browser). npm and package.json. Installing packages (dependencies vs devDependencies). npm scripts (dev, build, start).
+
+  react
+     What React is and why we use it. JSX. Function components. Props. useState. useEffect. Event handlers. Conditional rendering. List rendering with map and keys. Forms and controlled inputs. Callbacks. Component composition and folder structure.
+
+  frontend_pieces
+     Vite (dev server, production build). Material-UI (components, theme, sx prop). react-markdown and GFM. fetch with credentials and cookies. SSE (Server-Sent Events) streaming. Custom hooks. Polling pattern.
+
+  polish
+     Error handling and edge cases. Small UX fixes.

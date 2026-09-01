@@ -272,6 +272,3 @@ mypy  reads the type hints and warns you about mismatches like the one above.
 
               from typing import List
               def make() -> List[int]:
-
-
-In section 18 we look at VIRTUAL ENVIRONMENTS  --  isolated Python setups for a project  --  and how to create one with  python3 -m venv .venv .

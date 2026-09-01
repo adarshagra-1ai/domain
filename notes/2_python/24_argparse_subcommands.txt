@@ -1,0 +1,11 @@
+24  --  argparse subcommands: subparsers and command routing
+
+(Stub. Content will be filled when we reach this section.)
+
+Planned coverage:
+  -  What a SUBCOMMAND is, using real-world CLIs as examples ( git commit ,  git push ;  docker run ,  docker build ).
+  -  add_subparsers()  --  attaching a sub-parser tree to the main parser.
+  -   dest="command"  and how the chosen subcommand ends up on  args .
+  -  Adding per-subcommand flags with their own  add_argument  calls.
+  -  Routing:  if args.command == "..."  dispatch pattern.
+  -  Small worked example (e.g. a mini  todo  CLI with  add ,  list ,  done  subcommands).

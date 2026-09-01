@@ -6,7 +6,6 @@ We will break this section into 4 small chunks:
    Chunk C  -  The prompt (the "$" line)
    Chunk D  -  Why we use the terminal
 
-
 2  --  Chunk A  :  What is a terminal?
 
 1)  Two words to know first  (GUI and CLI)
@@ -16,7 +15,6 @@ We will break this section into 4 small chunks:
   -  CLI  =  Command Line Interface  --  the text world. You type an instruction as a line of text, press Enter, the computer runs it and prints text back.
 
 The terminal lives in the CLI world.
-
 
 2)  What IS a terminal?
 
@@ -37,7 +35,6 @@ Other names for the same thing:
   -  shell window
 
 In everyday use they all mean the same thing: a text chat window with the computer.
-
 
 3)  What a terminal window looks like
 
@@ -63,7 +60,6 @@ Pieces:
 
 The rhythm:  PROMPT  ->  COMMAND  ->  OUTPUT  ->  next PROMPT.
 
-
 4)  Terminal is a WINDOW, not the brain
 
 A terminal window by itself does NOT know what "ls" or "echo" means. It only does two jobs:
@@ -76,9 +72,7 @@ The program that actually understands commands is called the SHELL. The terminal
 Remember:
 
      Terminal  =  the WINDOW.
-     Shell     =  the PROGRAM inside it that
-                  does the work.
-
+     Shell     =  the PROGRAM inside it that does the work.
 
 5)  GUI vs CLI  --  same job, two ways
 
@@ -98,7 +92,6 @@ Task: see the list of files inside your Documents folder.
 
 Both give the same answer. For many tasks the terminal is faster and more exact once you know the commands. Full "why" is in Chunk D.
 
-
 2  --  Chunk B  :  Shell  (the program that reads your commands)
 
 1)  What IS a shell?
@@ -114,22 +107,19 @@ That is its whole life. Read a line, run it, print, wait for next line.
 
 Why is it called a "shell"?
 
-  The core of a Linux system is called the KERNEL  --  a large program that talks directly to the hardware (CPU, memory, disk, network). You do not talk to the kernel directly.
+  The core of a Linux system is called the KERNEL  --  a large program that talks directly to the hardware: the CPU (Central Processing Unit), memory, disk, and network. You do not talk to the kernel directly.
 
   A friendly outer program wraps around the kernel and lets you talk to it in plain text. This outer layer is the "shell"  --  because it sits around the kernel like a shell around a nut.
 
      shell   =  the outer program you talk to.
-     kernel  =  the inner engine that runs
-                everything on the machine.
-
+     kernel  =  the inner engine that runs everything on the machine.
 
 2)  Terminal vs Shell  --  swappable pieces
 
 Chunk A 4) already established: terminal = the window, shell = the program inside. The extra fact worth knowing here is that these two are INDEPENDENT pieces  --  you can mix and match.
 
   -  Same terminal window, different shell inside: open one terminal and switch from bash to zsh.
-  -  Same shell, different terminal window: bash can run inside GNOME Terminal, xterm, or VS Code's built-in terminal.
-
+  -  Same shell, different terminal window: bash can run inside GNOME Terminal, xterm, or the built-in terminal of VS Code (Visual Studio Code).
 
 3)  What happens when you type a command
 
@@ -152,7 +142,6 @@ Chunk A 4) already established: terminal = the window, shell = the program insid
      Step 8:  The program finishes. The shell prints a fresh prompt on the next line.
 
 Between "your key press" and "text on screen" there is a small chain, and the shell is the main character in it.
-
 
 4)  What is an operating system (OS)?
 
@@ -185,7 +174,6 @@ OS vs application:
   -  OS is the base layer. Usually ONE OS runs on a computer at a time.
   -  An APPLICATION (or "app") is a normal program running ON TOP OF the OS: a browser, a game, a terminal window.
 
-
 5)  UNIX and Linux
 
 UNIX  --  the grandparent operating system
@@ -201,7 +189,6 @@ UNIX  --  the grandparent operating system
     -  Command names ( ls, cd, cp, mv, rm , ... ).
 
   When you learn Linux commands today, you are really learning the UNIX way.
-
 
 Linux  --  the free, modern UNIX-style OS
 
@@ -222,7 +209,6 @@ Linux  --  the free, modern UNIX-style OS
     -  Arch Linux   (advanced, build-your-own)
     -  Linux Mint   (Windows-like desktop)
 
-
 UNIX-like family today
 
   -  UNIX-like  :  Linux, macOS, BSD (Berkeley Software Distribution), Android, iOS. Same shell world; terminals and commands feel similar.
@@ -230,7 +216,6 @@ UNIX-like family today
   -  Non-UNIX   :  Windows. Different tradition with its own command prompt (cmd.exe) and PowerShell.
 
 This is why a Mac user feels at home on a Linux server. It is also why Windows users often install a Linux-like layer called WSL (Windows Subsystem for Linux) to run bash and standard UNIX commands.
-
 
 6)  What is a script?
 
@@ -265,7 +250,6 @@ File extension  .sh  is a convention (helps humans spot scripts); Linux does not
 
 A script written for  bash  uses bash rules and may fail under a different shell like  fish  because the two do not share the same scripting syntax. This is why  fish  is called "not fully compatible with bash scripts" in section 7 below.
 
-
 7)  Common shells you will hear about on Linux
 
 All shells do the same basic job (read a line, run it), with different extra features and scripting rules.
@@ -287,7 +271,6 @@ All shells do the same basic job (read a line, run it), with different extra fea
 
 Whatever your Linux install came with is fine to start (usually bash or zsh).
 
-
 2  --  Chunk C  :  The prompt
 
 1)  What a prompt is
@@ -296,15 +279,7 @@ The "prompt" is the short line of text the shell prints every time it is ready f
 
      "Ready. Type your next command."
 
-Session rhythm:
-
-     prompt   ->  type command  ->  press Enter
-              ->  output appears
-              ->  fresh prompt appears
-              ->  repeat
-
 The prompt itself does not RUN anything. It is a "ready" signal.
-
 
 2)  Anatomy of a typical prompt
 
@@ -312,17 +287,14 @@ The prompt itself does not RUN anything. It is a "ready" signal.
 
 Left to right:
 
-     adarsh          ->  USERNAME (which user
-                         is logged in)
+     adarsh          ->  USERNAME (which user is logged in)
      @               ->  fixed separator
-     laptop          ->  HOSTNAME (name of this
-                         computer)
+     laptop          ->  HOSTNAME (name of this computer)
      :               ->  fixed separator
      ~/Documents     ->  CURRENT FOLDER
      $               ->  END MARKER (see below)
 
 A single glance tells you 4 things: user, machine, current folder, and whether you are a normal user or admin.
-
 
 3)  The end marker  --  $ vs #
 
@@ -334,15 +306,13 @@ A single glance tells you 4 things: user, machine, current folder, and whether y
 
 We do not use root for now.
 
-
 4)  Why the folder sometimes looks like just "~"
 
      adarsh@laptop:~$
 
 The folder part shows just  ~  (tilde). We saw in Chunk D of section 1 that  ~  is a shortcut for the home folder. So this prompt means:
 
-     "Current folder is  /home/adarsh
-      (shown short as  ~ )."
+     "Current folder is  /home/adarsh  (shown short as  ~ )."
 
 If you move deeper into the home folder:
 
@@ -353,7 +323,6 @@ If you move OUTSIDE the home folder, a full absolute path shows:
 
      adarsh@laptop:/etc$
      adarsh@laptop:/var/log$
-
 
 5)  Prompts vary between machines
 
@@ -367,23 +336,15 @@ Variations you may see:
 
      adarsh@laptop:~/Documents$     (classic bash)
 
-     ~/Documents %                  (some zsh
-                                     setups use
-                                     %  instead
-                                     of  $ )
+     ~/Documents %                  (some zsh setups use  %  instead of  $ )
 
      ~/Documents on main +?
-     $                              (fancy
-                                     prompts
-                                     from tools
-                                     like
-                                     "starship")
+     $                              (fancy prompts from tools like "starship")
 
 All are still prompts. Focus on:
 
   -  Where does it END?  ( $ , % , or  #  , sometimes with a space after)
   -  What shows BEFORE the end marker?  (user, machine, folder, in some form)
-
 
 6)  When the prompt "disappears"
 
@@ -402,7 +363,6 @@ Rule of thumb:
   -  Prompt visible at bottom  ->  shell is ready.
   -  Prompt NOT visible        ->  a command is still running, wait.
 
-
 2  --  Chunk D  :  Why we use the terminal
 
 1)  The fair question
@@ -410,7 +370,6 @@ Rule of thumb:
 If GUI is friendly (icons, menus, drag-drop), why does anyone still use the text-based terminal?
 
 There is no single big reason. Several small ones add up.
-
 
 2)  Speed  --  one line beats many clicks
 
@@ -422,7 +381,6 @@ There is no single big reason. Several small ones add up.
            mkdir -p a/b/c/d/e
            (1 line, fraction of a second)
 
-
   Example 2  --  rename 100 files:
 
      GUI:  right-click and rename 100 times.
@@ -430,7 +388,6 @@ There is no single big reason. Several small ones add up.
      Terminal:  a 2-line script does all 100 in a fraction of a second.
 
 "Type it" is almost always faster than "click it" once you know the commands.
-
 
 3)  Precision  --  same input, same output
 
@@ -446,24 +403,23 @@ Any small slip changes the result. In a terminal command the text is either righ
 
 "Steps to reproduce a bug" are almost always written as terminal commands, not clicks.
 
-
 4)  Automation  --  scripts do repetitive work
 
 We met scripts in Chunk B section 6. The terminal-specific angle: scripts move you from "using the computer" to "telling the computer what to do on its own".
 
 Uses:
 
-  -  Backup script runs every night at 2 AM.
   -  Deploy script pushes new code with one command.
   -  Cleanup script deletes old log files every Sunday.
   -  Test script runs 500 checks and prints pass/fail.
 
 GUI needs a human clicking. Terminal does not.
 
-
 5)  Remote work over SSH
 
 SSH (Secure Shell) is a protocol and program that lets you log in to a different computer over the network and open a shell on it, as if you were sitting in front of that machine.
+
+A "server" is a computer whose job is to serve other computers (host a website, database, API — Application Programming Interface — etc.).
 
 Everyday pattern:
 
@@ -476,19 +432,15 @@ Everyday pattern:
 
 Fast even on slow internet because text is tiny compared to a full graphical remote desktop.
 
-
 6)  Servers usually have NO graphical desktop
-
-A "server" is a computer whose job is to serve other computers (host a website, database, API, etc.).
 
 Servers are usually set up WITHOUT a graphical desktop:
 
   (a) No screen or keyboard sits in front of the server, so a desktop would waste memory.
-  (b) A graphical desktop uses hundreds of MB of RAM (Random Access Memory) even idle.
+  (b) A graphical desktop uses hundreds of MB (megabytes) of RAM (Random Access Memory) even idle.
   (c) Fewer installed programs means fewer things that can be attacked or crash.
 
 Only way in: SSH from your laptop, land in a text terminal, use shell commands. If you want to work on the internet's plumbing (websites, cloud, hosting), you MUST know the terminal.
-
 
 7)  Universal  --  same commands, forever
 
@@ -503,7 +455,6 @@ GUI apps change often. Buttons move, menus get renamed, entire redesigns happen 
 
 A guide about  ls  written in 1990 is still 95% correct in 2026.
 
-
 8)  Small footprint  --  works on tiny systems
 
 A terminal uses a few megabytes of memory. A full graphical desktop needs hundreds of megabytes for the window manager, compositor, fonts, icons, and sound services.
@@ -513,7 +464,6 @@ Because of this:
   -  On very old machines with little RAM, the terminal still works fine.
   -  Inside containers (small isolated Linux boxes used to run one service at a time), a terminal is often the only interface.
   -  On embedded devices, the terminal is again the only way in. (An "embedded device" is a small computer that lives INSIDE another product and does only one dedicated job. It has very little CPU and RAM, usually no screen or keyboard, and often runs a stripped-down Linux. Examples: WiFi routers, smart TVs, washing-machine controllers, digital cameras, smart watches, car engine control units, smart thermostats, traffic-light controllers, Raspberry Pi boards used in "headless mode" without a monitor. To configure or debug any of these you SSH in and use the terminal. There is no GUI on the device itself.)
-
 
 9)  When GUI is still the better tool
 
@@ -527,6 +477,3 @@ The terminal is not always better. Some jobs truly need a GUI:
 The right rule is: use each tool where it fits. Most professional users mix both  --  GUI for reading, browsing, and design; terminal for building, running, and automating.
 
 We learn the terminal not to replace the GUI, but to add a very powerful second tool to the toolbox.
-
-
-With Chunk D we finish section 2. In section 3 we will start learning the actual commands  --  pwd, ls, cd, mkdir, touch, cat, rm, mv, cp.

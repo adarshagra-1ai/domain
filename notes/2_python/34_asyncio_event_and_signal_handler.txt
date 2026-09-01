@@ -1,34 +1,38 @@
 asyncio.Event and loop.add_signal_handler (graceful shutdown pattern)
 
-
 1. WHAT asyncio.Event IS
 
-An  asyncio.Event  is a simple ON/OFF flag that coroutines can wait on. It has two states:
+An  asyncio.Event  is a SHARED FLAG with only two positions:
 
-  - NOT SET (the initial state)
+  - NOT SET (the starting position)
   - SET
 
-Any number of coroutines can call  await event.wait()  and pause until someone flips the flag to SET. The moment  event.set()  is called, every coroutine that was waiting wakes up and continues past its  wait  line. The flag stays SET until someone calls  event.clear()  to flip it back.
+Any coroutine that holds the same Event object can either WAIT on the flag or CHANGE the flag.
+
+  - Waiting. A coroutine calls  await event.wait()  . If the flag is NOT SET, that coroutine pauses right there and does nothing more. Many coroutines can be paused on the same Event at the same time.
+  - Changing. Any coroutine (or a signal handler, or plain sync code) calls  event.set()  to flip the flag to SET. The moment that happens, every coroutine that was paused on  event.wait()  wakes up together and continues from the line right after its  wait  call.
+  - Resetting. The flag stays SET forever until someone calls  event.clear()  , which puts it back to NOT SET. After  clear()  , new  event.wait()  calls will pause again; ones that already woke up are unaffected.
+
+The Event is only useful when the SAME object is shared. Two separate  asyncio.Event()  instances do not talk to each other — setting one has no effect on the other.
 
 Common uses:
   - "Please stop / shut down" flag for a long-running server.
   - "Startup finished" flag other coroutines can wait on before doing their work.
   - Simple one-shot notification between coroutines.
 
-
 2. THE FOUR METHODS
 
-    event = asyncio.Event()      # create a new Event, starts in NOT SET
+The Event API is small — one constructor and four methods:
 
-    await event.wait()           # pauses until the flag becomes SET
-    event.set()                  # flip to SET, wake every waiter
-    event.clear()                # flip back to NOT SET
-    event.is_set()               # returns True if SET, False otherwise (no wait)
+  -   event = asyncio.Event()   --  create a new Event; it starts in NOT SET.
+  -   await event.wait()   --  pauses the current coroutine until the flag becomes SET.
+  -   event.set()   --  flips the flag to SET and wakes every waiter.
+  -   event.clear()   --  flips the flag back to NOT SET.
+  -   event.is_set()   --  returns True if SET, False otherwise. Does not wait.
 
 Two rules worth remembering:
   - The flag is SHARED. Every coroutine that has a reference to the same Event object sees the same state.
   - Once SET, further  await event.wait()  calls return IMMEDIATELY without blocking. They only block again after  event.clear()  .
-
 
 3. A SIMPLE EXAMPLE
 
@@ -41,18 +45,16 @@ Two rules worth remembering:
 
     async def main():
         ready = asyncio.Event()
-
-        # kick off two workers; both immediately pause on ready.wait()
         asyncio.create_task(worker("A", ready))
         asyncio.create_task(worker("B", ready))
-
-        await asyncio.sleep(0.5)           # simulate some startup delay
+        await asyncio.sleep(0.5)
         print("main: flipping the flag")
-        ready.set()                         # wakes both workers at once
-
-        await asyncio.sleep(0.1)            # let workers finish printing
+        ready.set()
+        await asyncio.sleep(0.1)
 
     asyncio.run(main())
+
+The two  create_task  calls kick off both workers, which immediately pause on  ready.wait()  . The first  asyncio.sleep(0.5)  simulates a startup delay. The  ready.set()  call wakes both parked workers at once. The final  asyncio.sleep(0.1)  gives the workers a moment to finish printing before  main  exits.
 
 Output:
 
@@ -64,10 +66,9 @@ Output:
 
 Both workers were parked on  await ready.wait()  . The single  ready.set()  call released both of them.
 
-
 4. WHY THE ASYNC VERSION OF SIGNAL HANDLING EXISTS
 
-You already know  signal.signal(sig, handler)  from the plain-signal notes. It registers a handler that Python runs when the OS delivers the signal. That handler can arrive AT ANY POINT in the program, including in the middle of an executing coroutine, which is unsafe in an async program:
+You already know  signal.signal(sig, handler)  from the plain-signal notes. It registers a handler that Python runs when the OS (Operating System) delivers the signal. That handler can arrive AT ANY POINT in the program, including in the middle of an executing coroutine, which is unsafe in an async program:
 
   - The handler might touch data that a coroutine was midway through updating.
   - The handler cannot itself use  await  , because it runs outside the event loop.
@@ -80,10 +81,9 @@ This tells the event loop: "when the OS delivers  sig  , schedule  callback  to 
 
 Two rules for the callback:
   - It must be a PLAIN sync function (or a bound method), NOT an  async def  coroutine.
-  - It takes NO arguments. If you need to pass values, use a lambda or  functools.partial  .
+  - It takes NO arguments.
 
 Availability: Unix and macOS only. Windows does not support  add_signal_handler  ; you fall back to  signal.signal  there.
-
 
 5. THE GRACEFUL SHUTDOWN PATTERN
 
@@ -105,68 +105,11 @@ Skeleton:
         for sig in (signal.SIGINT, signal.SIGTERM):
             loop.add_signal_handler(sig, stop.set)
 
-        await start_servers()          # your startup code
-        await stop.wait()              # park here until a signal arrives
-        await shutdown_servers()       # your cleanup code
+        await start_servers()
+        await stop.wait()
+        await shutdown_servers()
 
 Notice that  stop.set  is passed WITHOUT parentheses. You are passing the METHOD ITSELF as the callback, not calling it. The event loop will call it later when a signal arrives.
-
-
-6. A FULL RUNNABLE EXAMPLE
-
-Save as  graceful_shutdown.py :
-
-    import asyncio
-    import signal
-
-    async def heartbeat(stop):
-        beat = 0
-        while not stop.is_set():
-            beat += 1
-            print("beat", beat)
-            try:
-                await asyncio.wait_for(stop.wait(), timeout=1.0)
-            except asyncio.TimeoutError:
-                pass
-        print("heartbeat stopping")
-
-    async def main():
-        stop = asyncio.Event()
-        loop = asyncio.get_running_loop()
-        for sig in (signal.SIGINT, signal.SIGTERM):
-            loop.add_signal_handler(sig, stop.set)
-
-        print("server running, press Ctrl-C to stop")
-        worker = asyncio.create_task(heartbeat(stop))
-
-        await stop.wait()
-        print("shutdown signal received, cleaning up")
-        await worker
-        print("bye")
-
-    asyncio.run(main())
-
-Run:
-
-    python3 graceful_shutdown.py
-
-Output (press Ctrl-C after a few seconds):
-
-    server running, press Ctrl-C to stop
-    beat 1
-    beat 2
-    beat 3
-    ^Cshutdown signal received, cleaning up
-    heartbeat stopping
-    bye
-
-Trace of what happened when you pressed Ctrl-C:
-  - OS delivered SIGINT to the process.
-  - The event loop scheduled the registered callback  stop.set  .
-  - Callback ran inside the loop, flipping the Event to SET.
-  - Both  await stop.wait()  calls (in  main  and in the  wait_for  inside  heartbeat  ) returned.
-  - main() fell through to  await worker  , which finished cleanly, then printed "bye".
-
 
 7. COMMON MISTAKES
 

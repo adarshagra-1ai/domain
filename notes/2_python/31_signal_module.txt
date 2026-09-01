@@ -53,7 +53,53 @@ The handler function must take TWO parameters:
 After registration, whenever SIGINT or SIGTERM arrives, Python interrupts whatever it was doing and calls  on_shutdown  .
 
 
-4. A CONCRETE EXAMPLE
+4. THE  raise SystemExit(0)  LINE
+
+The handler above ends with  raise SystemExit(0)  . This one line is doing two separate things  --  worth pulling apart.
+
+  -   SystemExit   --  a built-in Python EXCEPTION class. Ordinary exceptions like  ValueError  or  RuntimeError  signal "something went wrong". SystemExit signals "the program should stop now". When Python sees this exception bubble up and no code catches it, the interpreter shuts down instead of printing a traceback.
+
+  -   0   --  the EXIT CODE (also called exit status). A small integer that the program hands back to the operating system when it ends. The Unix convention:
+
+        -   0   --  success, everything fine
+        -  any non-zero number ( 1 ,  2 , ...)  --  something failed
+
+    The number itself is a message to the OS or to any script that started this program.
+
+Standalone example. Save as  exit_demo.py :
+
+    print("before exit")
+    raise SystemExit(0)
+    print("after exit")
+
+Run:
+
+    $ python3 exit_demo.py
+    before exit
+    $ echo $?
+    0
+
+Two things to notice:
+
+  -   "after exit"  never prints  --   raise SystemExit(0)  stops the program right there.
+
+  -   echo $?   --  a shell built-in that prints the exit code of the last command that finished. We got  0  , meaning success.
+
+Change it to  raise SystemExit(1)  and rerun:
+
+    $ python3 exit_demo.py
+    before exit
+    $ echo $?
+    1
+
+Now the shell reports  1   --  "the program ended with a failure". Scripts and process managers use this number to decide whether to retry, alert, or move on.
+
+ SystemExit  vs  sys.exit()  . You may also see  sys.exit(0)  in other code. It does exactly the same thing  --   sys.exit(0)  internally does  raise SystemExit(0)  . Two styles, one behaviour. Using  raise SystemExit(0)  directly saves an  import sys  .
+
+Back to the signal handler: when the user presses Ctrl-C, that is a NORMAL shutdown (the user asked for it, not a crash). So the handler exits with code  0  , telling the OS "I stopped cleanly, on purpose".
+
+
+5. A CONCRETE EXAMPLE
 
 Save this as  signal_demo.py :
 
@@ -86,7 +132,7 @@ Now press Ctrl-C. Output continues:
 Signal number 2 is SIGINT. If instead you ran the program in the background and then did  kill <pid>  from another terminal, you would see  caught signal 15  , because SIGTERM is number 15.
 
 
-5. COMMON MISTAKES
+6. COMMON MISTAKES
 
   - Trying to catch SIGKILL. You cannot. The OS kills the process instantly. If your program needs to guarantee cleanup, do it on SIGTERM and hope no one uses  kill -9  .
 
@@ -96,4 +142,4 @@ Signal number 2 is SIGINT. If instead you ran the program in the background and 
 
   - Assuming signals work the same on Windows. Windows has a very limited set of signals. Server code that uses SIGTERM is designed for Linux/macOS, which is the normal deployment target.
 
-  - Mixing plain  signal.signal(...)  with  asyncio  . If you already have an asyncio event loop running, prefer  loop.add_signal_handler(sig, callback)  so the callback runs safely inside the loop instead of interrupting whatever coroutine happens to be executing.
+  - Mixing plain  signal.signal(...)  with  asyncio.

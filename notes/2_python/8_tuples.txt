@@ -188,6 +188,3 @@ Use a LIST when the collection is expected to grow, shrink, or change.
            unpack (expected 2)
 
         Either add another name, or use star unpacking:  x, y, *rest = (1, 2, 3) .
-
-
-In section 9 we look at SETS  --  collections of UNIQUE values.

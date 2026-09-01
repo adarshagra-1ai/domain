@@ -371,6 +371,3 @@ Docstrings are optional. Add them for functions that do non-obvious work.
         Output:  None
 
         The function COMPUTED  x + y  but never returned it. Without a  return , the function gives back  None .
-
-
-In section 13 we look at reading and writing FILES  --  open , with , read , write .

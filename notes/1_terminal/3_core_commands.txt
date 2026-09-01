@@ -6,7 +6,6 @@ We will break this section into 4 small chunks:
    Chunk C  -  Create and view            (mkdir, touch, cat)
    Chunk D  -  Copy, move, delete         (cp, mv, rm)
 
-
 3  --  Chunk A  :  Where am I? What's here?  (pwd, ls)
 
 1)  Anatomy of a command line
@@ -22,8 +21,7 @@ Example:
 Broken down:
 
      ls              ->  COMMAND name
-     -l              ->  OPTION (also called
-                         "flag" or "switch")
+     -l              ->  OPTION (also called "flag" or "switch")
      /home/adarsh    ->  ARGUMENT
 
   -  COMMAND
@@ -42,7 +40,6 @@ Broken down:
 
 Pieces are separated by at least one SPACE.
 
-
 Combining short options
 
 Short options can be combined into one dash group. These two lines are the same:
@@ -51,7 +48,6 @@ Short options can be combined into one dash group. These two lines are the same:
      ls -alh
 
 Combining works only for short (single-letter) options. Long options each need their own  --  prefix.
-
 
 2)  pwd  --  print working directory
 
@@ -76,7 +72,6 @@ Why it is useful:
   -  Reality check when you feel lost about where you are.
   -  Some commands (with relative paths) behave based on the CWD, so  pwd  tells you the exact starting point.
 
-
 3)  ls  --  list  (see what is inside a folder)
 
 The command  ls  prints the NAMES of the files and folders inside a folder.
@@ -89,14 +84,12 @@ Syntax:
   -  No argument  ->  list the CURRENT folder.
   -  With a path  ->  list THAT folder, without changing your CWD.
 
-
 Example  --  current folder:
 
      adarsh@laptop:~$  ls
      Documents  Downloads  Music  Pictures
 
 Names shown side-by-side, separated by spaces.
-
 
 Example  --  absolute path:
 
@@ -105,14 +98,12 @@ Example  --  absolute path:
 
 Your CWD is still  ~  ; you just peeked into  /etc  without moving.
 
-
 Example  --  relative path:
 
      adarsh@laptop:~$  ls Documents
      grocery.txt  notes.txt  School
 
 Documents  is a relative path. Real target:  ~ + Documents  =  /home/adarsh/Documents .
-
 
 4)  Hidden files  (dot-files)
 
@@ -126,7 +117,6 @@ Examples of hidden names:
      .vscode
 
 These are usually settings used by programs. Hiding them keeps  ls  output clean.
-
 
 To see hidden files, add  -a  ("all"):
 
@@ -145,13 +135,11 @@ Rule of thumb:
      Plain  ls    ->  everyday view
      ls -a        ->  full view (with dot-files)
 
-
 5)  Useful ls options
 
   -l   "LONG" format. Each entry on its own line with extra details (permissions, owner, size, modification time).
 
-  -h   "HUMAN-readable" sizes. Prints  1.2K ,  3.4M ,  5.6G  instead of raw bytes. Only meaningful together with  -l .
-
+  -h   "HUMAN-readable" sizes. Prints  1.2K  (kilobytes),  3.4M  (megabytes),  5.6G  (gigabytes) instead of raw bytes. Only meaningful together with  -l .
 
 Combining:
 
@@ -161,7 +149,6 @@ Combining:
      ls -lah     ->  long + hidden + human sizes
 
 ls -lah  is one of the most common lines typed on Linux.
-
 
 6)  Reading the output of  ls -l
 
@@ -180,11 +167,8 @@ Each other line has 7 columns:
                   First character  =  type:
                      -   regular file
                      d   directory (folder)
-                     l   symbolic link (a
-                         shortcut to another
-                         file)
-                  Next 9 characters describe
-                  who can Read, Write, Execute.
+                     l   symbolic link (a shortcut to another file)
+                  Next 9 characters describe who can Read, Write, Execute.
                   Permissions in detail later.
 
      Column 2  :  Link count (hard links to this item; usually 1 for a file).
@@ -201,7 +185,6 @@ Each other line has 7 columns:
 
 For everyday use you read: Type/Permissions, Size, Modification time, Name.
 
-
 3  --  Chunk B  :  Move around  (cd)
 
 1)  What  cd  does
@@ -216,7 +199,6 @@ After a successful  cd :
 
 If  cd  fails (target does not exist), your CWD does not change; the terminal prints an error and leaves you where you were.
 
-
 2)  Syntax
 
      cd  <path-to-folder>
@@ -228,7 +210,6 @@ Path can be:
   -  Relative (does not start with  / )
   -  Shortcut ( ~ , .. , or - )
   -  Nothing (just  cd )
-
 
 3)  Moving with an absolute path
 
@@ -243,7 +224,6 @@ Path can be:
 The prompt changed from  ~  to  /etc ;  pwd  confirms.
 
 Absolute paths always work regardless of your starting CWD.
-
 
 4)  Moving with a relative path
 
@@ -260,7 +240,6 @@ Chain relative names in one step:
 
      adarsh@laptop:~/Documents/School$
 
-
 5)  Special shortcut targets
 
   (a)   cd ~     go to your HOME folder
@@ -268,14 +247,12 @@ Chain relative names in one step:
         adarsh@laptop:/etc$  cd ~
         adarsh@laptop:~$
 
-
   (b)   cd       (no argument)  also go HOME
 
         adarsh@laptop:/etc$  cd
         adarsh@laptop:~$
 
         Plain  cd  is the same as  cd ~ .
-
 
   (c)   cd ..    go UP one level
 
@@ -286,7 +263,6 @@ Chain relative names in one step:
 
         adarsh@laptop:~/Documents/School$  cd ../..
         adarsh@laptop:~$
-
 
   (d)   cd -     go back to the PREVIOUS folder
 
@@ -304,7 +280,6 @@ Chain relative names in one step:
         adarsh@laptop:/etc$
 
         cd -  also PRINTS the folder it jumped to  --  a handy confirmation.
-
 
 6)  Mixing shortcuts and folder names
 
@@ -327,7 +302,6 @@ Examples (starting from  ~/Documents/School ):
 
 Read paths piece by piece, left to right.
 
-
 7)  Verify with  pwd  after every move
 
 Habit worth building:
@@ -338,7 +312,6 @@ Habit worth building:
 
 The prompt shows CWD in most setups but can cut a long path.  pwd  always shows the full absolute path.
 
-
 8)  Common problems
 
   (a)   "No such file or directory"
@@ -348,7 +321,6 @@ The prompt shows CWD in most setups but can cut a long path.  pwd  always shows 
 
         Name does not exist in the current folder. Usually a TYPO. Check with  ls  first.
 
-
   (b)   "Not a directory"
 
         adarsh@laptop:~$  cd notes.txt
@@ -356,14 +328,12 @@ The prompt shows CWD in most setups but can cut a long path.  pwd  always shows 
 
         The name exists but is a FILE.  cd  moves into folders only.
 
-
   (c)   Case sensitivity
 
         adarsh@laptop:~$  cd documents
         bash: cd: documents: No such file or directory
 
         Linux paths are case-sensitive.  Documents  and  documents  are different names.
-
 
   (d)   Spaces in folder names
 
@@ -373,11 +343,9 @@ The prompt shows CWD in most setups but can cut a long path.  pwd  always shows 
 
         Without quotes, the space is a separator; the shell thinks you gave two arguments.
 
-
   (e)   Silent success
 
         A successful  cd  prints nothing. No news is good news.
-
 
 3  --  Chunk C  :  Create and view  (mkdir, touch, cat)
 
@@ -397,13 +365,11 @@ Example:
 
 Path can be relative ( mkdir Projects ) or absolute ( mkdir /tmp/scratch ).
 
-
 Many folders in one line:
 
      adarsh@laptop:~$  mkdir a b c
      adarsh@laptop:~$  ls
      a  b  c
-
 
 Common problems:
 
@@ -412,14 +378,12 @@ Common problems:
         adarsh@laptop:~$  mkdir Documents
         mkdir: cannot create directory 'Documents': File exists
 
-
   (b)   Parent folder missing
 
         adarsh@laptop:~$  mkdir Projects/webapp/src
         mkdir: cannot create directory 'Projects/webapp/src': No such file or directory
 
         Projects/webapp  does not exist yet. Fix:  -p  (next section).
-
 
 2)  mkdir -p  --  make nested folders in one shot
 
@@ -439,7 +403,6 @@ Rule of thumb:
 
      One folder that must be new    ->  mkdir
      A chain of folders quietly     ->  mkdir -p
-
 
 3)  touch  --  create empty file / update timestamp
 
@@ -470,13 +433,11 @@ Timestamp bumped to now. Size and name unchanged.
 
 The tool picks based on whether the file already exists.
 
-
 Multiple files at once:
 
      adarsh@laptop:~$  touch a.txt b.txt c.txt
      adarsh@laptop:~$  ls
      a.txt  b.txt  c.txt
-
 
 Parent folder missing:
 
@@ -484,7 +445,6 @@ Parent folder missing:
      touch: cannot touch 'Projects/webapp/README.md': No such file or directory
 
 touch  does NOT create missing parent folders. Use  mkdir -p  first, then  touch .
-
 
 4)  cat  --  print a file to screen
 
@@ -502,9 +462,7 @@ Example:
 
 Prompt returns on the next line.
 
-
-Use  cat  for SHORT files (config, one-line log, few-line note). For big files (thousands of lines) it dumps everything at once and scrolls past the top. Better tools ( less ,  head ,  tail ) come later.
-
+Use  cat  for SHORT files (config, one-line log, few-line note). For big files (thousands of lines) it dumps everything at once and scrolls past the top. Better tools ( less ,  head ,  tail ) come in section 4.
 
 5)  cat with multiple files
 
@@ -516,8 +474,7 @@ The name "concatenate" means "join end to end".  cat  prints multiple files one 
      first line from part2
      second line from part2
 
-All of  part1.txt , then all of  part2.txt  as one continuous stream. Very useful once we learn the  >  redirection symbol (later).
-
+All of  part1.txt , then all of  part2.txt  as one continuous stream. Very useful once we learn the  >  redirection symbol (section 4).
 
 6)  Common errors with cat
 
@@ -526,7 +483,6 @@ All of  part1.txt , then all of  part2.txt  as one continuous stream. Very usefu
         adarsh@laptop:~$  cat notes.tx
         cat: notes.tx: No such file or directory
 
-
   (b)   Target is a folder
 
         adarsh@laptop:~$  cat Documents
@@ -534,20 +490,14 @@ All of  part1.txt , then all of  part2.txt  as one continuous stream. Very usefu
 
         cat  reads FILES. Use  ls Documents  to peek inside a folder.
 
-
   (c)   Binary file dumps garbage
 
         adarsh@laptop:~$  cat photo.jpg
-        (random-looking characters, terminal
-         may beep)
+        (random-looking characters, terminal may beep)
 
-        Binary files (images, videos, PDFs) are not text. Dumping them prints raw bytes and can leave the terminal broken. Use  cat  only on plain-text files.
-
+        Binary files (images, videos, PDF (Portable Document Format) files) are not text. Dumping them prints raw bytes and can leave the terminal broken. Use  cat  only on plain-text files.
 
 3  --  Chunk D  :  Copy, move, delete  (cp, mv, rm)
-
-Before starting:  rm  can DELETE your files permanently. There is NO recycle bin. Read the  rm  sections carefully.
-
 
 1)  cp  --  copy a file
 
@@ -557,13 +507,11 @@ Syntax:
 
      cp  <source>  <destination>
 
-
 Copy in the same folder, new name:
 
      adarsh@laptop:~$  cp notes.txt notes-backup.txt
      adarsh@laptop:~$  ls
      notes.txt  notes-backup.txt
-
 
 Copy into a different folder:
 
@@ -571,16 +519,13 @@ Copy into a different folder:
 
 Destination is a folder  ->  copy goes INSIDE with the same file name:  Documents/notes.txt . Trailing slash is optional.
 
-
 Copy AND rename in one step:
 
      adarsh@laptop:~$  cp notes.txt Documents/oldnotes.txt
 
-
 Copy many files into a folder:
 
      adarsh@laptop:~$  cp a.txt b.txt c.txt Documents/
-
 
 2)  cp -r  --  copy a whole folder
 
@@ -595,14 +540,12 @@ The  -r  flag ("Recursive") copies inside every level.
      adarsh@laptop:~$  ls
      Projects  Projects-backup
 
-
 3)  Common problems with cp
 
   (a)   Source does not exist
 
         adarsh@laptop:~$  cp missing.txt Documents/
         cp: cannot stat 'missing.txt': No such file or directory
-
 
   (b)   Destination overwrites silently
 
@@ -615,7 +558,6 @@ The  -r  flag ("Recursive") copies inside every level.
 
         -i  = "interactive". Good habit while learning.
 
-
 4)  mv  --  move a file  (also RENAME a file)
 
 Moves a file or folder. Original disappears from the old location.
@@ -623,7 +565,6 @@ Moves a file or folder. Original disappears from the old location.
 Syntax:
 
      mv  <source>  <destination>
-
 
 Move into a folder:
 
@@ -638,7 +579,6 @@ Move into a folder:
      adarsh@laptop:~$  ls Documents
      notes.txt
 
-
 mv is also RENAME:
 
      adarsh@laptop:~$  mv notes.txt journal.txt
@@ -646,7 +586,6 @@ mv is also RENAME:
      journal.txt
 
 Content unchanged; name is new. Linux does not have a separate "rename" command;  mv  IS it.
-
 
 Move a folder (no  -r  needed):
 
@@ -658,7 +597,6 @@ Or:
 
 Moving updates a pointer in the file system; it does not walk through every file to copy bytes.  -r  not needed.
 
-
 Common mv problems
 
   (a)   Silent overwrite (same as cp)
@@ -666,18 +604,15 @@ Common mv problems
         adarsh@laptop:~$  mv -i a.txt b.txt
         mv: overwrite 'b.txt'?  y
 
-
   (b)   Wrong case = accidental rename
 
         adarsh@laptop:~$  mv notes.txt Notes.txt
 
         Linux is case-sensitive; this renames the file.
 
-
 5)  rm  --  remove  (DELETE a file)
 
      WARNING:  rm  deletes files PERMANENTLY. No recycle bin, no trash folder, no built-in undo. Once removed, the file is GONE.
-
 
 Deletes the file (or files) you name.
 
@@ -697,34 +632,29 @@ Example:
 
 Silent success. The file is simply gone.
 
-
 rm refuses folders by default:
 
      adarsh@laptop:~$  rm Projects
      rm: cannot remove 'Projects': Is a directory
 
-
 6)  rm -r  --  remove a folder and everything inside
 
-The  -r  flag ("Recursive") walks the folder, deletes every file and sub-folder, then deletes the folder itself.
+The same  -r  flag we used with  cp  walks the folder, deletes every file and sub-folder, then deletes the folder itself.
 
      adarsh@laptop:~$  rm -r Projects
 
 Everything inside  Projects  is gone permanently. This is the single most dangerous command a beginner will run.
 
-
 7)  Two more flags: -i and -f
 
-  -i   ("interactive")
+  -i   (same as with  cp )
        Ask before deleting each item.
 
        adarsh@laptop:~$  rm -i a.txt
        rm: remove regular file 'a.txt'?  y
 
-
   -f   ("force")
        Do not ask. Do not complain about missing files. Just delete. The opposite of  -i .
-
 
 You will often see  rm -rf <path>  :
 
@@ -733,19 +663,15 @@ You will often see  rm -rf <path>  :
 
 Powerful and used by experienced users, but removes every safety net. Avoid  rm -rf  until you are very sure of the target path.
 
-
 8)  rm safety habits
 
-  (a)   Always  ls  the path first.
+  (a)   Prefer ABSOLUTE paths for  rm  so you cannot be confused about the CWD.
 
-  (b)   Prefer ABSOLUTE paths for  rm  so you cannot be confused about the CWD.
+  (b)   Use  rm -i  while learning.
 
-  (c)   Use  rm -i  while learning.
+  (c)   NEVER run  rm -rf /  or  rm -rf /* . Those try to delete the entire file system starting from root. Modern systems refuse by default, but never type them.
 
-  (d)   NEVER run  rm -rf /  or  rm -rf /* . Those try to delete the entire file system starting from root. Modern systems refuse by default, but never type them.
-
-  (e)   Keep a backup of anything important (cp elsewhere, external drive, or a git repo  --  git comes later).
-
+  (d)   Keep a backup of anything important (cp elsewhere, external drive, or a git repo  --  git comes later).
 
 9)  A one-line habit before every rm
 
@@ -764,6 +690,3 @@ first run:
      adarsh@laptop:~$  ls -la Projects/webapp
 
 If the listing shows what you meant to remove, run the  rm . If not, stop and check.
-
-
-With Chunk D we finish section 3, and with it the Terminal topic. The next topic is Python from zero.

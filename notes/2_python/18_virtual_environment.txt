@@ -223,6 +223,3 @@ Nothing is lost outside that folder. You can recreate it any time with  python3 
   (d)   Activating on the wrong shell
 
         source .venv/bin/activate  is for bash and zsh. For fish and PowerShell, there are separate activate scripts inside the venv's  bin/  folder. Look for  activate.fish  or  Activate.ps1 .
-
-
-In section 19 we look at  pip  and  requirements.txt  --  how to install packages and how to save the list of packages for a project.
