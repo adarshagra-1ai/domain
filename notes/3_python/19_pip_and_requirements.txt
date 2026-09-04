@@ -1,0 +1,151 @@
+19  --  pip and requirements.txt workflow
+
+1)  What pip is
+
+pip is Python's PACKAGE INSTALLER. It downloads and installs third-party libraries from a central repository called PyPI  (Python Package Index).
+
+Every venv comes with its own  pip , so packages install into that venv and not the system.
+
+2)  Basic install
+
+     pip install <name>
+
+Example:
+
+     pip install requests
+
+Output (last line):
+
+     Successfully installed requests-2.32.3
+
+The package  requests  and everything it depends on is now installed.
+
+Install multiple packages in one command:
+
+     pip install requests fastapi
+
+Four things go wrong around installing, and every one of them is really a question of WHICH Python you are talking to.
+
+  -   pip: command not found  . The venv is not active and the system has no bare  pip . Either activate it, or call it through Python:  python3 -m pip install requests .
+
+  -  Permission denied. You are installing into the system Python. Activate a venv instead. Do NOT reach for  sudo pip   --  it writes into files the system package manager owns and can break the machine's own Python.
+
+  -   ModuleNotFoundError  right after a successful install. The install and the run used different Pythons. Check both with  which python3  and  which pip .
+
+  -  A stale  requirements.txt . A teammate clones the project, installs, and still gets  ModuleNotFoundError   --  because the file was never updated after the last install.
+
+3)  Install a specific version
+
+     pip install <name>==<version>
+
+Example:
+
+     pip install requests==2.32.3
+
+Version constraints:
+
+     ==2.32.3    exactly this version
+     >=2.30      this version or newer
+     <3          anything below 3.0
+     >=2.30,<3   a range
+
+4)  Uninstall a package
+
+     pip uninstall <name>
+
+Example:
+
+     pip uninstall requests
+
+pip asks for confirmation ( y  or  n ). To skip the prompt, add  -y :
+
+     pip uninstall -y requests
+
+5)  List installed packages
+
+     pip list
+
+Example output (fresh venv with one package):
+
+     Package    Version
+     ---------- -------
+     pip        24.0
+     requests   2.32.3
+
+To also see outdated packages:
+
+     pip list --outdated
+
+6)  Show info about a package
+
+     pip show <name>
+
+Example:
+
+     pip show requests
+
+Output (excerpt):
+
+     Name:     requests
+     Version:  2.32.3
+     Summary:  Python HTTP for Humans.
+     Home-page: https://...
+     Location: /home/adarsh/myproj/.venv/lib/...
+
+7)  What requirements.txt is
+
+requirements.txt  is a plain text file that lists the packages a project needs, one per line. Anyone with the file can install the same set with one command.
+
+Example  requirements.txt :
+
+     requests==2.32.3
+     fastapi>=0.115.0
+     pydantic==2.9.2
+
+Rules:
+
+  -  One package per line.
+  -  Blank lines and comments (starting with  # ) are allowed.
+  -  Version constraints work the same as on the  pip install  command line.
+
+8)  Freeze  --  create requirements.txt from the current venv
+
+     pip freeze > requirements.txt
+
+Output file (example):
+
+     certifi==2024.12.14
+     charset-normalizer==3.4.0
+     idna==3.10
+     requests==2.32.3
+     urllib3==2.2.3
+
+pip freeze  writes EVERY installed package with its exact version. This is a full snapshot of the venv.
+
+Downside:
+
+     pip freeze  also lists sub-dependencies that got installed automatically. Some teams prefer to hand-maintain  requirements.txt  with only the direct dependencies and let  pip  pull the rest in.
+
+9)  Install from requirements.txt
+
+     pip install -r requirements.txt
+
+pip reads the file and installs every listed package, respecting the version pins.
+
+Common workflow after cloning a project:
+
+     python3 -m venv .venv
+     source .venv/bin/activate
+     pip install -r requirements.txt
+
+You are now ready to run the project.
+
+10)  Upgrading
+
+Upgrade one package to the latest compatible version:
+
+     pip install --upgrade requests
+
+Upgrade  pip  itself:
+
+     pip install --upgrade pip

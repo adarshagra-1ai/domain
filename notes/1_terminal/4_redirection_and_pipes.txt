@@ -1,13 +1,5 @@
 4  --  Output redirection and pipes
 
-We will break this section into 4 small chunks:
-   Chunk A  -  Printing text and where output goes  (echo)
-   Chunk B  -  Sending output into a file           ( > , >> )
-   Chunk C  -  Small commands that read input       (head, tail, wc, sort, less)
-   Chunk D  -  Joining commands together            ( | )
-
-4  --  Chunk A  :  Printing text and where output goes  (echo)
-
 1)  echo  --  print text to the screen
 
 The command  echo  prints whatever text you give it, then moves to a new line.
@@ -24,11 +16,11 @@ Example:
      adarsh@laptop:~$  echo hello world
      hello world
 
-On its own  echo  looks pointless  --  you already know what you typed. It becomes useful in Chunk B, where its output is sent into a file instead of the screen.
+On its own  echo  looks pointless  --  you already know what you typed. It earns its place once its output is sent somewhere other than the screen.
 
 2)  echo and spaces  --  why quotes matter
 
-The shell splits your line into pieces at every space (the command / options / arguments split from section 3). It hands  echo  a LIST of words, and  echo  joins them back with exactly ONE space between each.
+The shell splits your line into pieces at every space. It hands  echo  a LIST of words, and  echo  joins them back with exactly ONE space between each.
 
 So extra spaces disappear:
 
@@ -69,40 +61,11 @@ Rule of thumb:
      Text containing double quotes          ->  single quotes
      Text containing single quotes          ->  double quotes
 
-4)  Standard output  --  where a command's result goes
+4)  >  --  send a command's output into a file
 
-Every command that produces text sends it to a stream called STANDARD OUTPUT (written  stdout ).
-
-By default standard output is connected to your terminal window, which is why the text lands on screen.
-
-     command  --->  standard output  --->  terminal window
-
-The idea to hold on to: a command does not "print to the screen". It writes to standard output, and standard output HAPPENS to point at the screen right now. Chunk B is about pointing it somewhere else.
-
-5)  Standard error  --  the second stream
-
-Commands have a SECOND output stream, used only for problems. It is called STANDARD ERROR (written  stderr ). Error messages go there, never to standard output.
-
-Both streams point at your terminal window by default, so on screen they look mixed together:
-
-     adarsh@laptop:~$  ls Documents missing_folder
-     ls: cannot access 'missing_folder': No such file or directory
-     Documents:
-     grocery.txt  notes.txt
-
-The first line came from standard error. The three lines below it came from standard output. Two separate streams arriving in the same window.
-
-This matters the moment you start redirecting, because the  >  symbol moves only ONE of the two. Chunk B section 6 shows it.
-
-4  --  Chunk B  :  Sending output into a file  ( > , >> )
-
-1)  >  --  send standard output into a file
-
-The  >  symbol REDIRECTS standard output away from the terminal and into a file.
+The  >  symbol REDIRECTS a command's normal output away from the terminal and into a file.
 
      command  >  filename
-
-     command  --->  standard output  --->  file
 
 Example:
 
@@ -113,9 +76,7 @@ Nothing appears on screen  --  the text went into the file instead. Check it wit
      adarsh@laptop:~$  cat greeting.txt
      hello
 
-This is the same trick used in the Python topic, section 2, to create  hello.py  without an editor.
-
-2)  Any command's output, not just echo
+5)  Any command's output, not just echo
 
      adarsh@laptop:~$  ls > list.txt
 
@@ -131,7 +92,7 @@ Two things to notice:
   -  The names come out one per line, not side by side. When  ls  sees that its output is going to a file instead of a terminal, it switches to one-name-per-line.
   -  list.txt  lists itself. The shell creates the empty file FIRST, then runs  ls .
 
-3)  >  OVERWRITES  --  the danger
+6)  >  OVERWRITES  --  the danger
 
 If the file already exists,  >  empties it first, then writes the new output. The old contents are gone. No warning, no undo.
 
@@ -147,7 +108,7 @@ If the file already exists,  >  empties it first, then writes the new output. Th
 
      WARNING:  never point  >  at a file you care about. Like  rm , this is instant and permanent.
 
-4)  >>  --  APPEND instead of overwrite
+7)  >>  --  APPEND instead of overwrite
 
 Two right-angle brackets add to the END of the file and keep what was already there.
 
@@ -162,7 +123,7 @@ Two right-angle brackets add to the END of the file and keep what was already th
 
 If the file does not exist yet,  >>  creates it, exactly like  > . The difference shows up only when the file already has content.
 
-5)  >  vs  >>  side by side
+8)  >  vs  >>  side by side
 
      >    file does not exist   ->  create it, write the output
      >    file exists           ->  ERASE it, write the output
@@ -174,9 +135,9 @@ Rule of thumb:
      Fresh file every time      ->  >
      Growing log, adding on     ->  >>
 
-6)  >  moves standard output only
+9)  >  does not catch error messages
 
-Error messages travel on standard error (Chunk A section 5), and  >  does not touch that stream.
+A command's error messages travel separately from its normal output, and  >  catches only the normal output.
 
      adarsh@laptop:~$  ls missing_folder > out.txt
      ls: cannot access 'missing_folder': No such file or directory
@@ -184,44 +145,15 @@ Error messages travel on standard error (Chunk A section 5), and  >  does not to
      adarsh@laptop:~$  cat out.txt
      adarsh@laptop:~$
 
-The error still printed on screen.  out.txt  was created but is EMPTY, because standard output had nothing in it.
+The error still printed on screen.  out.txt  was created but is EMPTY, because the command produced no normal output at all.
 
-To capture standard error instead, use  2>  :
+Notice that the file was created at all. The shell prepares the file before the command even runs, so the existence of a file is never proof that the command worked. Check the contents.
 
-     adarsh@laptop:~$  ls missing_folder 2> errors.txt
+10)  The sample file used from here on
 
-     adarsh@laptop:~$  cat errors.txt
-     ls: cannot access 'missing_folder': No such file or directory
+Everything so far has been about WHERE output goes. The next four commands are the other half: each one takes text IN, does one small job on it, and prints the result.
 
-The  2  is the number the system gives to standard error. Standard output is number  1 , which is why a plain  >  is really short for  1> .
-
-7)  Common problems
-
-  (a)   The file is created even when the command fails
-
-        Section 6 showed it:  out.txt  exists but is empty. The shell prepares the file before the command runs, so the existence of a file is not proof that the command worked. Check the contents.
-
-  (b)   Reading and writing the same file in one line
-
-        adarsh@laptop:~$  cat notes.txt > notes.txt
-        adarsh@laptop:~$  cat notes.txt
-        adarsh@laptop:~$
-
-        The file is now EMPTY. The shell erased  notes.txt  for the  >  before  cat  ever got to open it. Never send a command's output into a file that same command is reading. Write to a new name instead:
-
-        adarsh@laptop:~$  cat notes.txt > notes-copy.txt
-
-  (c)   A stray  >  with no command in front
-
-        adarsh@laptop:~$  > notes.txt
-
-        This is legal and it EMPTIES  notes.txt . There is no command, so there is no output, but the file still gets erased first. A  >  typed at the start of a line silently wipes the file named after it.
-
-4  --  Chunk C  :  Small commands that read input  (head, tail, wc, sort, less)
-
-Everything so far has been about WHERE output goes. Chunk D joins commands together, and for that you need commands on the RIGHT side that take text IN and produce text OUT. Here are five you will use constantly.
-
-Every example below uses the same file:
+Every example below reads the same file:
 
      adarsh@laptop:~$  cat fruits.txt
      banana
@@ -230,7 +162,7 @@ Every example below uses the same file:
      apple
      date
 
-1)  head  --  the first lines of a file
+11)  head  --  the first lines of a file
 
 By default  head  prints the first 10 lines. Our file has only 5, so all of them print:
 
@@ -250,7 +182,7 @@ Choose how many with  -n :
 
 Use it to peek at the top of a large file instead of dumping the whole thing with  cat .
 
-2)  tail  --  the last lines of a file
+12)  tail  --  the last lines of a file
 
 Mirror image of  head . Default is the last 10 lines;  -n  chooses how many.
 
@@ -264,7 +196,7 @@ One extra flag is worth knowing now:  -f  ("follow") keeps the command running a
 
 Press  Ctrl + C  to stop following and return to the prompt.
 
-3)  wc  --  count lines, words and characters
+13)  wc  --  count lines, words and characters
 
      adarsh@laptop:~$  wc fruits.txt
      5  5  31  fruits.txt
@@ -272,7 +204,7 @@ Press  Ctrl + C  to stop following and return to the prompt.
 Three numbers, always in this order:
 
      5    ->  LINES
-     5    ->  WORDS (one word per line in this file)
+     5    ->  WORDS
      31   ->  CHARACTERS (newline characters included)
 
 Ask for one number only with a flag:
@@ -288,7 +220,7 @@ Ask for one number only with a flag:
 
 wc -l  is the one you will type most  --  "how many lines is this?"
 
-4)  sort  --  put lines in order
+14)  sort  --  put lines in order
 
 Prints the lines in alphabetical order. THE FILE ITSELF IS NOT CHANGED  --  sort  only prints a sorted copy.
 
@@ -334,25 +266,6 @@ Two useful flags:
         10
         100
 
-5)  less  --  scroll through a long file
-
-Section 3 warned that  cat  is only good for short files: it dumps everything at once and the top scrolls away.  less  shows one screenful and waits for you.
-
-     adarsh@laptop:~$  less /var/log/syslog
-
-Keys to use inside  less :
-
-     Space        ->  next page
-     b            ->  previous page
-     Arrow keys   ->  move one line at a time
-     /word        ->  search forward for "word"
-     n            ->  jump to the next search match
-     q            ->  QUIT back to the prompt
-
-less  does not load the whole file into memory, so it opens a 2 GB (gigabyte) log file instantly.
-
-6)  These commands also read from a pipe
-
 Each of these commands can take a FILE NAME as an argument:
 
      wc -l fruits.txt
@@ -361,21 +274,32 @@ If you leave the file name OUT, the command waits for text to be handed to it fr
 
      adarsh@laptop:~$  wc -l
 
-It just sits there, because nothing is feeding it. Press  Ctrl + C  to get out. That "somewhere else" is exactly what Chunk D builds.
+It just sits there, because nothing is feeding it. Press  Ctrl + C  to get out.
 
-4  --  Chunk D  :  Joining commands together  ( | )
+15)  What a pipe does
 
-1)  What a pipe does
-
-The  |  symbol is called a PIPE. It takes the standard output of the command on its LEFT and feeds it in as the input of the command on its RIGHT.
+The  |  symbol is called a PIPE. It takes the normal output of the command on its LEFT and feeds it in as the input of the command on its RIGHT.
 
      command A  |  command B
 
-     command A  --->  standard output  --->  command B  --->  terminal window
+     command A  --->  its output  --->  command B  --->  terminal window
 
 Nothing is written to disk. The text goes straight from one program into the next.
 
-2)  First example  --  count your files
+Three rules follow from that:
+
+  -  The command on the RIGHT must be one that reads text input. The  head / tail / wc / sort / cat  family does;  mkdir  does not, because it expects a folder name as an argument.
+
+        adarsh@laptop:~$  ls | mkdir
+        mkdir: missing operand
+
+  -  Only normal output travels through a pipe. Error messages go straight to your screen and skip the pipe entirely, so the command on the right receives nothing.
+
+        adarsh@laptop:~$  ls missing_folder | wc -l
+        ls: cannot access 'missing_folder': No such file or directory
+        0
+
+16)  First example  --  count your files
 
      adarsh@laptop:~$  ls
      Documents  Downloads  Music  fruits.txt
@@ -385,13 +309,13 @@ Nothing is written to disk. The text goes straight from one program into the nex
 
 Step by step:
 
-     1)  ls  produces four names, one per line, on standard output.
+     1)  ls  produces four names, one per line, as its output.
      2)  The pipe hands those four lines to  wc -l  instead of to the screen.
      3)  wc -l  counts them and prints  4 .
 
 Notice that  wc -l  got NO file name here. It counted whatever the pipe fed it.
 
-3)  Sorting, then trimming
+17)  Sorting, then trimming
 
      adarsh@laptop:~$  sort fruits.txt | head -n 2
      apple
@@ -407,7 +331,7 @@ Swap the two commands and the meaning changes completely:
 
 Now  head  took the first two lines of the FILE ( banana  and  apple ), and  sort  ordered just those two. Read a pipeline left to right: each step only ever sees what the previous step handed over.
 
-4)  Chaining more than two commands
+18)  Chaining more than two commands
 
 There is no limit. Each  |  passes the result along.
 
@@ -418,7 +342,7 @@ There is no limit. Each  |  passes the result along.
      2)  head -n 3    ->  the first three of them
      3)  wc -l        ->  counts those three  ->  3
 
-5)  Pipe or redirect?  --  they are not the same
+19)  Pipe or redirect?  --  they are not the same
 
      >    sends output to a FILE      (the output stops there, on disk)
      |    sends output to a COMMAND   (the output keeps travelling)
@@ -433,29 +357,3 @@ Use both in one line  --  pipe through the commands you need, then redirect the 
      banana
 
 The  >  applies to the LAST command in the chain, not to the whole line.
-
-6)  Common problems
-
-  (a)   The right side must be a command that reads input
-
-        adarsh@laptop:~$  ls | mkdir
-        mkdir: missing operand
-
-        mkdir  does not read text input; it expects a folder name as an argument. Piping into it achieves nothing. The commands that read input are the  head / tail / wc / sort / cat  family.
-
-  (b)   Errors do not travel through a pipe
-
-        adarsh@laptop:~$  ls missing_folder | wc -l
-        ls: cannot access 'missing_folder': No such file or directory
-        0
-
-        The error went to standard error, straight to your screen, and skipped the pipe entirely. Only standard output travels through  | . So  wc -l  received nothing and printed  0 .
-
-  (c)   You do not need  cat  in front of a pipe
-
-        adarsh@laptop:~$  cat fruits.txt | sort
-        adarsh@laptop:~$  sort fruits.txt
-
-        Both print the same thing. The second line is shorter and starts one less program, because  sort  can open the file itself. Reach for  cat file |  only when you need  cat  to join several files first:
-
-        adarsh@laptop:~$  cat part1.txt part2.txt | sort

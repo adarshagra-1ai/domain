@@ -1,0 +1,403 @@
+5  --  Strings and common string operations
+
+1)  Making a string
+
+Wrap text in double quotes  " ... "  or single quotes  ' ... '  . Both work exactly the same way.
+
+Code:
+
+     a = "hello"
+     b = 'hello'
+     print(a == b)
+
+Output:  True
+
+Choose the quote style based on what the text itself contains, so you do not have to escape:
+
+     "It's a nice day"        (use double quotes, the apostrophe stays)
+     'He said "hi"'           (use single quotes, the double quotes stay)
+
+Triple-quoted strings  ( """...""" or '''...''' )  can span multiple lines. The newlines you type are preserved.
+
+Code:
+
+     poem = """Line 1
+     Line 2
+     Line 3"""
+     print(poem)
+
+Output:
+     Line 1
+     Line 2
+     Line 3
+
+2)  Escape sequences
+
+Inside a string, a backslash  \  starts an ESCAPE SEQUENCE  --  a code for a special character.
+
+     \n     ->  newline (line break)
+     \t     ->  tab
+     \\     ->  a literal backslash
+     \"     ->  a literal double quote
+     \'     ->  a literal single quote
+
+Code:
+
+     print("line1\nline2")
+     print("col1\tcol2")
+     print("path: C:\\Users\\adarsh")
+     print("She said \"hi\"")
+
+Output:
+     line1
+     line2
+     col1	col2
+     path: C:\Users\adarsh
+     She said "hi"
+
+3)  len()  --  length of a string
+
+The built-in  len(s)  returns the number of characters in the string  s .
+
+Code:
+
+     print(len("hello"))
+     print(len(""))
+     print(len("hi there"))
+
+Output:
+     5
+     0
+     8
+
+Notes:
+
+  -  An empty string has length  0 .
+  -  Spaces count as characters.
+
+4)  Indexing  --  get one character
+
+Every character in a string has a POSITION called an INDEX. Indexes start at  0 , not at  1 .
+
+     s   =  "python"
+     idx    0 1 2 3 4 5
+
+Use square brackets  s[i]  to read the character at position  i .
+
+Code:
+
+     s = "python"
+     print(s[0])
+     print(s[1])
+     print(s[5])
+
+Output:
+     p
+     y
+     n
+
+Negative indexes count from the END:
+
+     s     =   "python"
+     idx      -6 -5 -4 -3 -2 -1
+
+Code:
+
+     s = "python"
+     print(s[-1])
+     print(s[-2])
+
+Output:
+     n
+     o
+
+Rule:
+     s[-1]   is the LAST character.
+     s[-2]   is the second-last, and so on.
+
+Asking for a position the string does not have is an error, not an empty answer:
+
+     s = "hi"
+     print(s[5])
+     IndexError: string index out of range
+
+s  holds two characters, at positions  0  and  1 . Position  5  is simply not there.
+
+5)  Slicing  --  get a range of characters
+
+Syntax:  s[start:stop]
+
+  -  start   INCLUDED (0-based).
+  -  stop    NOT included (one past the last position you want).
+
+If  start  is omitted, it defaults to  0 . If  stop  is omitted, it defaults to the end of the string.
+
+Code:
+
+     s = "python"
+     print(s[0:2])
+     print(s[2:5])
+     print(s[:3])
+     print(s[3:])
+     print(s[:])
+
+Output:
+     py
+     tho
+     pyt
+     hon
+     python
+
+Optional step:  s[start:stop:step]
+
+Code:
+
+     s = "abcdefgh"
+     print(s[0:8:2])
+     print(s[::2])
+     print(s[::-1])
+
+Output:
+     aceg
+     aceg
+     hgfedcba
+
+Notes:
+
+  -  s[::2]    ->  every second character.
+  -  s[::-1]   ->  the string reversed.
+
+6)  Concatenation and repetition
+
+     +    joins two strings end to end.
+     *    repeats a string N times.
+
+Code:
+
+     first = "hello"
+     last  = "world"
+     print(first + " " + last)
+     print("ha" * 3)
+
+Output:
+     hello world
+     hahaha
+
+The  +  operator needs a string on BOTH sides. Putting a number on one side raises a  TypeError . Convert the number with  str()  first:
+
+Code:
+
+     print("score: " + str(42))
+
+Output:  score: 42
+
+An f-string is a cleaner way for this common case.
+
+7)  Membership  --  in  and  not in
+
+Check whether a substring appears inside a string.
+
+Code:
+
+     s = "python is fun"
+     print("python" in s)
+     print("java" in s)
+     print("java" not in s)
+
+Output:
+     True
+     False
+     True
+
+The check is CASE-SENSITIVE.  "Python" in s  would be  False  because  s  has lowercase  p .
+
+8)  Common string methods
+
+Methods are functions attached to a value/object. You call them with dot syntax:  value.method(args) . Every method below returns a NEW string; the original stays unchanged.
+
+  (a)   Change case
+
+           s = "Hello World"
+
+           s.upper()      ->  "HELLO WORLD"
+           s.lower()      ->  "hello world"
+           s.title()      ->  "Hello World"
+
+  (b)   Trim whitespace
+
+           s = "   hi there   "
+
+           s.strip()      ->  "hi there"
+           s.lstrip()     ->  "hi there   "
+           s.rstrip()     ->  "   hi there"
+
+        strip()   removes whitespace (spaces, tabs, newlines) from BOTH ends.
+        lstrip()  removes from the LEFT only.
+        rstrip()  removes from the RIGHT only.
+
+  (c)   Replace
+
+           s = "banana"
+
+           s.replace("a", "o")    ->  "bonono"
+
+        Replaces every occurrence of the first argument with the second.
+
+  (d)   Split
+
+           s = "a,b,c,d"
+
+           s.split(",")    ->  ["a", "b", "c", "d"]
+
+        Cuts the string wherever the given separator appears. Returns a LIST of pieces  --  several values held together in one value, written inside square brackets.
+
+  (e)   Check the start / end
+
+           s = "hello.py"
+
+           s.startswith("hello")   ->  True
+           s.endswith(".py")       ->  True
+           s.endswith(".txt")      ->  False
+
+  (f)   Count
+
+           s = "banana"
+
+           s.count("a")     ->  3
+
+        How many times the substring appears.
+
+  (g)   Find
+
+           s = "banana"
+
+           s.find("na")     ->   2
+           s.find("xy")     ->  -1
+
+        Returns the INDEX where the substring starts, or  -1  if it is not found.
+
+Chaining methods
+
+You can call a method on the result of another method:
+
+Code:
+
+     name = "   Adarsh Kumar   "
+     clean = name.strip().lower()
+     print(clean)
+     print(clean.replace(" ", "_"))
+
+Output:
+     adarsh kumar
+     adarsh_kumar
+
+name.strip().lower()  runs  strip  first, then calls  lower  on its result.
+
+9)  Strings are IMMUTABLE
+
+You cannot change a string in place. Every method that "modifies" a string actually returns a NEW string; the original stays untouched.
+
+Code:
+
+     s = "hello"
+     s.upper()
+     print(s)
+
+Output:  hello
+
+The  s.upper()  call returned  "HELLO" , but nothing captured that new value, so  s  still holds  "hello" .
+
+To keep the change, ASSIGN it back:
+
+Code:
+
+     s = "hello"
+     s = s.upper()
+     print(s)
+
+Output:  HELLO
+
+You also cannot assign to a single position:
+
+Code:
+
+     s = "hello"
+     s[0] = "H"
+
+Run:
+
+     TypeError: 'str' object does not support item assignment
+
+To change one character, REBUILD the string:
+
+Code:
+
+     s = "hello"
+     s = "H" + s[1:]
+     print(s)
+
+Output:  Hello
+
+10)  f-strings  --  build strings with variables
+
+An f-string is a string with an  f  in front of the opening quote. Inside the string, put variable names (or small expressions) in braces (curly brackets)  { }  and Python replaces them with their values.
+
+Syntax:
+
+     f"...{variable}..."
+
+Code:
+
+     name = "adarsh"
+     age  = 25
+     print(f"Hello, {name}. You are {age}.")
+
+Output:
+     Hello, adarsh. You are 25.
+
+Expressions work inside the braces too, not just plain variable names:
+
+Code:
+
+     x = 7
+     y = 3
+     print(f"{x} + {y} = {x + y}")
+
+Output:  7 + 3 = 10
+
+f-strings work with single, double, and triple quotes:
+
+     f"..."
+     f'...'
+     f"""..."""
+
+Use them instead of  +  concatenation with  str()  conversions. They are shorter and easier to read.
+
+Controlling how a number is displayed  --  the  :  format spec
+
+Inside the braces you can add a colon and a FORMAT SPEC that says how to render the value.  .2f  means "as a float, with exactly 2 decimal places, keeping trailing zeros".
+
+Code:
+
+     value = 1.5
+     print(f"{value:.2f}")
+     print(f"{value:.4f}")
+     print(f"{3.14159:.3f}")
+
+Output:
+     1.50
+     1.5000
+     3.142
+
+This is different from  round() :
+
+     round(x, 2)    changes the NUMBER itself. Trailing zeros disappear on print.
+     f"{x:.2f}"     changes the DISPLAY. You get a string with exactly 2 decimals, zeros kept.
+
+Forget the  f  and nothing breaks, which is what makes this one easy to miss. The braces stay on screen as ordinary text:
+
+     name = "adarsh"
+     print("Hello, {name}")
+     Hello, {name}
+
+Add the  f  and the brace is filled in:  print(f"Hello, {name}") .

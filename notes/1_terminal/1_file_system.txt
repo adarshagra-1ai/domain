@@ -1,13 +1,5 @@
 1  --  File System
 
-We will break this section into 4 small chunks:
-   Chunk A  -  What a File and a Folder are
-   Chunk B  -  The file system tree, root and home
-   Chunk C  -  What a Path is; absolute vs relative
-   Chunk D  -  Special symbols:  . , .. , ~ , /
-
-1  --  Chunk A  :  File and Folder
-
 1)  What is a FILE?
 
 A "file" is a named container that holds data (text, an image, code, anything).
@@ -24,7 +16,7 @@ Common examples:
      report.pdf     ->  PDF (Portable Document Format) document
      script.py      ->  Python code
 
-The extension is a HINT about what kind of data is inside. On Linux the extension is OPTIONAL  --  a file can exist with no extension at all. The system does not enforce it; programs use it only as a guess about the format.
+The extension is a HINT about what kind of data is inside. On Linux the extension is OPTIONAL  --  a file can exist with no extension at all. The system does not enforce it.
 
 2)  What is a FOLDER?
 
@@ -54,9 +46,7 @@ How to read it:
 
 This "tree" shape is how the file system is really organized.
 
-1  --  Chunk B  :  File system tree, root and home
-
-1)  The root  "/"
+4)  The root  "/"
 
 The topmost folder of the whole system is called the ROOT. Its name IS the single slash character:
 
@@ -79,7 +69,7 @@ Common folders that sit directly inside  / :
 
 Note: the word "root" is also used for the ROOT USER, a special admin account. That is a login, not a folder. In these notes, "root" means the folder  /  unless we clearly say "root user".
 
-2)  The home folder
+5)  The home folder
 
 Inside  /  there is a folder called  home  :
 
@@ -94,7 +84,7 @@ Facts:
   -  Your own files (notes, code, downloads, pictures) live under your home folder.
   -  Other users cannot normally read or change what is inside your home folder.
   -  When you open a fresh terminal, it starts you inside your home folder.
-  -  Your home folder has a shortcut symbol:  ~  (tilde). Covered in Chunk D.
+  -  Your home folder has a shortcut symbol:  ~  (tilde).
 
 If a machine has multiple users:
 
@@ -102,7 +92,7 @@ If a machine has multiple users:
      /home/priya           ->  Priya's home
      /home/rahul           ->  Rahul's home
 
-3)  A fuller tree
+6)  A fuller tree
 
      /                              <- root
      |
@@ -124,9 +114,7 @@ If a machine has multiple users:
           `-- another_user/
                `-- Documents/
 
-1  --  Chunk C  :  Path  (absolute vs relative)
-
-1)  What a path is
+7)  What a path is
 
 A "path" is a piece of text that tells the computer WHERE a file or folder is located in the tree.
 
@@ -149,12 +137,9 @@ Read left to right:
 
 Every part between two slashes is a folder name, except (possibly) the last part which may be a file name.
 
-Two kinds of paths:
+Paths come in two kinds, ABSOLUTE and RELATIVE. One character decides which one you are holding.
 
-     (a)  ABSOLUTE  --  starts with  /
-     (b)  RELATIVE  --  does NOT start with  /
-
-2)  Absolute path
+8)  Absolute path
 
 Rule:  starts with  /
 
@@ -172,13 +157,13 @@ Properties:
   -  Unambiguous  --  points to exactly one place on the system.
   -  Works from anywhere. It does not matter what your current folder is; the same absolute path always points to the same file.
 
-3)  Relative path
+9)  Relative path
 
 Rule:  does NOT start with  /
 
 A relative path is read starting from your CURRENT WORKING DIRECTORY (CWD)  --  the folder your terminal is currently sitting in.
 
-     Later, in section 3, we will learn the commands to see your CWD ( pwd ) and to change it ( cd ). For now, just know your terminal always has ONE current folder, and relative paths are read starting from there.
+     Your terminal always sits inside exactly ONE folder at a time, and that folder can be changed while you work. A relative path is read starting from whatever that folder is at the moment the command runs.
 
 Examples of relative paths:
 
@@ -193,7 +178,7 @@ Properties:
   -  DEPENDS on the current folder. The same relative path can point to different files if the CWD is different.
   -  Works only if the target actually exists relative to your CWD.
 
-4)  Same file, different paths
+10)  Same file, different paths
 
 Tree:
 
@@ -223,7 +208,7 @@ But its relative path changes based on the CWD:
 
 All three relative paths point to the same file. The absolute path stays the same in all three cases.
 
-5)  Name vs path
+11)  Name vs path
 
 Do not confuse a NAME with a PATH.
 
@@ -232,17 +217,11 @@ Do not confuse a NAME with a PATH.
 
 The single leading slash changes the meaning completely.
 
-1  --  Chunk D  :  Special symbols  ( . , .. , ~ , / )
+12)  The four special symbols  ( . , .. , ~ , / )
 
-Four characters have SPECIAL meaning inside a path. They are not folder names  --  they are shortcuts that expand to real locations.
+Four characters have SPECIAL meaning inside a path:  .  ,  ..  ,  ~  and  /  . They are not folder names  --  they are shortcuts that expand to real locations, and the next four sections take one each.
 
-     .        ->  the current folder
-     ..       ->  the parent folder (one level up)
-     ~        ->  your home folder
-     /        ->  the root folder  (when leading)
-                   OR a separator  (between names)
-
-1)  The single dot  " . "
+13)  The single dot  " . "
 
 Meaning:  the current folder (your CWD).
 
@@ -254,15 +233,9 @@ Examples  (CWD = /home/adarsh/Documents ):
 
      ./School/math.pdf     ->  /home/adarsh/Documents/School/math.pdf
 
-" ./notes.txt "  and just  " notes.txt "  point to the same file when you are in the same CWD. The  ./  in front is OPTIONAL here.
+" ./notes.txt "  and just  " notes.txt "  point to the same file when you are in the same CWD. The  ./  in front is OPTIONAL, and both forms are read starting from the folder you are in.
 
-One case where it is NOT optional: RUNNING a program that lives in the current folder. For example:
-
-     ./my_script.sh
-
-Without  ./  , the shell will not find the program in your current folder. You will meet this pattern later when you start running scripts.
-
-2)  The double dot  " .. "
+14)  The double dot  " .. "
 
 Meaning:  the parent folder (one level UP from your CWD).
 
@@ -286,7 +259,7 @@ Examples  (CWD = /home/adarsh/Documents/School ):
 
 Read each  ..  as "go up one folder".
 
-3)  The tilde  " ~ "
+15)  The tilde  " ~ "
 
 Meaning:  YOUR home folder ( /home/<username> ).
 
@@ -306,7 +279,7 @@ Facts:
   -  ~  works from anywhere, whatever your CWD is.
   -  A path starting with  ~  is technically RELATIVE (does not start with  / ), but the shell replaces  ~  with the full absolute path before running the command, so in practice it behaves like an absolute address to your home folder.
 
-4)  The slash  " / "
+16)  The slash  " / "
 
 The slash character has TWO different jobs depending on WHERE it appears.
 
@@ -325,9 +298,7 @@ Example showing both jobs:
      /            ->  Job (b): separator
      notes.txt    ->  a file name
 
-The leading  /  is also what decides absolute vs relative  --  that rule was covered in Chunk C.
-
-5)  Mixing symbols in one path
+17)  Mixing symbols in one path
 
 The symbols can appear together in the same path.
 

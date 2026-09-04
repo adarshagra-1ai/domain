@@ -1,0 +1,124 @@
+5  --  sudo and installing software
+
+1)  sudo  --  running one command as the admin
+
+Everything you type normally runs as YOU, and you can only change files that belong to you. Touching anything owned by the whole system needs the admin account, which on Linux is called ROOT.
+
+The command  sudo  runs ONE command as root, then drops straight back to being you.
+
+Syntax:
+
+     sudo  <command>
+
+Example:
+
+     adarsh@laptop:~$  sudo apt install git
+     [sudo] password for adarsh:
+
+Three things about that password prompt:
+
+  -  It wants YOUR password, not a separate root password.
+  -  Nothing appears as you type. No stars, no dots, no moving cursor. The keys ARE registering  --  type it and press Enter.
+  -  Once accepted,  sudo  stops asking for a few minutes, so a run of several  sudo  commands only prompts once.
+
+2)  When sudo is needed and when it is not
+
+     Anything inside your home folder    ->  no sudo
+     Reading most system files           ->  no sudo
+     Writing inside  /etc ,  /usr ,  /opt  ->  sudo
+     Installing or removing software     ->  sudo
+
+Without it you get a clear refusal, not a silent failure:
+
+     adarsh@laptop:~$  mkdir /opt/myapp
+     mkdir: cannot create directory '/opt/myapp': Permission denied
+
+     adarsh@laptop:~$  sudo mkdir /opt/myapp
+     adarsh@laptop:~$
+
+Habit worth building: run the command WITHOUT  sudo  first. If it works, it never needed root. Reach for  sudo  only after a permission error, never as a reflex  --  a wrong command does far more damage as root than as you.
+
+3)  What a package manager is
+
+A PACKAGE is one program bundled for installing: the program itself, the files it needs, and a list of other packages it depends on.
+
+A PACKAGE MANAGER is the tool that installs packages. It fetches the package, pulls in everything that package depends on, and records what it put where so it can be removed cleanly later.
+
+Packages live on servers called REPOSITORIES. Your machine keeps a local LIST of what those servers hold  --  package names and version numbers, not the programs themselves.
+
+On Ubuntu and Debian the package manager is  apt .
+
+4)  apt update  and  apt upgrade  --  two different jobs
+
+The names look almost identical and do completely different things. This catches everybody once.
+
+     adarsh@laptop:~$  sudo apt update
+
+Downloads a fresh copy of the LIST of available packages. It installs nothing and upgrades nothing. Nothing on your machine changes except its idea of what exists.
+
+     adarsh@laptop:~$  sudo apt upgrade
+
+Goes through the packages you already have, compares them against that list, and installs the newer versions. This one does change your machine.
+
+     apt update    ->  refresh the LIST
+     apt upgrade   ->  install newer versions
+
+Each is weak alone.  update  by itself achieves nothing visible;  upgrade  by itself works from a list that may be weeks old and will miss newer releases. So they are nearly always typed together:
+
+     adarsh@laptop:~$  sudo apt update && sudo apt upgrade
+
+The  &&  between them means "run the second one only if the first one succeeded".
+
+5)  Installing, removing and searching
+
+     adarsh@laptop:~$  sudo apt install git
+
+apt  works out what else  git  needs, shows you everything it is about to install, and asks once:
+
+     The following NEW packages will be installed:
+       git git-man liberror-perl
+     Do you want to continue? [Y/n]
+
+Press Enter to accept, or type  n  to back out. The capital  Y  marks the default.
+
+Several packages in one line:
+
+     adarsh@laptop:~$  sudo apt install git curl python3
+
+Removing takes the program off but leaves its configuration files behind:
+
+     adarsh@laptop:~$  sudo apt remove git
+
+Searching the list by keyword, when you do not know the exact package name:
+
+     adarsh@laptop:~$  apt search markdown
+
+Note that  search  needs no  sudo  , because reading the list changes nothing.
+
+The errors you will meet:
+
+  -  You forgot  sudo  on a command that writes.
+
+        adarsh@laptop:~$  apt install git
+        E: Could not open lock file /var/lib/dpkg/lock-frontend - open (13: Permission denied)
+
+  -  The package name is wrong. Package names are not always the name you know the program by, so search first.
+
+        adarsh@laptop:~$  sudo apt install gitt
+        E: Unable to locate package gitt
+
+  -  The list is stale, so  apt  asks for a version the server no longer has. Run  sudo apt update  and try again.
+
+        adarsh@laptop:~$  sudo apt install somepackage
+        E: Version '1.2.3' for 'somepackage' was not found
+
+6)  Other distributions use other package managers
+
+apt  belongs to Ubuntu and Debian. Other Linux families ship a different tool with the same job, and the command names change while the ideas do not.
+
+     apt        ->  Ubuntu, Debian, Linux Mint
+     dnf        ->  Fedora, Red Hat
+     pacman     ->  Arch Linux
+     zypper     ->  openSUSE
+
+For example, installing git on Fedora is  sudo dnf install git . You only need the one your own machine uses; the rest are worth recognising when you meet them in a tutorial written for another distribution.

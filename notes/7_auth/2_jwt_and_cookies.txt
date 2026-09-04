@@ -1,0 +1,292 @@
+2  --  JWT and cookies  (how the server remembers you after login)
+
+1)  The problem  --  HTTP has no memory
+
+HTTP (HyperText Transfer Protocol) is STATELESS. Each request is handled on its own. The server does not remember the previous request. So after a user finishes login, the very next request looks like a stranger's request to the server. We need something the browser can attach to EVERY request that proves "I already logged in as this user".
+
+2)  Two ways to remember  --  session vs stateless token
+
+There are two common approaches:
+
+  (a)  SERVER-SIDE SESSION.
+        On login the server generates a random string (the session id), stores  { session_id -> user_id, expiry }  in its own DB or memory, and sends the session id to the browser. On every next request the browser sends the id back; the server looks it up.
+
+  (b)  STATELESS TOKEN (JWT).
+        On login the server builds a small signed piece of JSON that already contains  { user_id, expiry } , and sends it to the browser. On every next request the browser sends the token back; the server just VERIFIES the signature. No lookup table on the server side.
+
+Trade-offs:
+
+  -  Server-side session: easy to revoke a single session (just delete the row); but every request costs a DB lookup, and scaling across many servers needs shared session storage.
+  -  Stateless JWT: no lookup on each request (fast, scales easily); but you cannot instantly invalidate a leaked token  --  it stays valid until its expiry, unless you add extra machinery.
+
+This project uses JWT.
+
+3)  Cookie  --  a closer look
+
+The cookie idea was introduced in the HTTP notes (topic 3, part 1). Here we look at exactly how it wires.
+
+The server sets a cookie by adding a  Set-Cookie  header in its response:
+
+     Set-Cookie: token=abc123; Path=/; HttpOnly
+
+The browser stores this. On every next request to the same site the browser adds:
+
+     Cookie: token=abc123
+
+... automatically, without JavaScript doing anything. That is why a cookie is the natural place to keep an authentication marker.
+
+A response can set several cookies (one  Set-Cookie  header per cookie). A request bundles them all into a single  Cookie  header, separated by  ;  .
+
+4)  Cookie flags  --  what each flag protects against
+
+Every  Set-Cookie  header can carry flags after the  name=value  pair. Each flag closes one attack door.
+
+  -  HttpOnly
+        The browser will not expose this cookie to JavaScript ( document.cookie  hides it). Protects against XSS (Cross-Site Scripting): even if an attacker injects a script into your page, the script cannot read the cookie.
+
+  -  Secure
+        The browser sends this cookie only over HTTPS, never plain HTTP. Protects against a network attacker on the same wifi from sniffing the cookie in transit.
+
+  -  SameSite=Strict  /  SameSite=Lax  /  SameSite=None
+        Controls whether the browser sends this cookie on requests that come from OTHER sites.
+
+        -  Strict: cookie is sent only when the request originates from the same site. Safest for auth cookies, but breaks flows where the user clicks a link from an email to a logged-in page.
+        -  Lax: cookie is sent on same-site requests and on top-level GET navigations from other sites. Sensible default.
+        -  None: cookie is sent on ALL cross-site requests. Requires the  Secure  flag. Use only when the API is on a different origin than the frontend.
+
+        SameSite is the main defense against CSRF (Cross-Site Request Forgery), the attack where a malicious site tricks your logged-in browser into sending a hostile request to your bank.
+
+  -  Path=/some/prefix
+        Cookie is sent only for URLs whose path starts with this prefix. Usually  Path=/ .
+
+  -  Domain=example.com
+        Cookie is sent to the given domain and its subdomains. If you leave it out, the cookie is bound to the exact host that set it.
+
+  -  Max-Age=SECONDS   or   Expires=DATE
+        How long the browser keeps the cookie. Without either flag the cookie is a SESSION cookie  --  gone when the browser closes.  Max-Age  is a number of seconds and is the modern choice;  Expires  is a fixed date. If both are present,  Max-Age  wins.
+
+Sensible defaults for an auth cookie:   HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=3600 .
+
+5)  JWT  --  what a JSON Web Token looks like
+
+A JWT (JSON Web Token) is a string with three parts joined by dots:
+
+     HEADER . PAYLOAD . SIGNATURE
+
+Each part is a piece of data encoded in BASE64URL (a URL-safe variation of base64). A real token looks like this (line-wrapped here for the page; in a real header it is one line):
+
+     eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+     .eyJzdWIiOiI0MiIsImV4cCI6MTcwMDAwMzYwMH0
+     .7bJmxK7tX_9K0JqYb4dQm6ROf9lZP0LI2vT5Xl8lJIQ
+
+Decode the HEADER (first part) from base64url:
+
+     {"alg":"HS256","typ":"JWT"}
+
+Decode the PAYLOAD (second part) from base64url:
+
+     {"sub":"42","exp":1700003600}
+
+The SIGNATURE is raw bytes, not JSON.
+
+Anyone with the token can decode the header and payload  --  there is no secret in the decoding step, it is just base64. Do NOT put secrets in the payload.
+
+6)  Header  --  which algorithm signed this
+
+The header is a tiny JSON object with two standard fields:
+
+  -  alg   --  the signing algorithm (e.g.  HS256 ,  RS256 ).
+  -  typ   --  almost always  "JWT" .
+
+7)  Payload  --  the claims
+
+The payload holds CLAIMS: individual facts about the token and the user. Standard claim names are reserved:
+
+  -  sub   (subject)     --  who this token is about, usually the user id.
+  -  iat   (issued at)   --  unix timestamp when the token was created.
+  -  exp   (expiry)      --  unix timestamp after which the token is no longer valid.
+  -  iss   (issuer)      --  who created the token (your app's identifier).
+  -  aud   (audience)    --  who this token is intended for.
+
+You can also add custom claims (e.g.  "role": "admin" ). Keep the payload SMALL  --  the whole token travels on every request.
+
+Anyone who reads the token can read the claims. Never put a password, a secret, or private data in the payload.
+
+8)  Signature  --  signed, not encrypted
+
+The server takes  base64url(header) + "." + base64url(payload) , then computes:
+
+     signature = HMAC_SHA256( that string, SECRET_KEY )
+
+... and appends the base64url of the signature. This is the HS256 algorithm.
+
+The important distinction:
+
+  -  SIGNED means: anyone can read the payload, but nobody can CHANGE it without knowing the secret. Change a single character in the payload and the signature will not match anymore  --  verification fails.
+  -  ENCRYPTED means: nobody can read the payload without the secret. JWT does NOT do this by default. If you need it, a separate spec called JWE (JSON Web Encryption) exists. Rare in web-app auth.
+
+An alternative algorithm  RS256  uses a KEYPAIR: the server signs with a private key; anyone can verify with the public key. Useful when many services need to verify tokens issued by one central auth service. For a single-service app,  HS256  with one secret is enough.
+
+9)  Secret key  --  how to hold it
+
+The secret used for HS256 must be:
+
+  -  LONG and RANDOM. At least 32 bytes of random data.
+  -  KEPT OUT of source code and out of the git repo.
+  -  Read from an environment variable at startup (e.g.  os.environ["JWT_SECRET"] ).
+  -  Different in development and production.
+
+If the secret leaks, anyone can mint valid tokens for any user. Rotate it (change to a new one) immediately; all existing tokens become invalid.
+
+10)  Expiry and refresh tokens
+
+The  exp  claim is what stops a stolen token from being valid forever. Common values are 15 minutes to a few hours for the main token.
+
+Short expiries hurt user experience (the user gets logged out often). The common fix is TWO tokens:
+
+  -  ACCESS TOKEN. Short-lived (say 15 minutes). Sent on every API request.
+  -  REFRESH TOKEN. Long-lived (say 7 days). Used only against one route  /refresh  that hands out a new access token.
+
+For this project a single token with a longer  exp  (say 1 hour or 1 day) is enough. Refresh tokens are a later upgrade.
+
+11)  Where to store the token on the browser
+
+Three common places:
+
+  (a)  localStorage
+        Plain JavaScript can read it  --  so any XSS attack instantly steals the token. AVOID for auth.
+
+  (b)  Memory (a plain JS variable)
+        Safer than localStorage, but the user is logged out on every page refresh. Painful UX.
+
+  (c)  HttpOnly cookie
+        JavaScript cannot read it. Browser sends it automatically on every request. Best default. This is what we use.
+
+Bringing it together: put the JWT INSIDE an  HttpOnly; Secure; SameSite=Lax  cookie. XSS cannot read the token; CSRF is handled by  SameSite=Lax ; the browser handles attaching it to every request.
+
+12)  Full flow  --  login and the requests that follow
+
+     1. Client   --  POST /signup   with email + password.
+        Server hashes the password (Part 1), stores the user row.
+
+     2. Client   --  POST /login    with email + password.
+        Server verifies the bcrypt hash.
+        Server builds a payload:   {"sub": user_id, "exp": now + 3600}
+        Server signs it  ->  JWT string.
+        Server responds with:
+             Set-Cookie: token=<jwt>; HttpOnly; Secure;
+                         SameSite=Lax; Path=/; Max-Age=3600
+
+     3. Client   --  GET /me    (or any protected route).
+        Browser automatically adds:
+             Cookie: token=<jwt>
+        Server reads the cookie, calls  jwt.decode  with the secret.
+        If the signature is valid and  exp  is in the future  ->  extract  sub   ->  load that user.
+        If not  ->  return 401 Unauthorized.
+
+     4. Client   --  POST /logout .
+        Server responds with:
+             Set-Cookie: token=; Max-Age=0
+        which tells the browser to delete the cookie.
+
+The actual FastAPI routes for this are in Part 3.
+
+13)  PyJWT  --  the Python library
+
+PyJWT is the standard Python library for encoding and decoding JWTs.
+
+Install (inside your venv):
+
+     pip install pyjwt
+
+Encode (create a token):
+
+Code:
+
+     import jwt
+     import time
+
+     SECRET = "change-me-in-prod"
+
+     payload = {
+         "sub": "42",
+         "iat": int(time.time()),
+         "exp": int(time.time()) + 3600,
+     }
+
+     token = jwt.encode(
+         payload,
+         SECRET,
+         algorithm="HS256",
+     )
+     print(token)
+
+Output (example, truncated):
+
+     eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIi...
+
+Decode (verify and read a token):
+
+Code:
+
+     import jwt
+
+     SECRET = "change-me-in-prod"
+
+     try:
+         data = jwt.decode(
+             token,
+             SECRET,
+             algorithms=["HS256"],
+         )
+         print(data)
+     except jwt.ExpiredSignatureError:
+         print("token expired")
+     except jwt.InvalidTokenError:
+         print("token invalid")
+
+Output on success:
+
+     {'sub': '42', 'iat': 1700000000, 'exp': 1700003600}
+
+Notes:
+
+  -  algorithm=  (singular) when encoding;   algorithms=  (list) when decoding. Always pass the list explicitly  --  see gotcha (b) below.
+  -  jwt.decode  automatically checks  exp  and raises  ExpiredSignatureError  when the token is past its expiry.
+  -  ExpiredSignatureError  is a subclass of  InvalidTokenError , so a single  except jwt.InvalidTokenError  catches both.
+
+14)  Common errors
+
+  (a)   Trusting the payload without verifying
+
+        If you just base64-decode the payload and use it, an attacker can send any values they like. ALWAYS call  jwt.decode  with the secret  --  that is what verifies the signature.
+
+  (b)   Forgetting  algorithms=  on decode
+
+        Older PyJWT versions defaulted to any algorithm the token itself claimed. Attackers could send a token with  {"alg": "none"}  and skip the signature check. Modern PyJWT refuses this, but always pass  algorithms=["HS256"]  explicitly.
+
+  (c)   Secret written in the code or committed to git
+
+        Never write the JWT secret as a string literal in a  .py  file that ends up in git. Read it from an environment variable.
+
+  (d)   No  exp  in the payload
+
+        A token without  exp  is valid forever. If it leaks once, it is game over. Always include  exp .
+
+  (e)   Cookie without  Secure  in production
+
+        Without  Secure  the browser will send the cookie over plain HTTP. On real deployments always set  Secure .
+
+  (f)   SameSite=None  without  Secure
+
+        Browsers reject this combination. If you truly need cross-site cookies, both flags are required.
+
+  (g)   Clock skew
+
+        exp  is a unix timestamp compared against the server's clock. If your server clock drifts by minutes, valid tokens can look expired (or vice versa). Keep servers time-synced (NTP  --  Network Time Protocol).
+
+  (h)   Sensitive data in the payload
+
+        The payload is READABLE by anyone who has the token. Never put a password, an API key, or private user data. Only stable identifiers (user id, role).
+
+In section 3 we wire this up in FastAPI  --  a real  /login  route that signs the token and sets the cookie, and a small dependency that reads and verifies the cookie on every protected route.

@@ -1,0 +1,70 @@
+1  --  Case styles  (snake_case, camelCase, PascalCase, kebab-case)
+
+1)  What a case style is
+
+A CASE STYLE is an agreed way to glue several words into one identifier. It decides exactly two things:
+
+  -  the SEPARATOR that goes between the words: an underscore, a dash, a dot, or nothing at all
+  -  where the CAPITAL letters go
+
+No style is more correct than another on its own. Each place you write a name expects ONE particular style.
+
+2)  snake_case
+
+All lowercase. An underscore  _  between each word.
+
+     user_first_name     total_price     is_active     read_file
+
+3)  SCREAMING_SNAKE_CASE
+
+The same style also goes by  UPPER_SNAKE_CASE ,  CONSTANT_CASE  and  MACRO_CASE .
+
+All capitals. An underscore  _  between each word.
+
+     MAX_RETRIES     DATABASE_URL     PI     DEFAULT_TIMEOUT
+
+4)  camelCase
+
+No separator at all. The FIRST word is entirely lowercase, and every word after it starts with a capital.
+
+     userFirstName     totalPrice     isActive     readFile
+
+The name comes from the shape: the capitals sit in the middle like the humps on a camel's back.
+
+5)  PascalCase
+
+The same style also goes by  UpperCamelCase  and, in Python's own style guide,  CapWords .
+
+No separator at all. EVERY word starts with a capital, including the first one.
+
+     UserFirstName     TotalPrice     HttpClient     Dog
+
+6)  kebab-case
+
+The same style also goes by  dash-case ,  hyphen-case  and  lisp-case .
+
+All lowercase. A dash  -  between each word.
+
+     user-first-name     dry-run     my-first-post
+
+kebab-case has one hard limit: it can never be a name INSIDE code. In almost every programming language the dash  -  is the minus operator, so  user-name  is not read as one name at all  --  it is read as  user  minus  name , and the program stops with an error. That is why kebab-case lives in web addresses, stylesheets and flags, where nothing is ever subtracted.
+
+7)  Three more styles worth recognising
+
+These turn up less often, but you should know the name when you see the shape.
+
+Train-Case  --  dashes like kebab-case, but every word capitalised.
+
+     User-First-Name
+
+flatcase  --  no separator and no capitals, so the words simply run together.
+
+     userfirstname
+
+dot.case  --  a dot between each word.
+
+     user.first.name
+
+8)  Never mix styles inside one codebase
+
+Inside a single codebase, do not mix styles. If the project you joined writes  userName  everywhere, keep writing  userName  even where the language's own style guide would say otherwise, because a file where two styles fight is harder to read than either style alone.

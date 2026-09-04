@@ -1,0 +1,105 @@
+6  --  Network basics from the terminal
+
+1)  What an IP address is
+
+An IP (Internet Protocol) address is the number that identifies ONE machine on a network. Machines find and talk to each other by these numbers, the way houses on a street are found by house numbers.
+
+The common form is four numbers from 0 to 255, joined by dots:
+
+     192.168.1.7
+
+That form is called IPv4. A newer, longer form called IPv6 exists too, written in hexadecimal with colons ( 2401:4900:1c50::8b2 ). Both are in use; IPv4 is the one you will read most often.
+
+Three kinds are worth telling apart:
+
+     127.0.0.1        ->  THIS machine, always. Also written  localhost .
+
+     PRIVATE  --  handed out inside one network, meaningful only there, never
+     reachable from the wider internet. Exactly three ranges are reserved:
+
+          10.0.0.0     to  10.255.255.255
+          172.16.0.0   to  172.31.255.255
+          192.168.0.0  to  192.168.255.255
+
+     PUBLIC  --  every other address. Reachable from the wider internet.
+
+Read those ranges to the FULL number, not the first piece. This is where people slip:
+
+     192.168.1.7        ->  PRIVATE.  192.168  is reserved.
+     192.178.158.100    ->  PUBLIC.   192.178  is not reserved, so this is an
+                                      ordinary public address like any other.
+
+Only  192.168  is taken out of the  192  block; the rest of  192  belongs to the internet. The same trap sits on  172 : the reserved part stops at  172.31 , so  172.5.4.1  and  172.99.4.1  are both public.
+
+A laptop at home normally has a private address. The router holds the single public address and passes traffic on behalf of every device behind it.
+
+2)  ip addr  --  find your own address
+
+     adarsh@laptop:~$  ip addr
+         .....
+         inet 192.168.1.7/24 brd 192.168.1.255 scope global wlp3s0
+
+The line you want is the one starting  inet . Here the machine's address is  192.168.1.7 .
+
+3)  hostname  --  the machine's own name
+
+     adarsh@laptop:~$  hostname
+     adarsh-agrahari
+
+This is the name a machine answers to on the network, and it is the same name the prompt shows after the  @  sign.
+
+The same command with a capital  -I  flag prints the machine's ADDRESSES instead of its name  --  every address it currently holds, on one line, separated by spaces, with the  127.0.0.1.
+
+     adarsh@laptop:~$  hostname -I
+     192.168.1.7
+
+This is the quickest way to read your own address:  ip addr  prints a screenful and you hunt for the  inet  line, while this prints the answer alone.
+
+The capital letter matters. Lowercase  -i  is a different flag.
+
+4)  ping  --  is that machine reachable?
+
+The command  ping  sends a tiny packet to another machine and waits for it to bounce back. It answers one question only: can this machine reach that one, and is that one answering?
+
+The  8.8.8.8  used below is a public server run by Google. Its real job is turning names into addresses, but it became the standard  ping  target for a different reason: it is short to type, it is up around the clock, and it answers from anywhere on the internet. So when it replies, your connection out to the world is working.
+
+     adarsh@laptop:~$  ping -c 4 8.8.8.8
+     PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.
+     64 bytes from 8.8.8.8: icmp_seq=1 ttl=115 time=12.4 ms
+     64 bytes from 8.8.8.8: icmp_seq=2 ttl=115 time=11.9 ms
+     64 bytes from 8.8.8.8: icmp_seq=3 ttl=115 time=13.1 ms
+     64 bytes from 8.8.8.8: icmp_seq=4 ttl=115 time=12.0 ms
+
+     --- 8.8.8.8 ping statistics ---
+     4 packets transmitted, 4 received, 0% packet loss, time 3005ms
+
+The  -c 4  stops it after four packets. Without  -c  it keeps going until you press Ctrl + C.
+
+What to read:
+
+     time=12.4 ms      how long the round trip took. Lower is better.
+     0% packet loss    every packet came back. Anything above 0% means a shaky link.
+
+A name works in place of a number, and the machine turns that name into an address first:
+
+     adarsh@laptop:~$  ping -c 2 google.com
+     PING google.com (142.250.183.14) 56(84) bytes of data.
+
+What  ping  does NOT tell you: whether a website or service on that machine is working. A machine can answer  ping  perfectly while the program you actually wanted is stopped.
+
+The errors you will meet:
+
+  -  The name cannot be turned into an address. Either the name is misspelt or name lookup itself is broken, which is worth testing by pinging a plain number instead.
+
+        adarsh@laptop:~$  ping -c 2 gogle.comm
+        ping: gogle.comm: Name or service not known
+
+  -  There is no route out at all. The machine is off the network  --  Wi-Fi disconnected, or the cable unplugged.
+
+        adarsh@laptop:~$  ping -c 2 8.8.8.8
+        ping: connect: Network is unreachable
+
+  -  The packets go out and nothing comes back. The address was reached but did not answer, often because a FIREWALL threw the packet away. A firewall is a filter standing in front of a machine or a whole network: every packet arriving is checked against a list of rules, and one that does not match is DROPPED  --  thrown away with no reply of any kind, so the sender is left waiting. Plenty of servers are deliberately set up to drop  ping , which means silence here is not proof that the machine is down.
+
+        adarsh@laptop:~$  ping -c 3 192.168.1.55
+        3 packets transmitted, 0 received, 100% packet loss, time 2043ms

@@ -1,0 +1,224 @@
+17  --  Type hints  (variables, function params, return types, Optional, List, Dict)
+
+1)  What type hints are
+
+A TYPE HINT is a NOTE in your code saying "this variable, parameter, or return value is supposed to be of this type". Python itself does NOT enforce type hints at runtime. External tools (editors, linters, type checkers like  mypy ) use them to catch mistakes before you run the code.
+
+Type hints make code:
+
+  -  easier to read (readers know what a function expects)
+  -  easier to check with tools
+  -  easier to refactor (editors know what a variable is)
+
+2)  Type hints on variables
+
+Syntax:
+
+     <name>: <type> = <value>
+
+Code:
+
+     count: int   = 0
+     price: float = 99.99
+     name:  str   = "adarsh"
+     is_ok: bool  = True
+
+The colon-and-type is the hint. Python still assigns the value; the type note is just extra info.
+
+You do not have to hint every variable. Hint function arguments and return types; hint a variable only when it clarifies something non-obvious.
+
+3)  Type hints on function parameters and return types
+
+Syntax:
+
+     def <name>(<param>: <type>,
+                <param>: <type>) -> <return_type>:
+
+Code:
+
+     def add(x: int, y: int) -> int:
+         return x + y
+
+     def greet(name: str) -> str:
+         return f"hello, {name}"
+
+     def log(msg: str) -> None:
+         print(msg)
+
+  -  Parameter types come after a colon.
+  -  Return type comes after  -> , before the final colon.
+  -  Use  None  as the return type when the function returns nothing meaningful.
+
+What if you pass the WRONG type?
+
+Short answer: Python DOES NOT stop you. Type hints are ONLY hints  --  they are not enforced at runtime. The function still runs with whatever you passed.
+
+Take the  add  function above:
+
+     def add(x: int, y: int) -> int:
+         return x + y
+
+Case 1  --  correct types:
+
+     add(2, 3)
+     ->  5
+
+Case 2  --  strings passed instead:
+
+     add("hi", "there")
+     ->  "hithere"
+
+     Python did not complain about the hints. The  +  operator works on strings too (it concatenates), so the function returned a  str , even though the hint said  int .
+
+Case 3  --  mixed types:
+
+     add("hi", 3)
+     ->  TypeError: can only concatenate str (not "int") to str
+
+     Here the error came from the  +  operator inside the function, NOT from the type hint. Python raised it because  str + int  itself is invalid  --  the hint had nothing to do with it.
+
+Case 4  --  a list and an int:
+
+     add([1, 2], 3)
+     ->  TypeError: can only concatenate list (not "int") to list
+
+     Same story: the error is from  + , not from the hint.
+
+So who DOES check the hints?
+
+  -  Your EDITOR / IDE  --  VS Code, PyCharm, etc. show a yellow / red underline when a call looks wrong.
+  -  Some libraries (for example FastAPI and Pydantic) DO enforce hints at runtime  --  but that is the LIBRARY doing the check, not Python itself.
+
+Rule of thumb: treat type hints as DOCUMENTATION plus a tool for editors and checkers. Do not rely on them to block bad input at runtime  --  if you need that, add an explicit  isinstance  check or use a library like Pydantic.
+
+The punctuation is not optional, and both slips give the same unhelpful message. A parameter hint needs a COLON:
+
+     def add(x int, y int) -> int:
+     SyntaxError: invalid syntax
+
+and the return hint needs an ARROW before the final colon, not a second colon:
+
+     def add(x: int, y: int): int:
+     SyntaxError: invalid syntax
+
+The correct shape is  def add(x: int, y: int) -> int: .
+
+4)  Basic built-in types
+
+     int      whole number
+     float    decimal number
+     str      string
+     bool     True / False
+     list     any list
+     dict     any dict
+     tuple    any tuple
+     set      any set
+     None     the value  None
+
+Code:
+
+     age:   int    = 25
+     price: float  = 3.99
+     name:  str    = "adarsh"
+     tags:  list   = ["python", "web"]
+     info:  dict   = {"city": "delhi"}
+
+5)  Generic types  --  say WHAT is inside
+
+Plain  list  says "a list of anything". You can be more specific about the item type.
+
+Modern syntax  (Python 3.9 and newer):
+
+     list[int]                 list of ints
+     list[str]                 list of strings
+     dict[str, int]            keys are str, values are int
+     tuple[int, str, float]    a fixed-size tuple with these three types
+     set[str]                  set of strings
+
+Code:
+
+     scores: list[int]        = [90, 85, 78]
+     lookup: dict[str, int]   = {"a": 1, "b": 2}
+
+If you are on modern Python (3.9+), prefer the lowercase built-in style ( list[int] , dict[str, int] ). Use  typing  for older code.
+
+The version numbers matter: these newer forms fail on older Python. There is a  from __future__ import annotations  line that lets you write modern hints in a file which must still run on an older Python.
+
+The capitalised names are the older style and they are NOT built in  --  they have to be imported, or Python does not know them:
+
+     def make() -> List[int]:
+     NameError: name 'List' is not defined
+
+Either switch to the lowercase built-in form,  list[int] , or add  from typing import List .
+
+6)  Optional  --  a value that can be None
+
+When a value is either of a type OR  None , write it as  Optional[<type>] .
+
+     Optional[int]     is the same as     int | None
+     Optional[str]     is the same as     str | None
+
+Code:
+
+     from typing import Optional
+
+     def find(name: str) -> Optional[dict]:
+         if name == "adarsh":
+             return {"age": 25}
+         return None
+
+Using the  |  syntax (Python 3.10+):
+
+     def find(name: str) -> dict | None:
+         ...
+
+7)  Union  --  more than one possible type
+
+Union[X, Y]  means "either X or Y". The  |  syntax does the same.
+
+     Union[int, str]     is the same as     int | str
+
+Code:
+
+     from typing import Union
+
+     def stringify(x: Union[int, float]) -> str:
+         return str(x)
+
+Modern equivalent (Python 3.10+):
+
+     def stringify(x: int | float) -> str:
+         return str(x)
+
+8)  Any  --  give up, allow anything
+
+Any  is a type hint meaning "I do not want to say what this is; accept anything". Use sparingly.
+
+Code:
+
+     from typing import Any
+
+     def dump(x: Any) -> None:
+         print(x)
+
+Prefer specific types when you know them.
+
+9)  Type checkers  (mypy, pyright)
+
+Type hints are NOT enforced by Python at runtime. This code runs without errors even though the hint says  int :
+
+Code:
+
+     def double(x: int) -> int:
+         return x * 2
+
+     print(double("hi"))
+
+Output:  hihi
+
+Python did not complain because it does not check hints. Use an external tool:
+
+     pip install mypy
+     mypy your_file.py
+
+mypy  reads the type hints and warns you about mismatches like the one above.

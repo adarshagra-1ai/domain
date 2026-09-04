@@ -1,0 +1,228 @@
+13  --  Reading and writing files  (open, with, read, write, modes r/w/a)
+
+1)  What file I/O is
+
+File I/O means Input / Output on files. Your Python program can:
+
+     -  READ text from a file on disk.
+     -  WRITE text into a file on disk.
+     -  APPEND text to the end of a file.
+
+The main tool is the built-in  open()  function.
+
+2)  open()  --  the basic form
+
+Syntax:
+
+     f = open(<path>, <mode>)
+
+     -  <path>  is a string with the file path (relative or absolute).
+     -  <mode>  is a short code string like  "r" , "w" , "a" .
+
+open()  returns a FILE OBJECT. You use its methods to read or write, and you must CLOSE it when done.
+
+3)  Modes
+
+     "r"    READ           Default. The file must already exist. Errors if not.
+     "w"    WRITE          Truncates the file to empty and starts fresh. Creates the file if it does not exist.
+     "a"    APPEND         Opens for writing at the END of the file. Existing content stays. Creates the file if missing.
+     "x"    CREATE         Opens for writing ONLY if the file does not yet exist. Errors if it does. Prevents accidental overwrite.
+     "r+"   READ + WRITE   Both. The file must already exist.
+     "b"    BINARY MODE    Combine with a mode letter, e.g.  "rb" ,  "wb" . Used for images, PDF files, and other non-text data.
+     "t"    TEXT MODE      The default. Data is treated as strings.
+
+Most everyday work uses  "r" , "w" , "a"  in text mode.
+
+The mode has to match what is actually on disk, and two mismatches come up constantly.
+
+Opening a file that is not there in  "r"  mode:
+
+     with open("missing.txt", "r") as f:
+         print(f.read())
+     FileNotFoundError: [Errno 2] No such file or directory: 'missing.txt'
+
+Check the path with  ls  in the terminal. If creating the file was the intention all along, open it in  "a"  or  "w"  mode instead.
+
+Opening a FOLDER instead of a file:
+
+     with open("Documents", "w") as f:
+         f.write("hi")
+     IsADirectoryError: [Errno 21] Is a directory: 'Documents'
+
+And reading a binary file as text. Images, PDF files and mp3 files are not made of characters, so text mode cannot decode them:
+
+     with open("photo.jpg", "r") as f:
+         data = f.read()
+     UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+
+Use  "rb"  for those.
+
+4)  Reading a file  --  the recommended pattern
+
+Use a  with  block. It automatically CLOSES the file at the end, even if an error happens inside.
+
+Syntax:
+
+     with open(<path>, <mode>) as f:
+         <indented block>
+
+Once the block ends,  f  is closed. You do not have to call  f.close()  yourself.
+
+Whole file at once  --  f.read()
+
+Code:
+
+     with open("notes.txt", "r") as f:
+         data = f.read()
+         print(data)
+
+Output:  (all text in notes.txt)
+
+One line at a time  --  for loop
+
+Best for big files, or when you want to process line by line.
+
+Code:
+
+     with open("notes.txt", "r") as f:
+         for line in f:
+             print(line)
+
+Each  line  includes its trailing newline  \n .  print()  adds another newline, so lines may look double-spaced. Strip if needed:
+
+Code:
+
+     with open("notes.txt", "r") as f:
+         for line in f:
+             print(line.rstrip())
+
+One line on demand  --  f.readline()
+
+Reads exactly ONE line from the current position and moves the cursor forward. Returns  ""  (empty string) when the end of the file is reached.
+
+Code:
+
+     with open("notes.txt", "r") as f:
+         first  = f.readline()
+         second = f.readline()
+         third  = f.readline()
+     print(first, end="")
+     print(second, end="")
+     print(third, end="")
+
+Output:
+     first
+     second
+     third
+
+Each string returned by  readline()  already includes its trailing newline  \n . Using  end=""  in the print prevents the double-newline that would happen with plain  print(first) .
+
+Alternative style  --  strip the newline, let  print  add its own:
+
+     first = f.readline().rstrip()
+     print(first)
+
+Both styles work. Pick one.
+
+Read until end with a while loop:
+
+Code:
+
+     with open("notes.txt", "r") as f:
+         while True:
+             line = f.readline()
+             if line == "":
+                 break
+             print(line.rstrip())
+
+Output:
+     first
+     second
+     third
+
+The empty-string check is how you detect end of file with  readline() .
+
+All lines into a list  --  f.readlines()
+
+Code:
+
+     with open("notes.txt", "r") as f:
+         lines = f.readlines()
+     print(lines)
+
+Output:  ['first\n', 'second\n', 'third\n']
+
+readline()  vs  readlines()  --  the difference
+
+     f.readline()     returns ONE string (one line). Advances the cursor by one line. Returns  ""  at end of file.
+     f.readlines()    returns a LIST of strings (all remaining lines). Reads the whole rest of the file into memory at once.
+
+When to use which:
+
+  -  readline()      for line-by-line processing where you want fine control (skip a header, stop early, read while a condition holds).
+  -  readlines()     for small files when you want all lines available as a list to index or slice.
+  -  for line in f:  the SIMPLEST pattern for reading a file line by line. Prefer this over  readline() . It handles the "stop at end of file" logic for you.
+
+Memory note:
+
+     f.readlines()  loads the WHOLE remaining file into memory as a list. For big files (hundreds of MB (megabytes), or more), this can crash the program. Prefer  for line in f:  , which reads one line at a time.
+
+5)  Writing to a file  --  f.write()
+
+"w"  mode empties the file first. Use it when you want to REPLACE the file with new content.
+
+Code:
+
+     with open("hello.txt", "w") as f:
+         f.write("hello\n")
+         f.write("world\n")
+
+After this,  hello.txt  contains:
+
+     hello
+     world
+
+Notes:
+
+  -  f.write()  does NOT add newlines for you. Include  \n  yourself if you want line breaks. Three writes with no  \n  produce one single line:
+
+        f.write("a")
+        f.write("b")
+        f.write("c")
+
+     leaves the file holding  abc , not three lines.
+  -  You can call  f.write()  many times inside the same  with  block.
+  -  Existing content in the file is WIPED as soon as  open  runs with  "w"  --  even before you write anything.
+
+6)  Appending  --  "a"  mode
+
+"a"  mode keeps the existing content and adds new content at the END of the file.
+
+Code:
+
+     with open("log.txt", "a") as f:
+         f.write("new event\n")
+
+If  log.txt  already had text, this leaves it intact and adds  new event\n  at the end.
+
+Common uses:
+
+  -  Log files.
+  -  Any file that grows over time.
+
+7)  Explicit close  (only if not using with)
+
+If you skip the  with  block, you must call  f.close()  yourself.
+
+Code:
+
+     f = open("notes.txt", "r")
+     data = f.read()
+     f.close()
+
+Downsides:
+
+  -  If an error happens before  close , the file stays open.
+  -  Easy to forget.
+
+Rule of thumb: always use  with .

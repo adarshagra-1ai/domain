@@ -1,0 +1,141 @@
+4  --  The controller box: an end-to-end picture
+
+1)  Physical picture  --  what the box is
+
+The controller is a small Linux computer packed into an enclosure roughly the size of a home router. It sits inside the NETWORK RACK (a small metal cabinet in a corner of the home that holds the internet router and the network cables) or the ELECTRICAL PANEL (the wall-mounted cabinet that holds the home's circuit breakers and, in a smart home, the KNX bus wiring).
+
+A common form:
+
+  -  Enclosure     :  small metal or plastic box
+  -  Power         :  12 V or 24 V DC (Direct Current) adapter (the small plug-in block that turns wall voltage into the low voltage the box needs), always on
+  -  Network       :  one or two Ethernet ports (LAN  --  Local Area Network)
+  -  Bus port      :  one KNX IP or serial port to reach the wired bus
+  -  Storage       :  a small SSD (Solid State Drive) or eMMC (embedded MultiMediaCard, on-board flash storage), a few GB
+  -  Front         :  status LEDs (power, LAN link, activity)
+
+There is NO screen and NO keyboard on the box. It is a HEADLESS device  --  a computer with no attached display or input; you reach it over the network, not through a monitor. The installer configures it from a laptop over the LAN, and the home user never sees it after installation.
+
+Every time power comes back the box boots on its own and starts serving the home. It behaves like a plug-in appliance, not like a desktop PC (Personal Computer). Nobody logs into it day to day.
+
+2)  The software's four jobs
+
+Once the box is powered, its software has exactly four things to do, on repeat, forever.
+
+  (a)  Talk to every device (drivers)
+
+        The controller does not itself know any brand's protocol. It runs one DRIVER per brand. A real home runs many drivers side by side inside the same box  --  for example:
+
+           -  KNX driver          --  ceiling lights, blinds, wall dimmers on the wired bus
+           -  Samsung TV driver   --  living-room TV over LAN
+           -  Sonos driver        --  music speakers over LAN
+           -  Marantz driver      --  the AVR (Audio-Video Receiver)
+           -  Coolmaster driver   --  central air-conditioning
+           -  CPPlus driver       --  security cameras
+           -  Ajax driver         --  the intrusion alarm
+
+        Each driver is a separate small program, started when the config bundle asks for it. If one driver crashes  --  say the TV is unplugged and its driver loses the connection  --  the box restarts just that driver. The rest keep running. This ISOLATION means a bug in one brand's driver cannot take the whole home down.
+
+  (b)  Run the automations (rules and scenes)
+
+      At run time, the software's job is to watch the world, decide when a rule should fire, and carry it out. Every rule goes through three steps in order:
+
+           1. TRIGGER    --  something changed (a time hit, a sensor fired, a button was pressed, the app sent a command).
+           2. CONDITION  --  optional extra check ("only if someone is home", "only after 8 pm").
+           3. ACTION     --  the list of steps to perform, which the driver layer actually executes on the devices.
+
+        A tricky problem shows up when two rules want opposite things on the same device at the same time. Example: the "Movie Mode" scene says lights 20 %, and in the same second a motion-sensor rule says lights 100 %. The box has to pick a winner. That choice is called ARBITRATION.
+
+        A well-built controller has clear arbitration rules. Common ones are:
+
+           -  PRIORITY LEVELS  --  every rule is given a number, and the higher-number rule wins.
+           -  MANUAL OVERRIDE  --  if the user just pressed a switch by hand, block automatic rules for the next 30 minutes.
+           -  LAST-WRITE-WINS  --  when two rules have the same priority, the one that fired most recently wins.
+
+        Without arbitration, the light would flicker between the two values every time a rule fires. This is one of the hardest parts of the software to get right.
+
+  (c)  Load the configuration (bundle)
+
+        Three terms show up together here, so a quick isolated meaning for each first:
+
+           -  CONFIGURATION  --  the SETTINGS a program needs to do its job; the things that change from one install to the next, not from one run to the next. It is not the program's code, and it is not the everyday state (like "the kitchen light is currently on"). For the box, the configuration is the fixed description of a specific home: which rooms exist, which devices sit in each room, what type each device is, what scenes are defined, and what rules run when.
+
+           -  BUNDLE  --  one file that PACKS several pieces together in a fixed shape so it can be moved around as a single unit. Instead of shipping "the rooms file, the devices file, the rules file" as separate loose files, you ship one bundle file that contains all of them inside. For the box, the bundle is a single JSON (JavaScript Object Notation) file with sections for rooms, devices, drivers, scenes, and rules.
+
+           -  SIGNATURE  --  a small fingerprint attached to a file that proves two things at once: (1) the file was made by a party you trust, and (2) nobody has changed even one byte since that party made it. If someone tampers with the file after signing, the signature stops matching and the check fails. Any receiver can run this check on their own, without having to contact the sender.
+
+        Put together, a SIGNED CONFIGURATION BUNDLE is one JSON file that describes the whole home, packed as a single unit and signed by the installer's design tool so the box can be sure the file is genuine before loading it.
+
+        At run time the box:
+
+           1. Verifies the signature, so a tampered or forged bundle is rejected.
+           2. Stops only the pieces that changed  --  drivers, rules, or scenes.
+           3. Reads the new bundle: rooms, devices, drivers, scenes, rules.
+           4. Starts the changed drivers, loads the new state, arms the new rules.
+
+        A bundle swap is expected to be ONLINE  --  the home keeps working during it. Only the pieces that changed are restarted; the parts that did not change keep running through the swap.
+
+  (d)  Serve the user's apps
+
+        Two different paths reach the box from a phone.
+
+        LAN PATH  --  the phone is on the same home Wi-Fi as the box. The app finds the box using a discovery protocol like mDNS (multicast DNS  --  an auto-discovery mechanism where devices announce themselves on the local network, so an app can find a nearby box without being told its IP address by hand) and speaks directly to it. This is the fast, no-internet-needed path.
+
+        CLOUD-RELAY PATH  --  the phone is on mobile data or on a different Wi-Fi, so it is out on the public internet. This path needs a little more setup, so a few basics first.
+
+        A CONNECTION between two computers is a live channel over which they send messages back and forth. Whoever STARTS the channel is the OUTBOUND side; whoever answers is the INBOUND side. Once the channel is open, either side can send.
+
+        Every home internet router has a default rule: connections that start from INSIDE the home going OUT to the internet (opening a webpage, sending a WhatsApp message from a phone on the home Wi-Fi) are allowed, but connections coming IN from the internet toward devices inside the home are BLOCKED. This is a security default; without it, any stranger on the internet could try to poke at the box, the camera, the smart fridge, and so on.
+
+        Now the problem is clear. The phone is out on the internet and wants to talk to the box. It cannot start a connection into the home  --  the home router will refuse it.
+
+        The trick: the BOX starts a connection outward, all the way to a small CLOUD RELAY (a public server on the internet, run by the controller's company, whose only job is to sit in the middle and pass messages). Because the box starts it from inside the home, the router lets it out. And the box HOLDS that connection open all the time  --  it never lets the channel close, so the relay always has a live line back to the box.
+
+        The phone, from wherever it is, starts its own outbound connection to the same relay (its router lets it out too, for the same reason). When the phone sends a command, the flow is:
+
+             phone   --(command)-->   relay   --(down the box's already-open channel)-->   box
+             box     --(update)-->    relay   --(down the phone's already-open channel)-->  phone
+
+        The relay does not run any home-automation logic. It only recognises "this message is from the phone, so send it down the box's channel" and "this message is from the box, so send it down the phone's channel".
+
+        Either way (LAN or cloud-relay), the app sends the same command and receives the same state back. The user does not know or care which path was used.
+
+3)  Local-first: what actually keeps working when the internet dies
+
+Here is the concrete split of what keeps working when the internet goes down and what does not. This is what a customer really wants to know when they ask "what breaks if my internet goes down":
+
+  Still works with NO internet:
+
+     -  every wall switch, every KNX button, every physical control
+     -  the mobile app while the phone is on the home Wi-Fi (LAN path)
+     -  every rule, scene, and macro (they all run inside the box)
+     -  the state shown in the app stays in sync with the devices
+
+  Does NOT work with no internet:
+
+     -  the mobile app while the phone is on mobile data or a different Wi-Fi (cloud-relay path is down)
+     -  pushing a new configuration bundle from the installer's design tool
+     -  cloud-only integrations (for example, an alarm system that only exposes a cloud API)
+     -  remote notifications and any dashboard that lives on a public web page
+
+Compare this with a pure-cloud design like a stock Alexa or Google Home setup. There, when the internet dies, even the physical wall switch feels broken, because the round-trip to the cloud is what turns the light on. That single behaviour is the reason professional integrators buy an on-premise controller instead.
+
+4)  What the box is NOT
+
+For someone new to home automation, knowing what the box is NOT is as important as knowing what it is. The controller is:
+
+  -  NOT the mobile app.
+        The app is a separate program that runs on the user's phone. It only shows the UI (User Interface) and forwards taps to the box. All decisions happen inside the box.
+
+  -  NOT the cloud dashboard.
+        Some products offer a web page where the homeowner or the installer can see status remotely. That page is a separate cloud service that talks to the box through the relay. If the cloud page is down, the home still runs.
+
+  -  NOT the installer's design tool.
+        The design tool is a laptop / browser application the technician uses to describe the home. Its output is the bundle. Once the bundle is on the box, the design tool can go offline and the home does not care.
+
+  -  NOT the devices themselves.
+        Lights, TVs, and AC units are made by other companies. The box controls them; it does not manufacture them or hold their firmware.
+
+  -  NOT a full server or a general-purpose computer.
+        The box runs one job  --  the controller software  --  and nothing else. It is not meant for storing family photos, hosting a website, or being logged into by hand to run other programs.
+
+In short: the box is the small always-on RUNTIME (the program that keeps running quietly in the background, all day, every day) in the middle. Apps, cloud pages, and design tools sit around it; devices sit under it. Any of those can be offline at a given moment without breaking the home  --  but the box itself must be running for the home to feel automated.

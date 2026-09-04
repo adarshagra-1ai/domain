@@ -1,0 +1,290 @@
+16  --  Classes  (class, __init__, self, methods, attributes, and a working look at inheritance)
+
+1)  What a class is
+
+A CLASS is a BLUEPRINT for creating objects. It defines what data each object will hold (its ATTRIBUTES) and what actions it can perform (its METHODS).
+
+An OBJECT (or "instance") is a specific value created from a class.
+
+     class    ->  the type / template
+     object   ->  a concrete value of that type
+
+You have already been using classes without building your own. Every value in Python is an object:  int  is a class,  42  is an instance;  str  is a class,  "hello"  is an instance;  list  is a class,  [1, 2, 3]  is an instance.
+
+2)  Defining a class
+
+Syntax:
+
+     class <ClassName>:
+         <body>
+
+Rules:
+
+  -  Class names use  PascalCase  by convention.
+  -  The header ends with a colon  : .
+  -  The body is INDENTED.
+
+Minimum class  --  no attributes, no methods:
+
+Code:
+
+     class Dog:
+         pass
+
+     d = Dog()
+     print(d)
+
+Output:
+     <__main__.Dog object at 0x...>
+
+Dog()  creates an instance. The  pass  statement inside is just a placeholder that does nothing  --  useful when Python needs a body but you have nothing yet.
+
+3)  __init__  --  the constructor
+
+__init__  is a special method that runs AUTOMATICALLY when a new instance is created. Use it to set up the initial data.
+
+Code:
+
+     class Dog:
+         def __init__(self, name, age):
+             self.name = name
+             self.age  = age
+
+     d = Dog("Bruno", 3)
+     print(d.name)
+     print(d.age)
+
+Output:
+     Bruno
+     3
+
+What happened:
+
+  -  Dog("Bruno", 3)  creates a new  Dog  instance and calls  __init__  on it.
+  -  self  is the new instance itself.
+  -  self.name = name  stores the value  "Bruno"  on the instance as an attribute called  name .
+
+Every class that holds data needs an  __init__ .
+
+You never call it by hand.  Dog("Bruno")  is the way to create an instance;  Dog.__init__("Bruno")  is not.
+
+4)  self  --  the current instance
+
+self  is the first parameter of every method. Python fills it in automatically with the instance the method is being called on.
+
+You do not pass  self  when calling the method  --  Python does it for you:
+
+     d = Dog("Bruno", 3)
+     d.bark()               <-  self = d
+
+Why the name  self ?
+     It is just a strong convention. Python does not require the name, but every Python codebase uses  self . Do not rename it.
+
+5)  Instance attributes
+
+An INSTANCE ATTRIBUTE is data stored on a specific instance, set with  self.<name> = <value>  inside a method.  __init__  is the standard place to set them.
+
+Each instance gets its OWN attributes. Setting a value on one instance does not affect another.
+
+Code:
+
+     class Dog:
+         def __init__(self, name):
+             self.name = name
+
+     a = Dog("Bruno")
+     b = Dog("Rex")
+     print(a.name)
+     print(b.name)
+
+Output:
+     Bruno
+     Rex
+
+Attributes can also be attached from outside, and this one is worth knowing because it raises no error at all:
+
+     d = Dog("Bruno")
+     d.color = "black"
+
+That works, but now only SOME instances have  color , and any code reading it breaks on the others. Set every core attribute in  __init__  instead.
+
+6)  Methods
+
+A METHOD is a function defined INSIDE a class. Its first parameter must be  self .
+
+Code:
+
+     class Dog:
+         def __init__(self, name):
+             self.name = name
+
+         def bark(self):
+             print(f"{self.name} says woof")
+
+         def rename(self, new_name):
+             self.name = new_name
+
+     d = Dog("Bruno")
+     d.bark()
+     d.rename("Kaka")
+     d.bark()
+
+Output:
+     Bruno says woof
+     Kaka says woof
+
+Methods can read and write the instance's attributes through  self . Both halves of that sentence come with an error when you forget them.
+
+Leave  self  out of the signature and the call fails, because Python passes the instance whether you declared a parameter for it or not:
+
+     class Dog:
+         def bark():
+             print("woof")
+
+     Dog().bark()
+     TypeError: bark() takes 0 positional arguments but 1 was given
+
+Leave the  self.  off when READING an attribute and Python looks for a plain local variable, finds none, and stops:
+
+     def bark(self):
+         print(name)
+
+     NameError: name 'name' is not defined
+
+7)  Multiple instances
+
+Every  ClassName(...)  call creates a NEW instance with its own attributes.
+
+Code:
+
+     class Dog:
+         def __init__(self, name, age):
+             self.name = name
+             self.age  = age
+
+         def info(self):
+             return f"{self.name}, age {self.age}"
+
+     dogs = [Dog("Bruno", 3),
+             Dog("Rex", 5),
+             Dog("Kaka", 1)]
+
+     for d in dogs:
+         print(d.info())
+
+Output:
+     Bruno, age 3
+     Rex, age 5
+     Kaka, age 1
+
+8)  Class attributes vs instance attributes
+
+CLASS ATTRIBUTES are defined at the class level (not inside a method). They are SHARED by all instances.
+
+INSTANCE ATTRIBUTES are set on  self  and are per-instance.
+
+Code:
+
+     class Dog:
+         species = "Canis familiaris"
+
+         def __init__(self, name):
+             self.name = name
+
+     a = Dog("Bruno")
+     b = Dog("Rex")
+     print(a.species)
+     print(b.species)
+     print(a.name)
+     print(b.name)
+
+Output:
+     Canis familiaris
+     Canis familiaris
+     Bruno
+     Rex
+
+Rule of thumb: use CLASS attributes for values that are the same for every instance (constants, defaults). Use INSTANCE attributes for per-instance data.
+
+9)  Inheritance  --  build a subclass
+
+INHERITANCE lets you make a new class that starts from an existing one and adds or changes things.
+
+Syntax:
+
+     class <SubClass>(<BaseClass>):
+         <body>
+
+Code:
+
+     class Animal:
+         def __init__(self, name):
+             self.name = name
+
+         def speak(self):
+             print(f"{self.name} makes a sound")
+
+     class Dog(Animal):
+         def speak(self):
+             print(f"{self.name} says woof")
+
+     a = Animal("Something")
+     d = Dog("Bruno")
+     a.speak()
+     d.speak()
+
+Output:
+     Something makes a sound
+     Bruno says woof
+
+What happened:
+
+  -  Dog  inherits from  Animal .
+  -  Dog  gets  __init__  automatically from  Animal , so it accepts  name .
+  -  Dog  OVERRIDES  speak  with its own version.
+
+Extending  __init__  --  super()
+
+If the subclass needs its own  __init__  but also wants to run the parent's  __init__ , use  super() .
+
+Code:
+
+     class Animal:
+         def __init__(self, name):
+             self.name = name
+
+     class Dog(Animal):
+         def __init__(self, name, breed):
+             super().__init__(name)
+             self.breed = breed
+
+     d = Dog("Bruno", "Lab")
+     print(d.name)
+     print(d.breed)
+
+Output:
+     Bruno
+     Lab
+
+super().__init__(name)  calls the parent class's  __init__  , which sets  self.name = name .
+
+Method override
+
+A subclass can define a method with the same name as one in the parent. The subclass version wins for instances of the subclass.
+
+Code:
+
+     class Animal:
+         def speak(self):
+             print("sound")
+
+     class Dog(Animal):
+         def speak(self):
+             print("woof")
+
+     Animal().speak()
+     Dog().speak()
+
+Output:
+     sound
+     woof
