@@ -1,0 +1,265 @@
+12  --  Operators  (identity, bitwise, walrus, precedence)
+
+1)  What an operator is
+
+An OPERATOR is a symbol that takes one or two values and produces a new value. The values it works on are called its OPERANDS.
+
+     7 + 3
+
+Here  +  is the operator, and  7  and  3  are its two operands. Most operators take two operands; a few take only one, such as  -5  and  not True .
+
+Python sorts its operators into seven families:
+
+     arithmetic     + - * / // % **                do maths on numbers
+     assignment     = += -= *= /= //= %= **=       put a value into a name
+     comparison     == != < > <= >=                compare two values, hand back a bool
+     logical        and  or  not                   combine bools
+     membership     in  not in                     ask whether a value sits inside a collection
+     identity       is  is not                     ask whether two names point at the SAME object
+     bitwise        & | ^ ~ << >>                  work on the individual bits of an integer
+
+Python has one more operator symbol,  @ , that plain Python gives no meaning to for any built-in type:
+
+     2 @ 3
+     TypeError: unsupported operand type(s) for @: 'int' and 'int'
+
+It exists so outside libraries can define it themselves; in NumPy it multiplies matrices. The same  @  character written at the START of a line is not an operator at all  --  there it marks a DECORATOR, which is a way of wrapping a function, and it never combines two operands.
+
+2)  is  and  is not  --  the identity operators
+
+==  asks "do these two values look the same?".  is  asks something different: "are these two names pointing at the SAME object?".
+
+Two lists can hold identical items and still be two separate objects.
+
+Code:
+
+     a = [1, 2, 3]
+     b = [1, 2, 3]
+     c = a
+     print(a == b)
+     print(a is b)
+     print(a is c)
+
+Output:
+     True
+     False
+     True
+
+a  and  b  hold equal contents, so  ==  is True. But each was built by its own  [1, 2, 3]  line, so they are two separate objects and  is  is False. The line  c = a  copied nothing  --  it put the SAME object into a second name, which is why  a is c  is True.
+
+is not  is the negative form:  a is not b  is True exactly when the two are different objects.
+
+id()  --  the number that identifies an object
+
+The built-in  id(x)  hands back an integer that identifies the object  x . Two names holding the same object give the same  id() .
+
+Code:
+
+     a = [1, 2, 3]
+     b = [1, 2, 3]
+     c = a
+     print(id(a) == id(c))
+     print(id(a) == id(b))
+
+Output:
+     True
+     False
+
+x is y  asks exactly the same question as  id(x) == id(y) , written shorter.
+
+Where  is  actually belongs
+
+Use  is  for one thing:  None .
+
+     if value is None:
+
+None  is Python's word for "no value at all", and a running program only ever holds ONE  None  object. That makes "is it that one object?" the exact right question, and  is None  is the form every Python codebase uses.
+
+For everything else use  == . Comparing numbers with  is  looks like it works, then quietly stops working when the number gets bigger.
+
+Code:
+
+     x = int("5")
+     y = int("5")
+     print(x is y)
+
+     x = int("257")
+     y = int("257")
+     print(x is y)
+
+Output:
+     True
+     False
+
+Both pairs hold equal numbers, yet  is  answers differently. CPython (the standard Python program you run) keeps one ready-made object for every small integer from  -5  to  256 , so both names land on that single shared object and  is  says True. 257 sits outside that range, so each  int("257")  builds a fresh object and  is  says False. Nothing in the code changed  --  only the size of the number.
+
+Writing those numbers as plain literals hides the effect instead of showing it. Python compiles  p = 257  and  q = 257  inside one file into a single shared constant, so  p is q  comes out True there. The  int("257")  form forces two real objects and shows what is actually happening.
+
+3)  Bitwise operators  --  working on the bits of an integer
+
+Every integer is stored as BINARY: a number written with only the digits 0 and 1, where each place is worth twice the place to its right.
+
+     place value     8    4    2    1
+     12           =  1    1    0    0
+     10           =  1    0    1    0
+
+So  12  is  1100  in binary and  10  is  1010 . The built-in  bin(x)  prints that form for you.
+
+Code:
+
+     print(bin(12))
+     print(bin(10))
+
+Output:
+     0b1100
+     0b1010
+
+The  0b  prefix only marks the digits after it as binary.
+
+A bitwise operator lines the two numbers up and works on each column on its own:
+
+     &     AND           1 only where BOTH bits are 1
+     |     OR            1 where EITHER bit is 1
+     ^     XOR           1 only where the bits DIFFER
+     ~     NOT           flips every bit (takes one operand)
+     <<    left shift    move the bits left, filling with 0
+     >>    right shift   move the bits right, dropping what falls off the end
+
+Code:
+
+     print(12 & 10)
+     print(12 | 10)
+     print(12 ^ 10)
+     print(~12)
+     print(12 << 2)
+     print(12 >> 2)
+
+Output:
+     8
+     14
+     6
+     -13
+     48
+     3
+
+Column by column, for  12 & 10 :
+
+     1100      12
+     1010      10
+     ----
+     1000      8      only the leftmost column held a 1 in both rows
+
+Shifting is multiplying and dividing by powers of two.  12 << 2  moves every bit two places left and gives  48 , which is  12 * 4 .  12 >> 2  moves them two places right and gives  3 , which is  12 // 4 .
+
+~12  gives  -13 , not  3 . Python integers carry a sign, and flipping every bit of  x  always lands on  -(x + 1) .
+
+The three symbols  & ,  |  and  ^  mean something completely different when both operands are SETS  --  there they are intersection, union and symmetric difference. Python picks the meaning from the TYPES of the operands, never from the symbol alone.
+
+Code:
+
+     print(12 & 10)
+     print({1, 2, 3} & {2, 3, 4})
+
+Output:
+     8
+     {2, 3}
+
+4)  :=  --  the walrus operator
+
+Plain assignment  =  is a statement: it does its job and hands back nothing, so it cannot sit inside a bigger expression. The walrus operator  :=  assigns a value AND hands that value back, so one expression can do both at once.
+
+The name comes from the shape:  :=  turned on its side looks like a walrus with two eyes and two tusks.
+
+Without it, you work the value out on one line and test it on the next.
+
+Code:
+
+     numbers = [1, 2, 3, 4, 5]
+     total = sum(numbers)
+     if total > 10:
+         print("total is", total)
+
+Output:
+     total is 15
+
+With it, both happen in the  if  line, and  total  is an ordinary variable afterwards.
+
+Code:
+
+     numbers = [1, 2, 3, 4, 5]
+     if (total := sum(numbers)) > 10:
+         print("total is", total)
+
+Output:
+     total is 15
+
+The parentheses around  total := sum(numbers)  are required. Without them Python cannot tell where the assignment stops and the  >  comparison starts.
+
+Its real home is a  while  loop that has to read something before it can test it:
+
+     while (line := input()) != "quit":
+         print(line)
+
+Read that as "read a line into  line , then keep looping for as long as that line is not  quit ".
+
+Learn to READ  := , because you will meet it in code other people wrote. Do not reach for it in your own. Two plain lines say the same thing, every reader understands them at a glance, and a walrus buried inside a long condition is easy to miss.
+
+5)  Operator precedence  --  which operator runs first
+
+When one expression holds several operators, Python does not simply work left to right. Every operator has a PRECEDENCE, and the higher one runs first.
+
+     print(2 + 3 * 4)
+     14
+
+*  has higher precedence than  + , so  3 * 4  ran first and  2  was added to its result. Plain left to right would have given  20 .
+
+The full table, highest first. Everything on one row shares the same precedence.
+
+     ()                                            parentheses (grouping)
+     **                                            exponent
+     +x   -x   ~x                                  unary plus, unary minus, bitwise NOT
+     *   /   //   %                                multiply, divide, floor divide, modulo
+     +   -                                         add, subtract
+     <<   >>                                       bit shifts
+     &                                             bitwise AND
+     ^                                             bitwise XOR
+     |                                             bitwise OR
+     ==  !=  <  >  <=  >=  is  is not  in  not in  comparison, identity, membership
+     not x                                         logical NOT
+     and                                           logical AND
+     or                                            logical OR
+     a if c else b                                 ternary
+     :=                                            walrus
+
+Operators sharing a row run LEFT to RIGHT, with one exception:  **  runs RIGHT to LEFT.
+
+     print(2 ** 3 ** 2)
+     512
+
+That is  2 ** (3 ** 2) , which is  2 ** 9 . Left to right would have given  (2 ** 3) ** 2 , which is  64 .
+
+The errors you will meet:
+
+  -  Unary minus binds LOOSER than  ** , so a minus sign written in front of a power is applied to the finished power rather than to the base.
+
+        print(-2 ** 2)
+        -4
+
+     Write  (-2) ** 2  when the base itself is meant to be negative; that gives  4 .
+
+  -  Comparisons bind looser than the bitwise operators, so a bitwise operator sitting next to  ==  groups the opposite way from how most people read it.
+
+        print(1 | 2 == 2)
+        False
+
+     Python ran  (1 | 2) == 2 , which is  3 == 2 . Parentheses settle it whichever grouping you wanted.
+
+  -  A test written as  x == 1 or 2  is true no matter what  x  holds.  or  binds looser than  == , so Python reads it as  (x == 1) or 2 , and a bare  2  is a truthy value, so the  or  succeeds every time.
+
+        x = 5
+        print(x == 1 or 2)
+        2
+
+     Write both comparisons out in full:  x == 1 or x == 2 .
+
+Parentheses beat every row in the table. Once an expression mixes three or more operators, add them even where the table says you do not have to  --  the next person reading the line should not have to recall row order to know what it does.

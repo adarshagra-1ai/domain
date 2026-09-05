@@ -1,0 +1,68 @@
+1  --  Symbol names
+
+1)  The symbols, one by one
+
+  (a)   Brackets  --  three pairs, and they are never interchangeable
+
+           (   )     parentheses           parens, round brackets
+           [   ]     square brackets       brackets, box brackets
+           {   }     curly braces          braces, curly brackets
+           <   >     angle brackets        alone they are less-than and greater-than
+
+  (b)   Quotes
+
+           '         single quote          apostrophe, tick
+           "         double quote          quote, inverted comma
+           `         backtick              backquote
+
+  (c)   Slashes and bars
+
+           /         forward slash         slash, stroke
+           \         backslash
+           |         pipe                  vertical bar, bar
+
+  (d)   Joiners and separators
+
+           .         dot                   period, full stop, point
+           ,         comma
+           :         colon
+           ;         semicolon
+           -         hyphen                dash, minus
+           _         underscore            underbar, low line
+           ...       ellipsis              dot dot dot
+
+  (e)   Maths and comparison
+
+           +         plus
+           =         equals                equal sign
+           *         asterisk              star
+           %         percent               percent sign
+           ^         caret                 hat
+
+  (f)   The rest of the shift row
+
+           !         exclamation mark      bang, exclamation point
+           ?         question mark         query
+           @         at sign               at
+           #         hash                  pound, number sign
+           $         dollar sign           dollar
+           &         ampersand             and sign
+           ~         tilde
+
+2)  Two-character combinations
+
+These are read as one unit and have their own names.
+
+     ->        arrow
+     =>        fat arrow, rocket
+     ==        double equals
+     !=        not equal, bang equals
+     &&        double ampersand
+     ||        double pipe
+     //        double slash
+     **        double star, double asterisk
+     ::        double colon
+     >>        double greater-than, right shift
+     <<        double less-than, left shift
+     :=        walrus
+     --        double dash, double hyphen

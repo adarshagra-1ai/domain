@@ -1,4 +1,4 @@
-1  --  Case styles  (snake_case, camelCase, PascalCase, kebab-case)
+2  --  Case styles  (snake_case, camelCase, PascalCase, kebab-case)
 
 1)  What a case style is
 

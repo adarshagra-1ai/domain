@@ -70,7 +70,7 @@ Code:
 
 Output:  6
 
-Every arithmetic operator has this shorthand form:  += ,  -= ,  *= ,  /= . There is no space between the operator and the  = , so it is  +=  and never  + = :
+Every arithmetic operator has this shorthand form:  += ,  -= ,  *= ,  /= ,  //= ,  %= ,  **= . There is no space between the operator and the  = , so it is  +=  and never  + = :
 
      count + = 1
      SyntaxError: invalid syntax

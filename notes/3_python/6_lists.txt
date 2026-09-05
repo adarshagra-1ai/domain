@@ -135,6 +135,18 @@ Output:  [10, 'a', 'b', 50]
 
 Positions  1 , 2 , 3  were replaced by  "a"  and  "b" . The list SHRANK from 5 items to 4.
 
+The replacement does not have to be the same size as the slice, so a slice assignment can GROW the list too:
+
+Code:
+
+     nums = [10, 20, 30, 40, 50]
+     nums[1:2] = ["x", "y", "z"]
+     print(nums)
+
+Output:  [10, 'x', 'y', 'z', 30, 40, 50]
+
+One position was replaced by three items, so the list grew from 5 items to 7.
+
 7)  Adding items
 
   (a)   append(item)  --  add one item to the END.
@@ -187,7 +199,41 @@ Positions  1 , 2 , 3  were replaced by  "a"  and  "b" . The list SHRANK from 5 i
            [3, 4]
            [1, 2, 3, 4]
 
-8)  Removing items
+8)  Membership and finding
+
+  (a)   in / not in  --  check if a value is in the list.
+
+        Code:
+
+           nums = [10, 20, 30]
+           print(20 in nums)
+           print(99 in nums)
+           print(99 not in nums)
+
+        Output:
+           True
+           False
+           True
+
+  (b)   index(value)  --  return the index of the FIRST item equal to  value . Raises  ValueError  if not present.
+
+        Code:
+
+           nums = [10, 20, 30, 20]
+           print(nums.index(20))
+
+        Output:  1
+
+  (c)   count(value)  --  return how many times  value  appears.
+
+        Code:
+
+           nums = [10, 20, 30, 20, 20]
+           print(nums.count(20))
+
+        Output:  3
+
+9)  Removing items
 
   (a)   remove(value)  --  remove the FIRST item equal to  value .
 
@@ -199,7 +245,18 @@ Positions  1 , 2 , 3  were replaced by  "a"  and  "b" . The list SHRANK from 5 i
 
         Output:  [10, 30, 20]
 
-        Only the FIRST 20 was removed. If  value  is not in the list,  remove()  raises a  ValueError .
+        Only the FIRST 20 was removed.
+
+        The value has to actually be in the list. Asking  remove()  to take out something that is absent raises an error rather than quietly doing nothing:
+
+           nums = [10, 20, 30]
+           nums.remove(99)
+           ValueError: list.remove(x): x not in list
+
+        Check first when you are not sure:
+
+           if 99 in nums:
+               nums.remove(99)
 
   (b)   pop(i)   --  remove the item at index  i  and RETURN it. Without an index, pops the LAST item.
 
@@ -241,51 +298,6 @@ Positions  1 , 2 , 3  were replaced by  "a"  and  "b" . The list SHRANK from 5 i
 
         Output:  []
 
-remove()  needs the value to actually be there. Asking it to remove something absent raises an error rather than doing nothing:
-
-     nums = [10, 20, 30]
-     nums.remove(99)
-     ValueError: list.remove(x): x not in list
-
-Check first when you are not sure:
-
-     if 99 in nums:
-         nums.remove(99)
-
-9)  Membership and finding
-
-  (a)   in / not in  --  check if a value is in the list.
-
-        Code:
-
-           nums = [10, 20, 30]
-           print(20 in nums)
-           print(99 in nums)
-           print(99 not in nums)
-
-        Output:
-           True
-           False
-           True
-
-  (b)   index(value)  --  return the index of the FIRST item equal to  value . Raises  ValueError  if not present.
-
-        Code:
-
-           nums = [10, 20, 30, 20]
-           print(nums.index(20))
-
-        Output:  1
-
-  (c)   count(value)  --  return how many times  value  appears.
-
-        Code:
-
-           nums = [10, 20, 30, 20, 20]
-           print(nums.count(20))
-
-        Output:  3
-
 10)  Sorting and reversing
 
   (a)   sort()  --  sort the list IN PLACE (changes the original). Returns  None .
@@ -301,6 +313,15 @@ Check first when you are not sure:
         Descending order:
 
            nums.sort(reverse=True)
+
+        Because  sort()  hands back  None  instead of the sorted list, assigning its result throws the whole list away.  None  is Python's word for "no value at all", and that is what the name is left holding:
+
+           nums = [30, 10, 20]
+           nums = nums.sort()
+           print(nums)
+           None
+
+        Call  sort()  on a line of its own and read the list afterwards, or use  sorted()  when you want a value back.
 
   (b)   sorted(lst)  --  return a NEW sorted list without changing the original.
 
@@ -325,32 +346,32 @@ Check first when you are not sure:
 
         Output:  [30, 20, 10]
 
-  IN-PLACE vs NEW:
+IN-PLACE vs NEW:
 
      sort() , reverse()       ->  change the original list, and return  None .
      sorted() , lst[::-1]     ->  return a new list, original stays untouched.
 
-  (d)   min(lst) , max(lst) , sum(lst)  --  built-in functions, not list methods.
+11)  Built-ins that take a list  --  min(), max(), sum()
 
-        Like  len() , you call them AROUND the list, not with a dot. They do not change the list.
+Like  len() , you call these AROUND the list, not with a dot. They do not change the list.
 
-        Code:
+Code:
 
-           nums = [30, 10, 20]
-           print(min(nums))
-           print(max(nums))
-           print(sum(nums))
-           print(nums)
+     nums = [30, 10, 20]
+     print(min(nums))
+     print(max(nums))
+     print(sum(nums))
+     print(nums)
 
-        Output:
-           10
-           30
-           60
-           [30, 10, 20]
+Output:
+     10
+     30
+     60
+     [30, 10, 20]
 
-        min()  and  max()  also work on a list of strings, comparing them alphabetically.  sum()  needs numbers.
+min()  and  max()  also work on a list of strings, comparing them alphabetically.  sum()  needs numbers.
 
-11)  Iterating over a list  (brief look)
+12)  Iterating over a list  (brief look)
 
 To do something with each item in a list, use a  for  loop.
 

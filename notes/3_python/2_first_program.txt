@@ -6,7 +6,7 @@
 
      ( ... )    ->  parentheses  --  they say "CALL this function with the values inside".
 
-     "hello"    ->  a STRING (a piece of text). Strings in Python are wrapped in double quotes  "..."  or single quotes  '...' . Both work.
+     "hello"    ->  a STRING (a piece of text).
 
 The whole line reads as:  "call the  print  function with the string  hello ".
 

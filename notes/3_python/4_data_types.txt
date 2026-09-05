@@ -149,7 +149,7 @@ Output:
      <class 'str'>
      <class 'bool'>
 
-Read  <class 'int'>  as "the type is int ". The word  class  is Python's own name for a type, and it shows up here because every type is built the same way underneath.  type()  is your quick way to answer "what type is this value?".
+Read  <class 'int'>  as "the type is int ". The word  class  is Python's own name for a type.
 
 8)  Convert between types
 
@@ -192,7 +192,7 @@ Python cannot tell whether you meant to add two numbers or to join two pieces of
      print(int("42") + 1)     ->  43
      print("42" + str(1))     ->  421
 
-A word on "CASTING": you will meet it in tutorials, used to mean the explicit kind. It comes from languages like C and Java, where a cast can reinterpret the same bits as a different type.  int("42")  does nothing of the sort  --  it builds a brand new object and leaves the string alone. For Python, "conversion" is the accurate word.
+A word on "CASTING": you will meet it in tutorials, used to mean the explicit kind.
 
 Common conversions:
 

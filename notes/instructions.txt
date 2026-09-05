@@ -84,8 +84,9 @@ All learning material lives inside the domain/ folder. It has TWO top-level sub-
     |    |    +-- 2_terminal.txt
     |    |    +-- 3_core_commands.txt
     |    |    +-- ...
-    |    +-- 2_naming_conventions/
-    |    |    +-- 1_case_styles.txt
+    |    +-- 2_symbols_and_naming/
+    |    |    +-- 1_symbols.txt
+    |    |    +-- 2_case_styles.txt
     |    +-- 3_python/
     |    |    +-- 1_what_is_python.txt
     |    |    +-- 2_first_program.txt
@@ -107,7 +108,7 @@ notes/ rules
 
   -  All learning content stays in plain .txt files. No markdown, no code files here.
   -  index.txt holds one intro section per topic in a single file. Each section lists the small parts that topic covers.
-  -  One folder per topic, named lowercase snake_case with a leading number (1_terminal/, 2_naming_conventions/, ...).
+  -  One folder per topic, named lowercase snake_case with a leading number (1_terminal/, 2_symbols_and_naming/, ...).
   -  Inside each topic folder: N_topic_name.txt — one file per section, where N is the section number.
   -  Starting a new section inside an existing topic: create N_topic_name.txt inside the correct topic folder.
   -  Starting a new topic: create a new folder notes/N_topic/ using the next unused number, add a new section for it in index.txt, and add section files as we teach them.

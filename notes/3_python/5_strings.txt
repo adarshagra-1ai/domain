@@ -17,7 +17,7 @@ Choose the quote style based on what the text itself contains, so you do not hav
      "It's a nice day"        (use double quotes, the apostrophe stays)
      'He said "hi"'           (use single quotes, the double quotes stay)
 
-Triple-quoted strings  ( """...""" or '''...''' )  can span multiple lines. The newlines you type are preserved.
+Triple-quoted strings  """ ... """  or  ''' ... '''  can span multiple lines. The newlines you type are preserved.
 
 Code:
 
@@ -191,8 +191,6 @@ Code:
 
 Output:  score: 42
 
-An f-string is a cleaner way for this common case.
-
 7)  Membership  --  in  and  not in
 
 Check whether a substring appears inside a string.
@@ -295,7 +293,9 @@ name.strip().lower()  runs  strip  first, then calls  lower  on its result.
 
 9)  Strings are IMMUTABLE
 
-You cannot change a string in place. Every method that "modifies" a string actually returns a NEW string; the original stays untouched.
+Changing something IN PLACE means the change happens to the thing you already have, rather than producing a separate copy. A value you can change this way is MUTABLE; a value you cannot is IMMUTABLE, and every "change" to it has to build a brand new value while the old one stays exactly as it was.
+
+Strings are immutable, so you cannot change one in place. Every method that "modifies" a string actually returns a NEW string; the original stays untouched.
 
 Code:
 
@@ -319,13 +319,8 @@ Output:  HELLO
 
 You also cannot assign to a single position:
 
-Code:
-
      s = "hello"
      s[0] = "H"
-
-Run:
-
      TypeError: 'str' object does not support item assignment
 
 To change one character, REBUILD the string:

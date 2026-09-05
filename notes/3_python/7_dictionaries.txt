@@ -72,12 +72,7 @@ Output:
 
 If the key does NOT exist, this raises a  KeyError :
 
-Code:
-
      print(person["email"])
-
-Run:
-
      KeyError: 'email'
 
 Safer:  d.get(key, default)
@@ -181,7 +176,7 @@ Output:
      False
      True
 
-in  checks KEYS by default, not values.
+in  checks KEYS, not values.
 
 7)  Iterating
 
@@ -201,6 +196,22 @@ in  checks KEYS by default, not values.
         d.values() --  view of all values.
         d.items()  --  view of (key, value) pairs.
 
+        A VIEW is not a list. It is a live window onto the dict, so it always shows what the dict holds right now.
+
+        Code:
+
+           person = {"name": "adarsh"}
+           keys = person.keys()
+           print(keys)
+           person["age"] = 25
+           print(keys)
+
+        Output:
+           dict_keys(['name'])
+           dict_keys(['name', 'age'])
+
+        The view was taken before  "age"  was added and it shows that key anyway. Wrap a view in  list()  when you want a real list that stops changing:
+
         Code:
 
            person = {"name": "adarsh", "age": 25}
@@ -212,6 +223,15 @@ in  checks KEYS by default, not values.
            ['name', 'age']
            ['adarsh', 25]
            [('name', 'adarsh'), ('age', 25)]
+
+        values()  is also how you ask a membership question about VALUES rather than keys:
+
+        Code:
+
+           person = {"name": "adarsh", "age": 25}
+           print(25 in person.values())
+
+        Output:  True
 
   (c)   Iterate as key and value together:
 
